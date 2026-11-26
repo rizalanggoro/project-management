@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, type ReactNode } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
@@ -14,17 +14,30 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { FieldGroup, Field, FieldLabel } from '@/components/ui/field'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyContent,
+} from '@/components/ui/empty'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { formatRupiah } from '@/lib/utils'
 import { useAuth } from '@/lib/auth'
 import { UnitPricePickerDialog } from './unit-price-picker-dialog'
 import {
-  ArrowLeft,
   Plus,
   Trash2,
   Save,
-  X,
   HardHat,
   Package,
   Wrench,
@@ -33,6 +46,11 @@ import {
 
 type LocalItem = CreateAhspItemInput & { id: string }
 type Category = 'LABOR' | 'MATERIALS' | 'EQUIPMENT'
+
+const statusOptions: { label: string; value: 'draft' | 'final' }[] = [
+  { label: 'Draft', value: 'draft' },
+  { label: 'Final / Disetujui', value: 'final' },
+]
 
 type AhspFormProps = {
   id?: string
@@ -210,47 +228,17 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
   )
 
   return (
-    <div className="flex flex-col gap-6 pb-16">
-      {/* Top Navigation & Action Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => navigate({ to: '/ahsp' })}
-            className="gap-1.5"
-          >
-            <ArrowLeft className="size-4" />
-            <span>Kembali ke AHSP</span>
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">
-              {isEdit ? 'Edit Analisa Harga Satuan (AHSP)' : 'Tambah AHSP Baru'}
-            </h1>
-            <p className="text-xs text-muted-foreground">
-              {isEdit
-                ? `Perbarui rincian item koefisien dan harga untuk ${code || 'AHSP'}`
-                : 'Pilih item dari Master Unit Price (HSD) lalu tentukan koefisien masing-masing komponen'}
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => navigate({ to: '/ahsp' })}
-            disabled={isPending}
-          >
-            <X className="size-4 mr-1.5" />
-            Batal
-          </Button>
-          <Button type="button" onClick={handleSave} disabled={isPending}>
-            <Save className="size-4 mr-1.5" />
-            {isPending ? 'Menyimpan...' : isEdit ? 'Simpan Perubahan' : 'Simpan AHSP'}
-          </Button>
-        </div>
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 pb-16">
+      {/* Page Title */}
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+          {isEdit ? 'Edit Analisa Harga Satuan (AHSP)' : 'Tambah AHSP Baru'}
+        </h1>
+        <p className="text-xs text-muted-foreground">
+          {isEdit
+            ? `Perbarui rincian item koefisien dan harga untuk ${code || 'AHSP'}`
+            : 'Pilih item dari Master Unit Price (HSD) lalu tentukan koefisien masing-masing komponen'}
+        </p>
       </div>
 
       {errorMessage && (
@@ -269,7 +257,7 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <FieldGroup className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <FieldGroup className="flex flex-col gap-4">
               <Field>
                 <FieldLabel htmlFor="ahsp-code">
                   Kode AHSP <span className="text-destructive">*</span>
@@ -284,21 +272,19 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
                 />
               </Field>
 
-              <div className="md:col-span-2">
-                <Field>
-                  <FieldLabel htmlFor="ahsp-work-item">
-                    Uraian Pekerjaan <span className="text-destructive">*</span>
-                  </FieldLabel>
-                  <Input
-                    id="ahsp-work-item"
-                    value={workItem}
-                    onChange={(e) => setWorkItem(e.target.value)}
-                    placeholder="e.g. Pembuatan 1 m3 Beton Mutu K-225"
-                    className="bg-card"
-                    required
-                  />
-                </Field>
-              </div>
+              <Field>
+                <FieldLabel htmlFor="ahsp-work-item">
+                  Uraian Pekerjaan <span className="text-destructive">*</span>
+                </FieldLabel>
+                <Input
+                  id="ahsp-work-item"
+                  value={workItem}
+                  onChange={(e) => setWorkItem(e.target.value)}
+                  placeholder="e.g. Pembuatan 1 m3 Beton Mutu K-225"
+                  className="bg-card"
+                  required
+                />
+              </Field>
 
               <Field>
                 <FieldLabel htmlFor="ahsp-unit">
@@ -314,259 +300,106 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
                 />
               </Field>
 
-              <div className="md:col-span-3">
-                <Field>
-                  <FieldLabel htmlFor="ahsp-note">Catatan / Spesifikasi Teknis</FieldLabel>
-                  <Textarea
-                    id="ahsp-note"
-                    value={note}
-                    onChange={(e) => setNote(e.target.value)}
-                    placeholder="Catatan metode kerja, spesifikasi standar, atau referensi SNI..."
-                    rows={2}
-                    className="bg-card"
-                  />
-                </Field>
-              </div>
+              <Field>
+                <FieldLabel htmlFor="ahsp-note">Catatan / Spesifikasi Teknis</FieldLabel>
+                <Textarea
+                  id="ahsp-note"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  placeholder="Catatan metode kerja, spesifikasi standar, atau referensi SNI..."
+                  rows={2}
+                  className="bg-card"
+                />
+              </Field>
 
               <Field>
                 <FieldLabel htmlFor="ahsp-status">Status</FieldLabel>
-                <NativeSelect
-                  id="ahsp-status"
+                <Select
+                  items={statusOptions}
                   value={status}
-                  onChange={(e) => setStatus(e.target.value as any)}
-                  className="w-full bg-card"
+                  onValueChange={(value) => {
+                    if (value) setStatus(value as 'draft' | 'final')
+                  }}
                 >
-                  <NativeSelectOption value="draft">Draft</NativeSelectOption>
-                  <NativeSelectOption value="final">Final / Disetujui</NativeSelectOption>
-                </NativeSelect>
+                  <SelectTrigger id="ahsp-status">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {statusOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </Field>
             </FieldGroup>
           </CardContent>
         </Card>
 
         {/* Section 2: Components Table (A, B, C) */}
-        <Card>
-          <CardHeader>
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <CardTitle>Rincian Komponen Koefisien & Harga Satuan</CardTitle>
-                <CardDescription>
-                  Item ditautkan langsung dari Master Unit Price (HSD). Anda cukup memasukkan koefisien kebutuhan.
-                </CardDescription>
-              </div>
-              <div className="flex items-center gap-2 text-xs">
-                <Badge variant="outline" className="gap-1 font-mono">
-                  Total Items: {items.length}
-                </Badge>
-              </div>
+        <section className="flex flex-col gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 className="text-lg font-semibold tracking-tight">
+                Rincian Komponen Koefisien & Harga Satuan
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                Item ditautkan langsung dari Master Unit Price (HSD). Anda cukup memasukkan koefisien kebutuhan.
+              </p>
             </div>
-          </CardHeader>
-          <CardContent className="p-0 sm:p-4">
-            <div className="rounded-lg border bg-card overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted/50">
-                    <TableHead className="w-12 text-center">No</TableHead>
-                    <TableHead className="min-w-[280px]">Uraian Item (Terhubung ke Master HSD)</TableHead>
-                    <TableHead className="w-32">Kode</TableHead>
-                    <TableHead className="w-20 text-center">Satuan</TableHead>
-                    <TableHead className="w-36 text-right">Koefisien</TableHead>
-                    <TableHead className="w-36 text-right">Harga Satuan (Rp)</TableHead>
-                    <TableHead className="w-36 text-right">Jumlah Biaya (Rp)</TableHead>
-                    <TableHead className="w-12 text-center"></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {/* Category A: LABOR */}
-                  <TableRow className="bg-muted/70 font-semibold border-t">
-                    <TableCell className="text-center font-bold text-primary">A</TableCell>
-                    <TableCell colSpan={6} className="text-foreground">
-                      <div className="flex items-center gap-2">
-                        <HardHat className="size-4 text-primary" />
-                        <span>TENAGA KERJA (LABOR)</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-center p-1">
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleOpenPicker('LABOR')}
-                        title="Pilih Tenaga Kerja dari Master Unit Price"
-                        className="h-8 gap-1 text-xs font-medium text-primary hover:text-primary hover:bg-primary/10"
-                      >
-                        <Plus className="size-3.5" />
-                        <span className="hidden sm:inline">Pilih</span>
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                  {items.filter((it) => it.category === 'LABOR').length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={8} className="text-center py-4 text-xs text-muted-foreground italic">
-                        Belum ada item tenaga kerja.{' '}
-                        <button
-                          type="button"
-                          onClick={() => handleOpenPicker('LABOR')}
-                          className="text-primary underline hover:text-primary/80 font-medium ml-1 inline-flex items-center gap-1"
-                        >
-                          <Plus className="size-3" /> Pilih dari Master Unit Price
-                        </button>
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    items
-                      .filter((it) => it.category === 'LABOR')
-                      .map((item, idx) => (
-                        <ComponentRow
-                          key={item.id}
-                          item={item}
-                          no={idx + 1}
-                          onUpdateCoefficient={updateCoefficient}
-                          onRemove={removeItem}
-                        />
-                      ))
-                  )}
-                  <TableRow className="border-t bg-muted/20 font-medium text-xs">
-                    <TableCell colSpan={6} className="text-right text-muted-foreground font-semibold">
-                      Jumlah Tenaga Kerja (A):
-                    </TableCell>
-                    <TableCell className="text-right font-bold text-foreground">
-                      {formatRupiah(calc.labor)}
-                    </TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
+            <Badge variant="outline" className="gap-1 font-mono text-xs">
+              Total Items: {items.length}
+            </Badge>
+          </div>
 
-                  {/* Category B: MATERIALS */}
-                  <TableRow className="bg-muted/70 font-semibold border-t-2">
-                    <TableCell className="text-center font-bold text-primary">B</TableCell>
-                    <TableCell colSpan={6} className="text-foreground">
-                      <div className="flex items-center gap-2">
-                        <Package className="size-4 text-primary" />
-                        <span>BAHAN (MATERIALS)</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-center p-1">
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleOpenPicker('MATERIALS')}
-                        title="Pilih Bahan dari Master Unit Price"
-                        className="h-8 gap-1 text-xs font-medium text-primary hover:text-primary hover:bg-primary/10"
-                      >
-                        <Plus className="size-3.5" />
-                        <span className="hidden sm:inline">Pilih</span>
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                  {items.filter((it) => it.category === 'MATERIALS').length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={8} className="text-center py-4 text-xs text-muted-foreground italic">
-                        Belum ada item bahan.{' '}
-                        <button
-                          type="button"
-                          onClick={() => handleOpenPicker('MATERIALS')}
-                          className="text-primary underline hover:text-primary/80 font-medium ml-1 inline-flex items-center gap-1"
-                        >
-                          <Plus className="size-3" /> Pilih dari Master Unit Price
-                        </button>
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    items
-                      .filter((it) => it.category === 'MATERIALS')
-                      .map((item, idx) => (
-                        <ComponentRow
-                          key={item.id}
-                          item={item}
-                          no={idx + 1}
-                          onUpdateCoefficient={updateCoefficient}
-                          onRemove={removeItem}
-                        />
-                      ))
-                  )}
-                  <TableRow className="border-t bg-muted/20 font-medium text-xs">
-                    <TableCell colSpan={6} className="text-right text-muted-foreground font-semibold">
-                      Jumlah Bahan (B):
-                    </TableCell>
-                    <TableCell className="text-right font-bold text-foreground">
-                      {formatRupiah(calc.material)}
-                    </TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
+          <div className="flex flex-col gap-6">
+            <CategoryCard
+              title="Tenaga Kerja (LABOR)"
+              icon={<HardHat />}
+              category="LABOR"
+              items={items}
+              total={calc.labor}
+              emptyLabel="item tenaga kerja"
+              onOpenPicker={handleOpenPicker}
+              onUpdateCoefficient={updateCoefficient}
+              onRemove={removeItem}
+            />
+            <CategoryCard
+              title="Bahan (MATERIALS)"
+              icon={<Package />}
+              category="MATERIALS"
+              items={items}
+              total={calc.material}
+              emptyLabel="item bahan"
+              onOpenPicker={handleOpenPicker}
+              onUpdateCoefficient={updateCoefficient}
+              onRemove={removeItem}
+            />
+            <CategoryCard
+              title="Peralatan (EQUIPMENT)"
+              icon={<Wrench />}
+              category="EQUIPMENT"
+              items={items}
+              total={calc.equipment}
+              emptyLabel="item peralatan"
+              onOpenPicker={handleOpenPicker}
+              onUpdateCoefficient={updateCoefficient}
+              onRemove={removeItem}
+            />
+          </div>
+        </section>
 
-                  {/* Category C: EQUIPMENT */}
-                  <TableRow className="bg-muted/70 font-semibold border-t-2">
-                    <TableCell className="text-center font-bold text-primary">C</TableCell>
-                    <TableCell colSpan={6} className="text-foreground">
-                      <div className="flex items-center gap-2">
-                        <Wrench className="size-4 text-primary" />
-                        <span>PERALATAN (EQUIPMENT)</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-center p-1">
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleOpenPicker('EQUIPMENT')}
-                        title="Pilih Peralatan dari Master Unit Price"
-                        className="h-8 gap-1 text-xs font-medium text-primary hover:text-primary hover:bg-primary/10"
-                      >
-                        <Plus className="size-3.5" />
-                        <span className="hidden sm:inline">Pilih</span>
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                  {items.filter((it) => it.category === 'EQUIPMENT').length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={8} className="text-center py-4 text-xs text-muted-foreground italic">
-                        Belum ada item peralatan.{' '}
-                        <button
-                          type="button"
-                          onClick={() => handleOpenPicker('EQUIPMENT')}
-                          className="text-primary underline hover:text-primary/80 font-medium ml-1 inline-flex items-center gap-1"
-                        >
-                          <Plus className="size-3" /> Pilih dari Master Unit Price
-                        </button>
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    items
-                      .filter((it) => it.category === 'EQUIPMENT')
-                      .map((item, idx) => (
-                        <ComponentRow
-                          key={item.id}
-                          item={item}
-                          no={idx + 1}
-                          onUpdateCoefficient={updateCoefficient}
-                          onRemove={removeItem}
-                        />
-                      ))
-                  )}
-                  <TableRow className="border-t bg-muted/20 font-medium text-xs">
-                    <TableCell colSpan={6} className="text-right text-muted-foreground font-semibold">
-                      Jumlah Peralatan (C):
-                    </TableCell>
-                    <TableCell className="text-right font-bold text-foreground">
-                      {formatRupiah(calc.equipment)}
-                    </TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Section 3: Summary & Overhead (D, E, F) */}
+        {/* Section 3: Summary & Overhead */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="md:col-span-1 border-muted">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-semibold text-muted-foreground">
-                D. Total Biaya Langsung
+                Total Biaya Langsung
               </CardTitle>
-              <CardDescription className="text-xs">Komponen Tenaga (A) + Bahan (B) + Alat (C)</CardDescription>
+              <CardDescription className="text-xs">Tenaga kerja, bahan, dan peralatan</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold font-mono text-foreground">
@@ -579,7 +412,7 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-semibold text-muted-foreground">
-                  E. Overhead & Keuntungan
+                  Overhead & Keuntungan
                 </CardTitle>
                 <div className="flex items-center gap-1.5">
                   <Input
@@ -593,7 +426,7 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
                   <span className="text-xs font-semibold">%</span>
                 </div>
               </div>
-              <CardDescription className="text-xs">{overheadPct}% dari Biaya Langsung (D)</CardDescription>
+              <CardDescription className="text-xs">{overheadPct}% dari biaya langsung</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold font-mono text-foreground">
@@ -604,14 +437,9 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
 
           <Card className="md:col-span-1 border-primary/40 bg-primary/5">
             <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-bold text-primary">
-                  F. Harga Satuan Pekerjaan (AHSP)
-                </CardTitle>
-                <Badge variant="default" className="text-[10px] uppercase font-semibold">
-                  D + E
-                </Badge>
-              </div>
+              <CardTitle className="text-sm font-bold text-primary">
+                Harga Satuan Pekerjaan (AHSP)
+              </CardTitle>
               <CardDescription className="text-xs">
                 Harga per 1 {unit ? <span className="font-semibold text-foreground">{unit}</span> : 'satuan'}
               </CardDescription>
@@ -625,18 +453,17 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
         </div>
 
         {/* Bottom Actions */}
-        <div className="flex items-center justify-end gap-3 pt-4 border-t">
+        <div className="flex items-center justify-end gap-3 pt-4">
           <Button
             type="button"
             variant="outline"
-            size="lg"
             onClick={() => navigate({ to: '/ahsp' })}
             disabled={isPending}
           >
             Batal
           </Button>
-          <Button type="submit" size="lg" disabled={isPending} className="min-w-36">
-            <Save className="size-4 mr-2" />
+          <Button type="submit" variant="default" disabled={isPending}>
+            <Save data-icon="inline-start" />
             {isPending ? 'Menyimpan...' : isEdit ? 'Simpan Perubahan' : 'Simpan AHSP'}
           </Button>
         </div>
@@ -708,15 +535,109 @@ function ComponentRow({
       <TableCell className="p-2 text-center">
         <Button
           type="button"
-          size="icon"
           variant="ghost"
-          className="size-8 text-muted-foreground hover:text-destructive"
           onClick={() => onRemove(item.id)}
           title="Hapus baris"
         >
-          <Trash2 className="size-4" />
+          <Trash2 />
         </Button>
       </TableCell>
     </TableRow>
+  )
+}
+
+function CategoryCard({
+  title,
+  icon,
+  category,
+  items,
+  total,
+  emptyLabel,
+  onOpenPicker,
+  onUpdateCoefficient,
+  onRemove,
+}: {
+  title: string
+  icon: ReactNode
+  category: Category
+  items: LocalItem[]
+  total: number
+  emptyLabel: string
+  onOpenPicker: (category: Category) => void
+  onUpdateCoefficient: (id: string, coef: string) => void
+  onRemove: (id: string) => void
+}) {
+  const categoryItems = items.filter((it) => it.category === category)
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 pb-3">
+        <CardTitle className="text-base">{title}</CardTitle>
+        <Button type="button" variant="outline" onClick={() => onOpenPicker(category)}>
+          <Plus data-icon="inline-start" />
+          Pilih dari HSD
+        </Button>
+      </CardHeader>
+      <CardContent className="p-0 sm:p-4">
+        <div className="rounded-lg border bg-card overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-muted/50">
+                <TableHead className="w-12 text-center">No</TableHead>
+                <TableHead className="min-w-[280px]">Uraian Item (Terhubung ke Master HSD)</TableHead>
+                <TableHead className="w-32">Kode</TableHead>
+                <TableHead className="w-20 text-center">Satuan</TableHead>
+                <TableHead className="w-36 text-right">Koefisien</TableHead>
+                <TableHead className="w-36 text-right">Harga Satuan (Rp)</TableHead>
+                <TableHead className="w-36 text-right">Jumlah Biaya (Rp)</TableHead>
+                <TableHead className="w-12 text-center"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {categoryItems.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={8} className="p-0">
+                    <Empty>
+                      <EmptyHeader>
+                        <EmptyMedia variant="icon">{icon}</EmptyMedia>
+                        <EmptyTitle>Belum ada {emptyLabel}</EmptyTitle>
+                        <EmptyDescription>
+                          Pilih item dari Master Unit Price (HSD) untuk menambahkan komponen biaya.
+                        </EmptyDescription>
+                      </EmptyHeader>
+                      <EmptyContent>
+                        <Button type="button" variant="outline" onClick={() => onOpenPicker(category)}>
+                          <Plus data-icon="inline-start" />
+                          Pilih dari Master Unit Price
+                        </Button>
+                      </EmptyContent>
+                    </Empty>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                categoryItems.map((item, idx) => (
+                  <ComponentRow
+                    key={item.id}
+                    item={item}
+                    no={idx + 1}
+                    onUpdateCoefficient={onUpdateCoefficient}
+                    onRemove={onRemove}
+                  />
+                ))
+              )}
+              <TableRow className="border-t bg-muted/20 font-medium text-xs">
+                <TableCell colSpan={6} className="text-right font-semibold text-muted-foreground">
+                  Jumlah {title}:
+                </TableCell>
+                <TableCell className="text-right font-bold text-foreground">
+                  {formatRupiah(total)}
+                </TableCell>
+                <TableCell />
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
+    </Card>
   )
 }
