@@ -791,7 +791,7 @@ definitions:
 info:
   contact: {}
   description: Project monitoring & cost estimate API.
-  title: MUSASHI API
+  title: Project Management API
   version: 0.1.0
 paths:
   /ahsps:

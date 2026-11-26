@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "description": "Project monitoring \u0026 cost estimate API.",
-        "title": "MUSASHI API",
+        "title": "Project Management API",
         "contact": {},
         "version": "0.1.0"
     },

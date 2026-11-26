@@ -2807,7 +2807,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
-	Title:            "MUSASHI API",
+	Title:            "Project Management API",
 	Description:      "Project monitoring & cost estimate API.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

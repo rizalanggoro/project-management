@@ -1,4 +1,4 @@
-// @title           MUSASHI API
+// @title           Project Management API
 // @version         0.1.0
 // @description     Project monitoring & cost estimate API.
 // @BasePath        /api/v1

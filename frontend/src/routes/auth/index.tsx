@@ -47,7 +47,7 @@ function AuthPage() {
           <div className="mx-auto mb-2 flex size-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <Construction className="size-5" />
           </div>
-          <CardTitle className="text-xl">MUSASHI</CardTitle>
+          <CardTitle className="text-xl">Project Management</CardTitle>
           <CardDescription>
             Estimasi Biaya &amp; Manajemen Proyek Konstruksi
           </CardDescription>

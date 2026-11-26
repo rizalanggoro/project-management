@@ -187,7 +187,7 @@ func (s *service) GenerateRabPdf(projectID uint) (string, []byte, error) {
 	pdf := fpdf.New("L", "mm", "A4", "")
 	pdf.AddPage()
 	pdf.SetFont("Arial", "B", 16)
-	pdf.Cell(0, 10, "MUSASHI - RENCANA ANGGARAN BIAYA (RAB)")
+	pdf.Cell(0, 10, "PROJECT MANAGEMENT - RENCANA ANGGARAN BIAYA (RAB)")
 	pdf.Ln(12)
 
 	pdf.SetFont("Arial", "", 10)
