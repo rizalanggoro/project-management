@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { AhspForm } from '@/components/ahsp'
 
-export const Route = createFileRoute('/ahsp/$id/edit')({
+export const Route = createFileRoute('/ahsp/$id/edit/')({
   component: AhspEditPage,
 })
 
