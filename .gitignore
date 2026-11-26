@@ -7,8 +7,6 @@
 backend/.env
 backend/*.exe
 
-.agents/
-skills-lock.json
 .claude/
 .tmp/
 .tanstack/
