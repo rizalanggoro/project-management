@@ -19,6 +19,7 @@ import { Route as RabIndexRouteImport } from './routes/rab/index'
 import { Route as ScheduleIndexRouteImport } from './routes/schedule/index'
 import { Route as UnitPricesIndexRouteImport } from './routes/unit-prices/index'
 import { Route as VolumeIndexRouteImport } from './routes/volume/index'
+import { Route as AhspIdIndexRouteImport } from './routes/ahsp/$id/index'
 import { Route as AhspNewIndexRouteImport } from './routes/ahsp/new/index'
 import { Route as VolumeNewIndexRouteImport } from './routes/volume/new/index'
 import { Route as AhspIdEditIndexRouteImport } from './routes/ahsp/$id/edit/index'
@@ -73,6 +74,11 @@ const VolumeIndexRoute = VolumeIndexRouteImport.update({
   path: '/volume/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AhspIdIndexRoute = AhspIdIndexRouteImport.update({
+  id: '/ahsp/$id/',
+  path: '/ahsp/$id/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AhspNewIndexRoute = AhspNewIndexRouteImport.update({
   id: '/ahsp/new/',
   path: '/ahsp/new/',
@@ -100,6 +106,7 @@ export interface FileRoutesByFullPath {
   '/schedule/': typeof ScheduleIndexRoute
   '/unit-prices/': typeof UnitPricesIndexRoute
   '/volume/': typeof VolumeIndexRoute
+  '/ahsp/$id/': typeof AhspIdIndexRoute
   '/ahsp/new/': typeof AhspNewIndexRoute
   '/volume/new/': typeof VolumeNewIndexRoute
   '/ahsp/$id/edit/': typeof AhspIdEditIndexRoute
@@ -115,6 +122,7 @@ export interface FileRoutesByTo {
   '/schedule': typeof ScheduleIndexRoute
   '/unit-prices': typeof UnitPricesIndexRoute
   '/volume': typeof VolumeIndexRoute
+  '/ahsp/$id': typeof AhspIdIndexRoute
   '/ahsp/new': typeof AhspNewIndexRoute
   '/volume/new': typeof VolumeNewIndexRoute
   '/ahsp/$id/edit': typeof AhspIdEditIndexRoute
@@ -131,6 +139,7 @@ export interface FileRoutesById {
   '/schedule/': typeof ScheduleIndexRoute
   '/unit-prices/': typeof UnitPricesIndexRoute
   '/volume/': typeof VolumeIndexRoute
+  '/ahsp/$id/': typeof AhspIdIndexRoute
   '/ahsp/new/': typeof AhspNewIndexRoute
   '/volume/new/': typeof VolumeNewIndexRoute
   '/ahsp/$id/edit/': typeof AhspIdEditIndexRoute
@@ -148,6 +157,7 @@ export interface FileRouteTypes {
     | '/schedule/'
     | '/unit-prices/'
     | '/volume/'
+    | '/ahsp/$id/'
     | '/ahsp/new/'
     | '/volume/new/'
     | '/ahsp/$id/edit/'
@@ -163,6 +173,7 @@ export interface FileRouteTypes {
     | '/schedule'
     | '/unit-prices'
     | '/volume'
+    | '/ahsp/$id'
     | '/ahsp/new'
     | '/volume/new'
     | '/ahsp/$id/edit'
@@ -178,6 +189,7 @@ export interface FileRouteTypes {
     | '/schedule/'
     | '/unit-prices/'
     | '/volume/'
+    | '/ahsp/$id/'
     | '/ahsp/new/'
     | '/volume/new/'
     | '/ahsp/$id/edit/'
@@ -194,6 +206,7 @@ export interface RootRouteChildren {
   ScheduleIndexRoute: typeof ScheduleIndexRoute
   UnitPricesIndexRoute: typeof UnitPricesIndexRoute
   VolumeIndexRoute: typeof VolumeIndexRoute
+  AhspIdIndexRoute: typeof AhspIdIndexRoute
   AhspNewIndexRoute: typeof AhspNewIndexRoute
   VolumeNewIndexRoute: typeof VolumeNewIndexRoute
 }
@@ -270,6 +283,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VolumeIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ahsp/$id/': {
+      id: '/ahsp/$id/'
+      path: '/ahsp/$id'
+      fullPath: '/ahsp/$id/'
+      preLoaderRoute: typeof AhspIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ahsp/new/': {
       id: '/ahsp/new/'
       path: '/ahsp/new'
@@ -305,6 +325,7 @@ const rootRouteChildren: RootRouteChildren = {
   ScheduleIndexRoute: ScheduleIndexRoute,
   UnitPricesIndexRoute: UnitPricesIndexRoute,
   VolumeIndexRoute: VolumeIndexRoute,
+  AhspIdIndexRoute: AhspIdIndexRoute,
   AhspNewIndexRoute: AhspNewIndexRoute,
   VolumeNewIndexRoute: VolumeNewIndexRoute,
 }

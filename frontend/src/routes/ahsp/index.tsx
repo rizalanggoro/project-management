@@ -105,7 +105,17 @@ function AhspPage() {
               </TableRow>
             ) : (
               ahsps.map((a, idx) => (
-                <TableRow key={a.id}>
+                <TableRow
+                  key={a.id}
+                  className="cursor-pointer hover:bg-muted/50"
+                  tabIndex={0}
+                  onClick={() => navigate({ to: '/ahsp/$id', params: { id: a.id } })}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      navigate({ to: '/ahsp/$id', params: { id: a.id } })
+                    }
+                  }}
+                >
                   <TableCell className="text-center text-muted-foreground">{idx + 1}</TableCell>
                   <TableCell className="font-mono text-xs font-semibold">{a.code}</TableCell>
                   <TableCell className="font-medium text-foreground">{a.work_item}</TableCell>
@@ -115,7 +125,11 @@ function AhspPage() {
                   </TableCell>
                   <TableCell className="text-muted-foreground">{a.note || '-'}</TableCell>
                   {isAdmin && (
-                    <TableCell className="text-center">
+                    <TableCell
+                      className="text-center"
+                      onClick={(e) => e.stopPropagation()}
+                      onKeyDown={(e) => e.stopPropagation()}
+                    >
                       <DropdownMenu>
                         <DropdownMenuTrigger
                           render={
