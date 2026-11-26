@@ -15,7 +15,8 @@ import (
 	"musashi/backend/internal/model"
 )
 
-// Seed populates the database with default dev data idempotently.
+// Seed populates the database with data extracted from
+// docs/Renovasi Beton Bertulang.xlsx. Idempotent: existing rows are kept.
 func Seed(db *gorm.DB) error {
 	slog.Info("starting database seeder...")
 
@@ -23,23 +24,25 @@ func Seed(db *gorm.DB) error {
 		return fmt.Errorf("seed users: %w", err)
 	}
 
-	unitPriceMap, err := seedUnitPrices(db)
+	upMap, err := seedUnitPrices(db)
 	if err != nil {
 		return fmt.Errorf("seed unit prices: %w", err)
 	}
 
-	ahspMap, err := seedAhsps(db, unitPriceMap)
+	ahspMap, err := seedAhsps(db, upMap)
 	if err != nil {
 		return fmt.Errorf("seed ahsps: %w", err)
 	}
 
-	if err := seedProjects(db, ahspMap); err != nil {
-		return fmt.Errorf("seed projects: %w", err)
+	if err := seedProject(db, ahspMap); err != nil {
+		return fmt.Errorf("seed project: %w", err)
 	}
 
 	slog.Info("database seeding completed successfully")
 	return nil
 }
+
+func f(v float64) *float64 { return &v }
 
 func seedUsers(db *gorm.DB) error {
 	adminHash := "$2a$10$i/3zZPOBK/Bw79ayDXks9u3YblN8XnEAQqruvWzi2uwzl4u/TQerS" // admin123
@@ -80,641 +83,199 @@ func seedUsers(db *gorm.DB) error {
 }
 
 func seedUnitPrices(db *gorm.DB) (map[string]model.UnitPrice, error) {
-	items := []model.UnitPrice{
-		// LABOR (Tenaga Kerja)
-		{Code: "TK-01", Category: domain.CategoryLabor, WorkItem: "Pekerja", Unit: "OH", UnitPrice: 120000, Note: "Tenaga kerja harian standar"},
-		{Code: "TK-02", Category: domain.CategoryLabor, WorkItem: "Tukang Batu", Unit: "OH", UnitPrice: 150000, Note: "Tukang batu & dinding"},
-		{Code: "TK-03", Category: domain.CategoryLabor, WorkItem: "Tukang Besi / Kayu", Unit: "OH", UnitPrice: 150000, Note: "Pekerjaan fabrikasi & bekisting"},
-		{Code: "TK-04", Category: domain.CategoryLabor, WorkItem: "Tukang Cat", Unit: "OH", UnitPrice: 145000, Note: "Pekerjaan finishing pengecatan"},
-		{Code: "TK-05", Category: domain.CategoryLabor, WorkItem: "Kepala Tukang", Unit: "OH", UnitPrice: 175000, Note: "Koordinator tukang lapangan"},
-		{Code: "TK-06", Category: domain.CategoryLabor, WorkItem: "Mandor", Unit: "OH", UnitPrice: 200000, Note: "Supervisi harian proyek"},
-
-		// MATERIALS (Bahan Material)
-		{Code: "MT-01", Category: domain.CategoryMaterials, WorkItem: "Semen Portland (50 kg)", Unit: "sak", UnitPrice: 75000, Note: "Standar SNI (Gresik/Tiga Roda)"},
-		{Code: "MT-02", Category: domain.CategoryMaterials, WorkItem: "Pasir Pasang / Pasir Beton", Unit: "m3", UnitPrice: 320000, Note: "Pasir ayak kualitas baik"},
-		{Code: "MT-03", Category: domain.CategoryMaterials, WorkItem: "Kerikil / Batu Split Beton", Unit: "m3", UnitPrice: 350000, Note: "Ukuran 1-2 cm"},
-		{Code: "MT-04", Category: domain.CategoryMaterials, WorkItem: "Bata Ringan (Hebel) Tebal 10cm", Unit: "m3", UnitPrice: 720000, Note: "Ukuran standar SNI"},
-		{Code: "MT-05", Category: domain.CategoryMaterials, WorkItem: "Semen Mortar Instan Perekat Bata Ringan", Unit: "sak", UnitPrice: 95000, Note: "Kemasan 40 kg"},
-		{Code: "MT-06", Category: domain.CategoryMaterials, WorkItem: "Besi Beton Polos / Ulir", Unit: "kg", UnitPrice: 14500, Note: "Krakatau Steel SNI"},
-		{Code: "MT-07", Category: domain.CategoryMaterials, WorkItem: "Kawat Beton (Bendrat)", Unit: "kg", UnitPrice: 28000, Note: "Pengikat tulangan"},
-		{Code: "MT-08", Category: domain.CategoryMaterials, WorkItem: "Cat Dasar Tembok Alkali Resisting", Unit: "kg", UnitPrice: 48000, Note: "Dulux / Mowilex dasar"},
-		{Code: "MT-09", Category: domain.CategoryMaterials, WorkItem: "Cat Tembok Interior Emulsi", Unit: "kg", UnitPrice: 65000, Note: "Warna standar pabrik"},
-		{Code: "MT-10", Category: domain.CategoryMaterials, WorkItem: "Plamir Tembok", Unit: "kg", UnitPrice: 22000, Note: "Persiapan permukaan dinding"},
-		{Code: "MT-11", Category: domain.CategoryMaterials, WorkItem: "Keramik Lantai 40x40 cm Polished", Unit: "m2", UnitPrice: 90000, Note: "Roman / Platinum motif polos"},
-
-		// EQUIPMENT (Peralatan)
-		{Code: "EQ-01", Category: domain.CategoryEquipment, WorkItem: "Concrete Mixer (Molen) 0.35 m3", Unit: "hari", UnitPrice: 250000, Note: "Termasuk BBM dan operator"},
-		{Code: "EQ-02", Category: domain.CategoryEquipment, WorkItem: "Scaffolding Besi Pipa", Unit: "set/hari", UnitPrice: 35000, Note: "Komplit main frame & cross brace"},
-		{Code: "EQ-03", Category: domain.CategoryEquipment, WorkItem: "Jack Hammer Listrik", Unit: "hari", UnitPrice: 180000, Note: "Untuk pembongkaran dinding & beton"},
-		{Code: "EQ-04", Category: domain.CategoryEquipment, WorkItem: "Dump Truck 5 m3", Unit: "hari", UnitPrice: 850000, Note: "Pembuangan puing & material sisa"},
-	}
-
-	resultMap := make(map[string]model.UnitPrice)
-	for _, item := range items {
+	result := make(map[string]model.UnitPrice)
+	for _, seed := range unitPriceSeeds {
 		var existing model.UnitPrice
-		err := db.Where("lower(code) = lower(?) AND deleted_at IS NULL", item.Code).First(&existing).Error
+		err := db.Where("lower(code) = lower(?) AND deleted_at IS NULL", seed.Code).First(&existing).Error
 		if errors.Is(err, gorm.ErrRecordNotFound) {
+			item := model.UnitPrice{
+				Code:      seed.Code,
+				Category:  seed.Category,
+				WorkItem:  seed.WorkItem,
+				Unit:      seed.Unit,
+				UnitPrice: seed.Price,
+				Note:      "Diekstrak dari Renovasi Beton Bertulang.xlsx",
+			}
 			if err := db.Create(&item).Error; err != nil {
 				return nil, err
 			}
-			resultMap[item.Code] = item
-			slog.Info("seeded unit price", "code", item.Code, "workItem", item.WorkItem)
+			result[seed.Code] = item
 		} else if err != nil {
 			return nil, err
 		} else {
-			resultMap[item.Code] = existing
+			result[seed.Code] = existing
 		}
 	}
-
-	return resultMap, nil
-}
-
-type ahspItemTemplate struct {
-	Category    domain.UnitPriceCategory
-	Sort        int
-	Description string
-	Code        string
-	Unit        string
-	Coefficient float64
-	UpCode      string // references UnitPrice Code
-}
-
-type ahspTemplate struct {
-	Code              string
-	WorkItem          string
-	Unit              string
-	OverheadProfitPct float64
-	Status            domain.AhspStatus
-	Note              string
-	Items             []ahspItemTemplate
+	return result, nil
 }
 
 func seedAhsps(db *gorm.DB, upMap map[string]model.UnitPrice) (map[string]model.Ahsp, error) {
-	templates := []ahspTemplate{
-		{
-			Code:              "AHSP-BR-10",
-			WorkItem:          "Pemasangan 1 m2 Dinding Bata Ringan Tebal 10 cm",
-			Unit:              "m2",
-			OverheadProfitPct: 10.0,
-			Status:            domain.AhspStatusFinal,
-			Note:              "Standar SNI Pekerjaan Dinding Pabrik",
-			Items: []ahspItemTemplate{
-				{Category: domain.CategoryLabor, Sort: 1, Description: "Pekerja", Code: "TK-01", Unit: "OH", Coefficient: 0.2000, UpCode: "TK-01"},
-				{Category: domain.CategoryLabor, Sort: 2, Description: "Tukang Batu", Code: "TK-02", Unit: "OH", Coefficient: 0.1000, UpCode: "TK-02"},
-				{Category: domain.CategoryLabor, Sort: 3, Description: "Kepala Tukang", Code: "TK-05", Unit: "OH", Coefficient: 0.0100, UpCode: "TK-05"},
-				{Category: domain.CategoryLabor, Sort: 4, Description: "Mandor", Code: "TK-06", Unit: "OH", Coefficient: 0.0100, UpCode: "TK-06"},
-				{Category: domain.CategoryMaterials, Sort: 5, Description: "Bata Ringan (Hebel) Tebal 10cm", Code: "MT-04", Unit: "m3", Coefficient: 0.1000, UpCode: "MT-04"},
-				{Category: domain.CategoryMaterials, Sort: 6, Description: "Semen Mortar Instan Perekat Bata Ringan", Code: "MT-05", Unit: "sak", Coefficient: 0.1250, UpCode: "MT-05"},
-			},
-		},
-		{
-			Code:              "AHSP-CAT-INT",
-			WorkItem:          "Pengecatan 1 m2 Dinding Interior Baru (1 Dasar, 2 Penutup)",
-			Unit:              "m2",
-			OverheadProfitPct: 10.0,
-			Status:            domain.AhspStatusFinal,
-			Note:              "Finishing dinding ruang produksi dan kantor",
-			Items: []ahspItemTemplate{
-				{Category: domain.CategoryLabor, Sort: 1, Description: "Pekerja", Code: "TK-01", Unit: "OH", Coefficient: 0.0200, UpCode: "TK-01"},
-				{Category: domain.CategoryLabor, Sort: 2, Description: "Tukang Cat", Code: "TK-04", Unit: "OH", Coefficient: 0.0630, UpCode: "TK-04"},
-				{Category: domain.CategoryLabor, Sort: 3, Description: "Kepala Tukang", Code: "TK-05", Unit: "OH", Coefficient: 0.0063, UpCode: "TK-05"},
-				{Category: domain.CategoryLabor, Sort: 4, Description: "Mandor", Code: "TK-06", Unit: "OH", Coefficient: 0.0030, UpCode: "TK-06"},
-				{Category: domain.CategoryMaterials, Sort: 5, Description: "Plamir Tembok", Code: "MT-10", Unit: "kg", Coefficient: 0.1000, UpCode: "MT-10"},
-				{Category: domain.CategoryMaterials, Sort: 6, Description: "Cat Dasar Tembok Alkali Resisting", Code: "MT-08", Unit: "kg", Coefficient: 0.1000, UpCode: "MT-08"},
-				{Category: domain.CategoryMaterials, Sort: 7, Description: "Cat Tembok Interior Emulsi", Code: "MT-09", Unit: "kg", Coefficient: 0.2600, UpCode: "MT-09"},
-				{Category: domain.CategoryEquipment, Sort: 8, Description: "Scaffolding Besi Pipa", Code: "EQ-02", Unit: "set/hari", Coefficient: 0.0500, UpCode: "EQ-02"},
-			},
-		},
-		{
-			Code:              "AHSP-KR-40",
-			WorkItem:          "Pemasangan 1 m2 Lantai Keramik 40x40 cm Polished",
-			Unit:              "m2",
-			OverheadProfitPct: 10.0,
-			Status:            domain.AhspStatusFinal,
-			Note:              "Lantai area koridor dan ruang kerja",
-			Items: []ahspItemTemplate{
-				{Category: domain.CategoryLabor, Sort: 1, Description: "Pekerja", Code: "TK-01", Unit: "OH", Coefficient: 0.2500, UpCode: "TK-01"},
-				{Category: domain.CategoryLabor, Sort: 2, Description: "Tukang Batu", Code: "TK-02", Unit: "OH", Coefficient: 0.1200, UpCode: "TK-02"},
-				{Category: domain.CategoryLabor, Sort: 3, Description: "Kepala Tukang", Code: "TK-05", Unit: "OH", Coefficient: 0.0120, UpCode: "TK-05"},
-				{Category: domain.CategoryLabor, Sort: 4, Description: "Mandor", Code: "TK-06", Unit: "OH", Coefficient: 0.0125, UpCode: "TK-06"},
-				{Category: domain.CategoryMaterials, Sort: 5, Description: "Keramik Lantai 40x40 cm Polished", Code: "MT-11", Unit: "m2", Coefficient: 1.0500, UpCode: "MT-11"},
-				{Category: domain.CategoryMaterials, Sort: 6, Description: "Semen Portland (50 kg)", Code: "MT-01", Unit: "sak", Coefficient: 0.2000, UpCode: "MT-01"},
-				{Category: domain.CategoryMaterials, Sort: 7, Description: "Pasir Pasang / Pasir Beton", Code: "MT-02", Unit: "m3", Coefficient: 0.0450, UpCode: "MT-02"},
-			},
-		},
-		{
-			Code:              "AHSP-BOK-01",
-			WorkItem:          "Pembongkaran 1 m2 Dinding Bata / Partisi Lama",
-			Unit:              "m2",
-			OverheadProfitPct: 10.0,
-			Status:            domain.AhspStatusFinal,
-			Note:              "Pekerjaan persiapan renovasi dan pembuangan puing",
-			Items: []ahspItemTemplate{
-				{Category: domain.CategoryLabor, Sort: 1, Description: "Pekerja", Code: "TK-01", Unit: "OH", Coefficient: 0.2500, UpCode: "TK-01"},
-				{Category: domain.CategoryLabor, Sort: 2, Description: "Mandor", Code: "TK-06", Unit: "OH", Coefficient: 0.0250, UpCode: "TK-06"},
-				{Category: domain.CategoryEquipment, Sort: 3, Description: "Jack Hammer Listrik", Code: "EQ-03", Unit: "hari", Coefficient: 0.0500, UpCode: "EQ-03"},
-			},
-		},
+	byWorkItem := make(map[string]model.UnitPrice)
+	for _, up := range upMap {
+		key := strings.ToLower(up.WorkItem) + "|" + strings.ToLower(up.Unit)
+		byWorkItem[key] = up
 	}
 
-	resultMap := make(map[string]model.Ahsp)
-
-	for _, tmpl := range templates {
+	result := make(map[string]model.Ahsp)
+	for _, seed := range ahspSeeds {
 		var existing model.Ahsp
-		err := db.Where("lower(code) = lower(?) AND deleted_at IS NULL", tmpl.Code).First(&existing).Error
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			var totalLabor int64
-			var totalMaterial int64
-			var totalEquipment int64
-
-			var items []model.AhspItem
-			for _, it := range tmpl.Items {
-				up, ok := upMap[it.UpCode]
-				unitPriceVal := int64(0)
-				var upID *uint
-				if ok {
-					unitPriceVal = up.UnitPrice
-					upID = &up.ID
-				}
-				cost := int64(math.Round(it.Coefficient * float64(unitPriceVal)))
-
-				switch it.Category {
-				case domain.CategoryLabor:
-					totalLabor += cost
-				case domain.CategoryMaterials:
-					totalMaterial += cost
-				case domain.CategoryEquipment:
-					totalEquipment += cost
-				}
-
-				items = append(items, model.AhspItem{
-					Category:    it.Category,
-					Sort:        it.Sort,
-					Description: it.Description,
-					Code:        it.Code,
-					Unit:        it.Unit,
-					Coefficient: it.Coefficient,
-					UnitPrice:   unitPriceVal,
-					Cost:        cost,
-					UnitPriceID: upID,
-				})
-			}
-
-			totalCost := totalLabor + totalMaterial + totalEquipment
-			overheadCost := int64(math.Round((tmpl.OverheadProfitPct / 100.0) * float64(totalCost)))
-			unitPriceOfWork := totalCost + overheadCost
-
-			ahsp := model.Ahsp{
-				Code:              tmpl.Code,
-				WorkItem:          tmpl.WorkItem,
-				Unit:              tmpl.Unit,
-				OverheadProfitPct: tmpl.OverheadProfitPct,
-				TotalLabor:        totalLabor,
-				TotalMaterial:     totalMaterial,
-				TotalEquipment:    totalEquipment,
-				TotalCost:         totalCost,
-				UnitPriceOfWork:   unitPriceOfWork,
-				Status:            tmpl.Status,
-				Note:              tmpl.Note,
-				Items:             items,
-			}
-
-			if err := db.Create(&ahsp).Error; err != nil {
-				return nil, err
-			}
-			resultMap[ahsp.Code] = ahsp
-			slog.Info("seeded ahsp", "code", ahsp.Code, "workItem", ahsp.WorkItem, "unitPrice", ahsp.UnitPriceOfWork)
-		} else if err != nil {
-			return nil, err
-		} else {
-			resultMap[tmpl.Code] = existing
+		err := db.Where("lower(code) = lower(?) AND deleted_at IS NULL", seed.Code).First(&existing).Error
+		if err == nil {
+			result[seed.Code] = existing
+			continue
 		}
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, err
+		}
+
+		var totalLabor, totalMaterial, totalEquipment int64
+		items := make([]model.AhspItem, 0, len(seed.Items))
+		for i, it := range seed.Items {
+			up, ok := upMap[it.Code]
+			if !ok {
+				up = byWorkItem[strings.ToLower(it.Description)+"|"+strings.ToLower(it.Unit)]
+			}
+			unitPrice := it.UnitPrice
+			if unitPrice == 0 && up.ID != 0 {
+				unitPrice = up.UnitPrice
+			}
+			var upID *uint
+			if ok || up.ID != 0 {
+				upID = &up.ID
+			}
+			cost := int64(math.Round(it.Coefficient * float64(unitPrice)))
+			switch it.Category {
+			case domain.CategoryLabor:
+				totalLabor += cost
+			case domain.CategoryMaterials:
+				totalMaterial += cost
+			case domain.CategoryEquipment:
+				totalEquipment += cost
+			}
+			items = append(items, model.AhspItem{
+				Category:    it.Category,
+				Sort:        i + 1,
+				Description: it.Description,
+				Code:        it.Code,
+				Unit:        it.Unit,
+				Coefficient: it.Coefficient,
+				UnitPrice:   unitPrice,
+				Cost:        cost,
+				UnitPriceID: upID,
+			})
+		}
+
+		totalCost := totalLabor + totalMaterial + totalEquipment
+		overhead := int64(math.Round(seed.OverheadProfitPct / 100.0 * float64(totalCost)))
+		ahsp := model.Ahsp{
+			Code:              seed.Code,
+			WorkItem:          seed.WorkItem,
+			Unit:              seed.Unit,
+			OverheadProfitPct: seed.OverheadProfitPct,
+			TotalLabor:        totalLabor,
+			TotalMaterial:     totalMaterial,
+			TotalEquipment:    totalEquipment,
+			TotalCost:         totalCost,
+			UnitPriceOfWork:   totalCost + overhead,
+			Status:            domain.AhspStatusFinal,
+			Note:              "Diekstrak dari Renovasi Beton Bertulang.xlsx",
+			Items:             items,
+		}
+		if err := db.Create(&ahsp).Error; err != nil {
+			return nil, err
+		}
+		result[ahsp.Code] = ahsp
+		slog.Info("seeded ahsp", "code", ahsp.Code, "unitPrice", ahsp.UnitPriceOfWork)
 	}
 
-	return resultMap, nil
+	return result, nil
 }
 
-func f(v float64) *float64 { return &v }
-
-func seedProjects(db *gorm.DB, ahspMap map[string]model.Ahsp) error {
-	now := time.Now()
-	planDate1 := now.AddDate(0, -1, 0) // 1 month ago
-	planDate2 := now.AddDate(0, 1, 15) // next month
-	planDate3 := now.AddDate(0, 0, -10)
-
-	projects := []struct {
-		project   model.Project
-		schedules []model.Schedule
-		boqs      []struct {
-			boq    model.BoqItem
-			volume model.Volume
-			rab    model.RabItem
+func seedProject(db *gorm.DB, ahspMap map[string]model.Ahsp) error {
+	var project model.Project
+	err := db.Where("lower(name) = lower(?) AND deleted_at IS NULL", projectName).First(&project).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		now := time.Now()
+		plan := now.AddDate(0, 1, 0)
+		project = model.Project{
+			Name:               projectName,
+			Section:            string(domain.ProjectSectionGABuilding),
+			Plant:              string(domain.ProjectPlantCikarang),
+			ImplementationPlan: &plan,
+			Budget:             projectBudget,
+			Note:               "Data seed hasil ekstraksi dari Renovasi Beton Bertulang.xlsx",
+			Status:             domain.ProjectStatusPlanning,
+			ProgressPPT:        domain.ProgressDone,
+			ProgressDrawing:    domain.ProgressDone,
+			ProgressRAB:        domain.ProgressDone,
 		}
-	}{
-		{
-			project: model.Project{
-				Name:                 "Renovasi Area Produksi & Koridor Gedung A",
-				Section:              string(domain.ProjectSectionGABuilding),
-				Plant:                string(domain.ProjectPlantCikarang),
-				ImplementationPlan:   &planDate1,
-				Budget:               350000000,
-				Note:                 "Peremajaan dinding partisi dan lantai koridor Plant Cikarang",
-				Status:               domain.ProjectStatusOnGoing,
-				ProgressPPT:          domain.ProgressDone,
-				ProgressDrawing:      domain.ProgressDone,
-				ProgressRAB:          domain.ProgressDone,
-				ProgressVendor:       domain.ProgressDone,
-				ProgressSPB:          domain.ProgressDone,
-				ProgressPR:           domain.ProgressDone,
-				ProgressRINGI:        domain.ProgressDone,
-				ProgressPO:           domain.ProgressDone,
-				ProgressConstruction: domain.ProgressPending,
-				ProgressBAST:         domain.ProgressPending,
-			},
-			schedules: []model.Schedule{
-				{
-					Code:      "SCH-01",
-					WorkItem:  "Pekerjaan Pembongkaran Dinding & Pembersihan",
-					StartDate: now.AddDate(0, 0, -20),
-					EndDate:   now.AddDate(0, 0, -14),
-					Duration:  7,
-					Weight:    15.0,
-					Progress:  100.0,
-					Status:    domain.ScheduleDone,
-				},
-				{
-					Code:      "SCH-02",
-					WorkItem:  "Pemasangan Dinding Bata Ringan Baru",
-					StartDate: now.AddDate(0, 0, -13),
-					EndDate:   now.AddDate(0, 0, -3),
-					Duration:  11,
-					Weight:    35.0,
-					Progress:  85.0,
-					Status:    domain.ScheduleOnGoing,
-				},
-				{
-					Code:      "SCH-03",
-					WorkItem:  "Pemasangan Lantai Keramik Koridor",
-					StartDate: now.AddDate(0, 0, -2),
-					EndDate:   now.AddDate(0, 0, 8),
-					Duration:  11,
-					Weight:    25.0,
-					Progress:  20.0,
-					Status:    domain.ScheduleOnGoing,
-				},
-				{
-					Code:      "SCH-04",
-					WorkItem:  "Pengecatan Dinding & Finishing Akhir",
-					StartDate: now.AddDate(0, 0, 9),
-					EndDate:   now.AddDate(0, 0, 16),
-					Duration:  8,
-					Weight:    20.0,
-					Progress:  0.0,
-					Status:    domain.SchedulePlanning,
-				},
-				{
-					Code:      "SCH-05",
-					WorkItem:  "Serah Terima Pertama (BAST-1) & General Cleaning",
-					StartDate: now.AddDate(0, 0, 17),
-					EndDate:   now.AddDate(0, 0, 18),
-					Duration:  2,
-					Weight:    5.0,
-					Progress:  0.0,
-					Status:    domain.SchedulePlanning,
-				},
-			},
-			boqs: []struct {
-				boq    model.BoqItem
-				volume model.Volume
-				rab    model.RabItem
-			}{
-				{
-					boq: model.BoqItem{
-						WorkItem:      "Pembongkaran 1 m2 Dinding Bata / Partisi Lama",
-						Unit:          "m2",
-						PlannedVolume: 120.0,
-					},
-					volume: model.Volume{
-						Formula:       "area_pt",
-						Length:        f(30.0),
-						Height:        f(4.0),
-						Quantity:      120.0,
-						UnitWeight:    1.0,
-						TotalQuantity: 120.0,
-						Description:   "Sisi Barat Koridor Utama (P=30m, T=4m)",
-					},
-					rab: model.RabItem{
-						WorkItem:  "Pembongkaran 1 m2 Dinding Bata / Partisi Lama",
-						Unit:      "m2",
-						Volume:    120.0,
-						UnitPrice: 45000,
-						TotalCost: 5400000,
-					},
-				},
-				{
-					boq: model.BoqItem{
-						WorkItem:      "Pemasangan 1 m2 Dinding Bata Ringan Tebal 10 cm",
-						Unit:          "m2",
-						PlannedVolume: 240.0,
-					},
-					volume: model.Volume{
-						Formula:       "area_pt",
-						Length:        f(60.0),
-						Height:        f(4.0),
-						Quantity:      240.0,
-						UnitWeight:    1.0,
-						TotalQuantity: 240.0,
-						Description:   "Dinding Partisi Koridor Baru (P=60m, T=4m)",
-					},
-					rab: model.RabItem{
-						WorkItem:  "Pemasangan 1 m2 Dinding Bata Ringan Tebal 10 cm",
-						Unit:      "m2",
-						Volume:    240.0,
-						UnitPrice: 185000,
-						TotalCost: 44400000,
-					},
-				},
-				{
-					boq: model.BoqItem{
-						WorkItem:      "Pemasangan 1 m2 Lantai Keramik 40x40 cm Polished",
-						Unit:          "m2",
-						PlannedVolume: 180.0,
-					},
-					volume: model.Volume{
-						Formula:       "area_pl",
-						Length:        f(60.0),
-						Width:         f(3.0),
-						Quantity:      180.0,
-						UnitWeight:    1.0,
-						TotalQuantity: 180.0,
-						Description:   "Lantai Koridor Pejalan Kaki (P=60m, L=3m)",
-					},
-					rab: model.RabItem{
-						WorkItem:  "Pemasangan 1 m2 Lantai Keramik 40x40 cm Polished",
-						Unit:      "m2",
-						Volume:    180.0,
-						UnitPrice: 195000,
-						TotalCost: 35100000,
-					},
-				},
-				{
-					boq: model.BoqItem{
-						WorkItem:      "Pengecatan 1 m2 Dinding Interior Baru (1 Dasar, 2 Penutup)",
-						Unit:          "m2",
-						PlannedVolume: 480.0,
-					},
-					volume: model.Volume{
-						Formula:       "area_pt",
-						Length:        f(60.0),
-						Height:        f(4.0),
-						Quantity:      240.0,
-						UnitWeight:    2.0, // 2 sisi dinding
-						TotalQuantity: 480.0,
-						Description:   "Dinding Sisi Dalam dan Sisi Luar (2 sisi)",
-					},
-					rab: model.RabItem{
-						WorkItem:  "Pengecatan 1 m2 Dinding Interior Baru (1 Dasar, 2 Penutup)",
-						Unit:      "m2",
-						Volume:    480.0,
-						UnitPrice: 38000,
-						TotalCost: 18240000,
-					},
-				},
-			},
-		},
-		{
-			project: model.Project{
-				Name:                 "Pembangunan Instalasi Pengolahan Air Limbah (IPAL)",
-				Section:              string(domain.ProjectSectionEHS),
-				Plant:                string(domain.ProjectPlantKarawang),
-				ImplementationPlan:   &planDate2,
-				Budget:               620000000,
-				Note:                 "Peningkatan kapasitas IPAL dan saluran drainase terpadu Plant Karawang",
-				Status:               domain.ProjectStatusPlanning,
-				ProgressPPT:          domain.ProgressDone,
-				ProgressDrawing:      domain.ProgressDone,
-				ProgressRAB:          domain.ProgressDone,
-				ProgressVendor:       domain.ProgressPending,
-				ProgressSPB:          domain.ProgressPending,
-				ProgressPR:           domain.ProgressPending,
-				ProgressRINGI:        domain.ProgressPending,
-				ProgressPO:           domain.ProgressPending,
-				ProgressConstruction: domain.ProgressPending,
-				ProgressBAST:         domain.ProgressPending,
-			},
-			boqs: []struct {
-				boq    model.BoqItem
-				volume model.Volume
-				rab    model.RabItem
-			}{
-				{
-					boq: model.BoqItem{
-						WorkItem:      "Pengecoran Bore Pile D40 cm Kedalaman 6 m",
-						Unit:          "m3",
-						PlannedVolume: 9.0478,
-					},
-					volume: model.Volume{
-						Formula:       "cylinder",
-						Length:        f(0.40), // Diameter D
-						Height:        f(6.00), // Depth T
-						Quantity:      0.7540,
-						UnitWeight:    12.0, // 12 titik lubang bor
-						TotalQuantity: 9.0478,
-						Description:   "Titik Bore Pile P-01 s/d P-12 Pondasi Bak IPAL",
-					},
-					rab: model.RabItem{
-						WorkItem:  "Pengecoran Bore Pile D40 cm Kedalaman 6 m",
-						Unit:      "m3",
-						Volume:    9.0478,
-						UnitPrice: 1350000,
-						TotalCost: 12214530,
-					},
-				},
-				{
-					boq: model.BoqItem{
-						WorkItem:      "Pemasangan Tulangan Besi Beton Ulir D13",
-						Unit:          "kg",
-						PlannedVolume: 625.20,
-					},
-					volume: model.Volume{
-						Formula:       "weight_rebar",
-						Length:        f(12.00), // Panjang batang
-						Width:         f(1.042), // Berat jenis kg/m'
-						Quantity:      12.5040,
-						UnitWeight:    50.0, // 50 batang
-						TotalQuantity: 625.20,
-						Description:   "Pembesian Utama Bore Pile (50 btg @ 12m)",
-					},
-					rab: model.RabItem{
-						WorkItem:  "Pemasangan Tulangan Besi Beton Ulir D13",
-						Unit:      "kg",
-						Volume:    625.20,
-						UnitPrice: 18500,
-						TotalCost: 11566200,
-					},
-				},
-				{
-					boq: model.BoqItem{
-						WorkItem:      "Pekerjaan Pengukuran & Pasang Bowplank",
-						Unit:          "m'",
-						PlannedVolume: 150.0,
-					},
-					volume: model.Volume{
-						Formula:       "linear_p",
-						Length:        f(150.0),
-						Quantity:      150.0,
-						UnitWeight:    1.0,
-						TotalQuantity: 150.0,
-						Description:   "Keliling Saluran Drainase & Kolam IPAL",
-					},
-					rab: model.RabItem{
-						WorkItem:  "Pekerjaan Pengukuran & Pasang Bowplank",
-						Unit:      "m'",
-						Volume:    150.0,
-						UnitPrice: 35000,
-						TotalCost: 5250000,
-					},
-				},
-				{
-					boq: model.BoqItem{
-						WorkItem:      "Pembersihan Lapangan & Mobilisasi Alat",
-						Unit:          "lot",
-						PlannedVolume: 1.0,
-					},
-					volume: model.Volume{
-						Formula:       "unit_only",
-						Quantity:      1.0,
-						UnitWeight:    1.0,
-						TotalQuantity: 1.0,
-						Description:   "Awal Proyek IPAL Plant Karawang",
-					},
-					rab: model.RabItem{
-						WorkItem:  "Pembersihan Lapangan & Mobilisasi Alat",
-						Unit:      "lot",
-						Volume:    1.0,
-						UnitPrice: 15000000,
-						TotalCost: 15000000,
-					},
-				},
-			},
-		},
-		{
-			project: model.Project{
-				Name:                 "Renovasi Ruang Istirahat & Kantin Karyawan",
-				Section:              string(domain.ProjectSectionWellfare),
-				Plant:                string(domain.ProjectPlantCikarang),
-				ImplementationPlan:   &planDate3,
-				Budget:               180000000,
-				Note:                 "Fasilitas kesejahteraan karyawan shift pabrik",
-				Status:               domain.ProjectStatusOnGoing,
-				ProgressPPT:          domain.ProgressDone,
-				ProgressDrawing:      domain.ProgressDone,
-				ProgressRAB:          domain.ProgressDone,
-				ProgressVendor:       domain.ProgressDone,
-				ProgressSPB:          domain.ProgressPending,
-				ProgressPR:           domain.ProgressPending,
-				ProgressRINGI:        domain.ProgressPending,
-				ProgressPO:           domain.ProgressPending,
-				ProgressConstruction: domain.ProgressPending,
-				ProgressBAST:         domain.ProgressPending,
-			},
-		},
+		if err := db.Create(&project).Error; err != nil {
+			return err
+		}
+		slog.Info("seeded project", "name", project.Name, "id", project.ID)
+	} else if err != nil {
+		return err
 	}
 
-	for _, entry := range projects {
-		var p model.Project
-		err := db.Where("lower(name) = lower(?) AND deleted_at IS NULL", entry.project.Name).First(&p).Error
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			p = entry.project
-			if err := db.Create(&p).Error; err != nil {
-				return err
-			}
-			slog.Info("seeded project", "name", p.Name, "id", p.ID)
+	date := time.Now().AddDate(0, 0, -10)
+	for _, seed := range boqSeeds {
+		var boq model.BoqItem
+		bErr := db.Where("project_id = ? AND lower(work_item) = lower(?) AND deleted_at IS NULL", project.ID, seed.WorkItem).First(&boq).Error
+		if bErr == nil {
+			continue
+		}
+		if !errors.Is(bErr, gorm.ErrRecordNotFound) {
+			return bErr
+		}
 
-			// Seed schedules
-			for _, s := range entry.schedules {
-				s.ProjectID = p.ID
-				if err := db.Create(&s).Error; err != nil {
-					return err
-				}
-			}
-		} else if err != nil {
+		boq = model.BoqItem{
+			ProjectID:     project.ID,
+			WorkItem:      seed.WorkItem,
+			Unit:          seed.Unit,
+			PlannedVolume: seed.PlannedVolume,
+		}
+		if ah, ok := ahspMap[seed.AhspCode]; ok && seed.AhspCode != "" {
+			boq.AhspID = &ah.ID
+		}
+		if err := db.Create(&boq).Error; err != nil {
 			return err
 		}
 
-		// Ensure BoQ, Volume, and RAB exist for this project
-		for _, b := range entry.boqs {
-			var existingBoq model.BoqItem
-			bErr := db.Where("project_id = ? AND lower(work_item) = lower(?) AND deleted_at IS NULL", p.ID, b.boq.WorkItem).First(&existingBoq).Error
-			if errors.Is(bErr, gorm.ErrRecordNotFound) {
-				boq := b.boq
-				boq.ProjectID = p.ID
-
-				// Link AHSP if matched
-				for _, ah := range ahspMap {
-					if ah.WorkItem == boq.WorkItem {
-						boq.AhspID = &ah.ID
-						break
-					}
-				}
-
-				if err := db.Create(&boq).Error; err != nil {
-					return err
-				}
-
-				// Volume
-				vol := b.volume
-				vol.BoqItemID = boq.ID
-				d := now.AddDate(0, 0, -10)
-				vol.Date = &d
-				if err := db.Create(&vol).Error; err != nil {
-					return err
-				}
-
-				// RAB
-				rab := b.rab
-				rab.ProjectID = p.ID
-				rab.BoqItemID = &boq.ID
-				if err := db.Create(&rab).Error; err != nil {
-					return err
-				}
-				slog.Info("seeded boq & volume", "project", p.Name, "workItem", boq.WorkItem, "formula", vol.Formula)
+		for _, v := range seed.Volumes {
+			vol := model.Volume{
+				BoqItemID:     boq.ID,
+				Date:          &date,
+				Formula:       v.Formula,
+				Length:        v.Length,
+				Width:         v.Width,
+				Height:        v.Height,
+				Quantity:      v.Quantity,
+				UnitWeight:    v.UnitWeight,
+				TotalQuantity: v.TotalQuantity,
+				Description:   v.Description,
+			}
+			if err := db.Create(&vol).Error; err != nil {
+				return err
 			}
 		}
-	}
 
-	// Backfill any existing volume with empty formula
-	var unassignedVols []model.Volume
-	if err := db.Where("formula = '' OR formula IS NULL").Find(&unassignedVols).Error; err == nil && len(unassignedVols) > 0 {
-		for _, v := range unassignedVols {
-			var b model.BoqItem
-			if err := db.First(&b, v.BoqItemID).Error; err == nil {
-				formula := "box"
-				u := strings.ToLower(strings.TrimSpace(b.Unit))
-				switch u {
-				case "lot", "ls", "lumpsum", "unit", "pcs", "titik", "buah", "set", "btg", "bh":
-					formula = "unit_only"
-				case "m2", "m²":
-					if v.Height != nil && *v.Height > 0 {
-						formula = "area_pt"
-					} else {
-						formula = "area_pl"
-					}
-				case "kg", "ton":
-					formula = "weight_rebar"
-				case "m'", "m", "meter", "ml":
-					formula = "linear_p"
-				case "m3", "m³":
-					if v.Width == nil || *v.Width == 0 {
-						formula = "cylinder"
-					} else {
-						formula = "box"
-					}
-				}
-				db.Model(&v).Update("formula", formula)
-			}
+		unitPrice := seed.SheetPrice
+		if ah, ok := ahspMap[seed.AhspCode]; ok && seed.AhspCode != "" {
+			unitPrice = ah.UnitPriceOfWork
 		}
-		slog.Info("backfilled existing volume formulas", "count", len(unassignedVols))
+		rab := model.RabItem{
+			ProjectID: project.ID,
+			BoqItemID: &boq.ID,
+			WorkItem:  seed.WorkItem,
+			Unit:      seed.Unit,
+			Volume:    seed.PlannedVolume,
+			UnitPrice: unitPrice,
+			TotalCost: int64(math.Round(seed.PlannedVolume * float64(unitPrice))),
+		}
+		if err := db.Create(&rab).Error; err != nil {
+			return err
+		}
+		slog.Info("seeded boq, volume, rab", "workItem", boq.WorkItem, "unitPrice", unitPrice)
 	}
 
 	return nil
