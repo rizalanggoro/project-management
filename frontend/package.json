@@ -6,11 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "test": "bun test",
+    "test": "vitest run",
     "lint": "oxlint",
     "preview": "vite preview",
     "api": "openapi-ts",
-    "api:all": "cd ../backend && swag init -g cmd/api/main.go -o ./docs --parseDependency --parseInternal --useStructName --requiredByDefault && cd ../frontend && bun run api"
+    "api:all": "cd ../backend && swag init -g cmd/api/main.go -o ./docs --parseDependency --parseInternal --useStructName --requiredByDefault && cd ../frontend && npm run api"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
@@ -48,6 +48,7 @@
     "@vitejs/plugin-react": "^6.1.2",
     "oxlint": "^1.88.0",
     "typescript": "~6.0.3",
-    "vite": "^8.3.4"
+    "vite": "^8.3.4",
+    "vitest": "^5.1.2"
   }
 }

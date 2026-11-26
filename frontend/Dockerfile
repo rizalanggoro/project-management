@@ -1,16 +1,16 @@
-# Stage 1: Build Vite frontend using Bun
-FROM oven/bun:alpine AS builder
+# Stage 1: Build Vite frontend using Node + npm
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 
 ARG VITE_API_BASE_URL
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 
-COPY package.json bun.lock* ./
-RUN bun install --frozen-lockfile
+COPY package.json package-lock.json ./
+RUN npm ci
 
 COPY . .
-RUN bun run build
+RUN npm run build
 
 # Stage 2: Serve with Nginx
 FROM nginx:alpine
