@@ -3,7 +3,6 @@ import {
   listProjectsOptions,
 } from "@/api/@tanstack/react-query.gen";
 import type { Project } from "@/api/types.gen";
-import { PageHeader } from "@/components/page-header";
 import {
   AddProjectDialog,
   EditProjectDialog,
@@ -12,6 +11,11 @@ import {
 } from "@/components/projects";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,7 +40,7 @@ import { useAuth } from "@/lib/auth";
 import { formatRupiah } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Check, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Check, MoreHorizontal, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/projects/")({
@@ -93,18 +97,35 @@ function ProjectsPage() {
 
   return (
     <div className="flex flex-col gap-4 min-w-0">
-      <PageHeader
-        title="Projects"
-        searchValue={q || ""}
-        onSearch={(val) => {
-          navigate({
-            search: ((prev: any) => ({ ...prev, q: val || undefined })) as any,
-            replace: true,
-          });
-        }}
-        onAdd={handleOpenAdd}
-        addLabel="Project"
-      />
+      <div className="flex flex-col gap-4">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+          Projects
+        </h1>
+        <div className="flex items-center justify-between gap-4">
+          <InputGroup className="w-64">
+            <InputGroupAddon>
+              <Search data-icon="inline-start" />
+            </InputGroupAddon>
+            <InputGroupInput
+              placeholder="Search..."
+              value={q || ""}
+              onChange={(e) =>
+                navigate({
+                  search: ((prev: any) => ({
+                    ...prev,
+                    q: e.target.value || undefined,
+                  })) as any,
+                  replace: true,
+                })
+              }
+            />
+          </InputGroup>
+          <Button onClick={handleOpenAdd}>
+            <Plus data-icon="inline-start" />
+            Project
+          </Button>
+        </div>
+      </div>
 
       <div className="rounded-md border bg-card overflow-hidden">
         <Table className="min-w-[800px]">

@@ -3,13 +3,28 @@ import {
   listUnitPricesOptions,
 } from "@/api/@tanstack/react-query.gen";
 import type { UnitPriceDto } from "@/api/types.gen";
-import { PageHeader } from "@/components/page-header";
 import {
-  UnitPriceCategoryFilter,
   UnitPriceDialog,
   UnitPriceTable,
 } from "@/components/unit-prices";
+import { UNIT_PRICE_CATEGORIES } from "@/components/unit-prices/constants";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/lib/auth";
+import { Button } from "@/components/ui/button";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { Filter, Plus, Search } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
@@ -76,31 +91,66 @@ function UnitPricesPage() {
 
   return (
     <div className="flex flex-col gap-4 min-w-0">
-      <PageHeader
-        title="Unit Prices"
-        searchValue={q || ""}
-        onSearch={(val) => {
-          navigate({
-            search: ((prev: any) => ({ ...prev, q: val || undefined })) as any,
-            replace: true,
-          });
-        }}
-        onAdd={handleOpenAdd}
-        addLabel="Unit Price"
-      />
-
-      <UnitPriceCategoryFilter
-        value={currentCategory}
-        onChange={(val) => {
-          navigate({
-            search: ((prev: any) => ({
-              ...prev,
-              category: val === "ALL" ? undefined : val,
-            })) as any,
-            replace: true,
-          });
-        }}
-      />
+      <div className="flex flex-col gap-4">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+          Unit Prices
+        </h1>
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <InputGroup className="w-64">
+              <InputGroupAddon>
+                <Search data-icon="inline-start" />
+              </InputGroupAddon>
+              <InputGroupInput
+                placeholder="Search..."
+                value={q || ""}
+                onChange={(e) =>
+                  navigate({
+                    search: ((prev: any) => ({
+                      ...prev,
+                      q: e.target.value || undefined,
+                    })) as any,
+                    replace: true,
+                  })
+                }
+              />
+            </InputGroup>
+            <DropdownMenu>
+              <DropdownMenuTrigger render={<Button variant="outline" size="icon" />}>
+                <Filter data-icon="inline-start" />
+                <span className="sr-only">Filter Kategori</span>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>Category</DropdownMenuLabel>
+                  <DropdownMenuRadioGroup
+                    value={currentCategory}
+                    onValueChange={(val) =>
+                      navigate({
+                        search: ((prev: any) => ({
+                          ...prev,
+                          category: val === "ALL" ? undefined : val,
+                        })) as any,
+                        replace: true,
+                      })
+                    }
+                  >
+                    {UNIT_PRICE_CATEGORIES.map((cat) => (
+                      <DropdownMenuRadioItem key={cat} value={cat}>
+                        {cat}
+                      </DropdownMenuRadioItem>
+                    ))}
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <Button onClick={handleOpenAdd}>
+            <Plus data-icon="inline-start" />
+            Unit Price
+          </Button>
+        </div>
+      </div>
 
       <UnitPriceTable
         items={items}

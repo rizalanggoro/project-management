@@ -36,13 +36,12 @@ function BoqPage() {
 
   return (
     <div className="flex flex-col gap-4 min-w-0">
-      {/* Header bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">BOQ (Bill of Quantities)</h1>
-        </div>
-
-        <div className="flex items-center gap-3">
+      {/* Header */}
+      <div className="flex flex-col gap-4">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+          BOQ (Bill of Quantities)
+        </h1>
+        <div className="flex items-center justify-between gap-4">
           <InputGroup className="w-64">
             <InputGroupAddon>
               <Search data-icon="inline-start" />
@@ -59,19 +58,21 @@ function BoqPage() {
               }}
             />
           </InputGroup>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate({ to: '/volume' })}
-          >
-            Volume Take-off
-          </Button>
-          <Button
-            size="sm"
-            onClick={() => navigate({ to: '/rab' })}
-          >
-            RAB
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate({ to: '/volume' })}
+            >
+              Volume Take-off
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => navigate({ to: '/rab' })}
+            >
+              RAB
+            </Button>
+          </div>
         </div>
       </div>
 

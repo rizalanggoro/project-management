@@ -8,9 +8,9 @@ import {
   deleteVolumeMutation,
   updateVolumeMutation,
 } from '@/api/@tanstack/react-query.gen'
-import { PageHeader } from '@/components/page-header'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button, buttonVariants } from '@/components/ui/button'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
@@ -18,7 +18,7 @@ import { FormulaBadge } from '@/components/formula-badge'
 import { renderDimensions } from '@/lib/volume'
 import { formatDecimal } from '@/lib/utils'
 import { useAuth } from '@/lib/auth'
-import { FileSpreadsheet } from 'lucide-react'
+import { FileSpreadsheet, Plus, Search } from 'lucide-react'
 
 export const Route = createFileRoute('/volume/')({
   component: VolumePage,
@@ -110,18 +110,35 @@ function VolumePage() {
 
   return (
     <div className="flex flex-col gap-4 min-w-0">
-      <PageHeader
-        title="Volume Take-off"
-        searchValue={q || ''}
-        onSearch={(val) => {
-          navigate({
-            search: ((prev: any) => ({ ...prev, q: val || undefined })) as any,
-            replace: true,
-          })
-        }}
-        onAdd={handleOpenAdd}
-        addLabel="Tambah Take-off"
-      />
+      <div className="flex flex-col gap-4">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+          Volume Take-off
+        </h1>
+        <div className="flex items-center justify-between gap-4">
+          <InputGroup className="w-64">
+            <InputGroupAddon>
+              <Search data-icon="inline-start" />
+            </InputGroupAddon>
+            <InputGroupInput
+              placeholder="Search..."
+              value={q || ''}
+              onChange={(e) =>
+                navigate({
+                  search: ((prev: any) => ({
+                    ...prev,
+                    q: e.target.value || undefined,
+                  })) as any,
+                  replace: true,
+                })
+              }
+            />
+          </InputGroup>
+          <Button onClick={handleOpenAdd}>
+            <Plus data-icon="inline-start" />
+            Tambah Take-off
+          </Button>
+        </div>
+      </div>
 
       {/* Project Selector & Status Bar */}
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border bg-card p-3 shadow-xs">

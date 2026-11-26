@@ -7,10 +7,10 @@ import {
   createScheduleMutation,
   deleteScheduleMutation,
 } from '@/api/@tanstack/react-query.gen'
-import { PageHeader } from '@/components/page-header'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { Input } from '@/components/ui/input'
 import { FieldGroup, Field, FieldLabel } from '@/components/ui/field'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -18,6 +18,7 @@ import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/u
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { useAuth } from '@/lib/auth'
+import { Plus, Search } from 'lucide-react'
 
 export const Route = createFileRoute('/schedule/')({
   component: SchedulePage,
@@ -143,18 +144,35 @@ function SchedulePage() {
 
   return (
     <div className="flex flex-col gap-4 min-w-0">
-      <PageHeader
-        title="Schedule"
-        searchValue={q || ''}
-        onSearch={(val) => {
-          navigate({
-            search: ((prev: any) => ({ ...prev, q: val || undefined })) as any,
-            replace: true,
-          })
-        }}
-        onAdd={handleOpenAdd}
-        addLabel="Schedule"
-      />
+      <div className="flex flex-col gap-4">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+          Schedule
+        </h1>
+        <div className="flex items-center justify-between gap-4">
+          <InputGroup className="w-64">
+            <InputGroupAddon>
+              <Search data-icon="inline-start" />
+            </InputGroupAddon>
+            <InputGroupInput
+              placeholder="Search..."
+              value={q || ''}
+              onChange={(e) =>
+                navigate({
+                  search: ((prev: any) => ({
+                    ...prev,
+                    q: e.target.value || undefined,
+                  })) as any,
+                  replace: true,
+                })
+              }
+            />
+          </InputGroup>
+          <Button onClick={handleOpenAdd}>
+            <Plus data-icon="inline-start" />
+            Schedule
+          </Button>
+        </div>
+      </div>
 
       {/* Project Selector Bar */}
       <div className="flex items-center gap-4 rounded-lg border bg-card p-3">

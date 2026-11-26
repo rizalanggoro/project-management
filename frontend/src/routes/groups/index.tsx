@@ -7,7 +7,6 @@ import {
   updateGroupMutation,
   deleteGroupMutation,
 } from '@/api/@tanstack/react-query.gen'
-import { PageHeader } from '@/components/page-header'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -17,6 +16,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Empty, EmptyHeader, EmptyTitle } from '@/components/ui/empty'
 import { Badge } from '@/components/ui/badge'
 import { useAuth } from '@/lib/auth'
+import { Plus } from 'lucide-react'
 
 export const Route = createFileRoute('/groups/')({
   component: GroupsPage,
@@ -84,7 +84,19 @@ function GroupsPage() {
 
   return (
     <div className="flex flex-col gap-4 min-w-0">
-      <PageHeader title="Grup Pekerjaan" onAdd={isAdmin ? openAdd : undefined} addLabel="Grup" />
+      <div className="flex flex-col gap-4">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+          Grup Pekerjaan
+        </h1>
+        <div className="flex items-center justify-end gap-4">
+          {isAdmin && (
+            <Button onClick={openAdd}>
+              <Plus data-icon="inline-start" />
+              Grup
+            </Button>
+          )}
+        </div>
+      </div>
 
       <div className="rounded-md border bg-card overflow-hidden">
         <Table>

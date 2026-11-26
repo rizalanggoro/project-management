@@ -4,7 +4,6 @@ import {
   listAhspsOptions,
   deleteAhspMutation,
 } from '@/api/@tanstack/react-query.gen'
-import { PageHeader } from '@/components/page-header'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import {
   DropdownMenu,
@@ -13,10 +12,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty'
 import { formatRupiah } from '@/lib/utils'
 import { useAuth } from '@/lib/auth'
-import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
+import { MoreHorizontal, Pencil, Plus, Search, Trash2 } from 'lucide-react'
 
 export const Route = createFileRoute('/ahsp/')({
   component: AhspPage,
@@ -57,18 +57,35 @@ function AhspPage() {
 
   return (
     <div className="flex flex-col gap-4 min-w-0">
-      <PageHeader
-        title="AHSP"
-        searchValue={q || ''}
-        onSearch={(val) => {
-          navigate({
-            search: ((prev: any) => ({ ...prev, q: val || undefined })) as any,
-            replace: true,
-          })
-        }}
-        onAdd={handleOpenAdd}
-        addLabel="AHSP"
-      />
+      <div className="flex flex-col gap-4">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+          AHSP
+        </h1>
+        <div className="flex items-center justify-between gap-4">
+          <InputGroup className="w-64">
+            <InputGroupAddon>
+              <Search data-icon="inline-start" />
+            </InputGroupAddon>
+            <InputGroupInput
+              placeholder="Search..."
+              value={q || ''}
+              onChange={(e) =>
+                navigate({
+                  search: ((prev: any) => ({
+                    ...prev,
+                    q: e.target.value || undefined,
+                  })) as any,
+                  replace: true,
+                })
+              }
+            />
+          </InputGroup>
+          <Button onClick={handleOpenAdd}>
+            <Plus data-icon="inline-start" />
+            AHSP
+          </Button>
+        </div>
+      </div>
 
       <div className="rounded-md border bg-card overflow-hidden">
         <Table className="min-w-[700px]">
