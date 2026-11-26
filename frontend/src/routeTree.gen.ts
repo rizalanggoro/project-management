@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AhspIndexRouteImport } from './routes/ahsp/index'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as BoqIndexRouteImport } from './routes/boq/index'
+import { Route as GroupsIndexRouteImport } from './routes/groups/index'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
 import { Route as RabIndexRouteImport } from './routes/rab/index'
@@ -42,6 +43,11 @@ const AuthIndexRoute = AuthIndexRouteImport.update({
 const BoqIndexRoute = BoqIndexRouteImport.update({
   id: '/boq/',
   path: '/boq/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GroupsIndexRoute = GroupsIndexRouteImport.update({
+  id: '/groups/',
+  path: '/groups/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginIndexRoute = LoginIndexRouteImport.update({
@@ -100,6 +106,7 @@ export interface FileRoutesByFullPath {
   '/ahsp/': typeof AhspIndexRoute
   '/auth/': typeof AuthIndexRoute
   '/boq/': typeof BoqIndexRoute
+  '/groups/': typeof GroupsIndexRoute
   '/login/': typeof LoginIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/rab/': typeof RabIndexRoute
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/ahsp': typeof AhspIndexRoute
   '/auth': typeof AuthIndexRoute
   '/boq': typeof BoqIndexRoute
+  '/groups': typeof GroupsIndexRoute
   '/login': typeof LoginIndexRoute
   '/projects': typeof ProjectsIndexRoute
   '/rab': typeof RabIndexRoute
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/ahsp/': typeof AhspIndexRoute
   '/auth/': typeof AuthIndexRoute
   '/boq/': typeof BoqIndexRoute
+  '/groups/': typeof GroupsIndexRoute
   '/login/': typeof LoginIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/rab/': typeof RabIndexRoute
@@ -151,6 +160,7 @@ export interface FileRouteTypes {
     | '/ahsp/'
     | '/auth/'
     | '/boq/'
+    | '/groups/'
     | '/login/'
     | '/projects/'
     | '/rab/'
@@ -167,6 +177,7 @@ export interface FileRouteTypes {
     | '/ahsp'
     | '/auth'
     | '/boq'
+    | '/groups'
     | '/login'
     | '/projects'
     | '/rab'
@@ -183,6 +194,7 @@ export interface FileRouteTypes {
     | '/ahsp/'
     | '/auth/'
     | '/boq/'
+    | '/groups/'
     | '/login/'
     | '/projects/'
     | '/rab/'
@@ -200,6 +212,7 @@ export interface RootRouteChildren {
   AhspIndexRoute: typeof AhspIndexRoute
   AuthIndexRoute: typeof AuthIndexRoute
   BoqIndexRoute: typeof BoqIndexRoute
+  GroupsIndexRoute: typeof GroupsIndexRoute
   LoginIndexRoute: typeof LoginIndexRoute
   ProjectsIndexRoute: typeof ProjectsIndexRoute
   RabIndexRoute: typeof RabIndexRoute
@@ -239,6 +252,13 @@ declare module '@tanstack/react-router' {
       path: '/boq'
       fullPath: '/boq/'
       preLoaderRoute: typeof BoqIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/groups/': {
+      id: '/groups/'
+      path: '/groups'
+      fullPath: '/groups/'
+      preLoaderRoute: typeof GroupsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login/': {
@@ -319,6 +339,7 @@ const rootRouteChildren: RootRouteChildren = {
   AhspIndexRoute: AhspIndexRoute,
   AuthIndexRoute: AuthIndexRoute,
   BoqIndexRoute: BoqIndexRoute,
+  GroupsIndexRoute: GroupsIndexRoute,
   LoginIndexRoute: LoginIndexRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,
   RabIndexRoute: RabIndexRoute,

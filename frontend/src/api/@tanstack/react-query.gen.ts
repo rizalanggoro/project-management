@@ -3,8 +3,8 @@
 import { type DefaultError, type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { createAhsp, createProject, createRabItem, createSchedule, createUnitPrice, createVolume, deleteAhsp, deleteProject, deleteRabItem, deleteSchedule, deleteUnitPrice, deleteVolume, exportRabExcel, exportRabPdf, exportVolumeExcel, getAhsp, getCostEstimate, getHealth, getMe, getProject, getProjectBoq, getProjectRab, listAhsps, listBoqProjects, listProjects, listSchedules, listUnitPrices, listVolumes, login, logout, type Options, updateAhsp, updateProject, updateRabItem, updateSchedule, updateUnitPrice, updateVolume } from '../sdk.gen';
-import type { CreateAhspData, CreateAhspError, CreateAhspResponse, CreateProjectData, CreateProjectError, CreateProjectResponse, CreateRabItemData, CreateRabItemError, CreateRabItemResponse, CreateScheduleData, CreateScheduleError, CreateScheduleResponse, CreateUnitPriceData, CreateUnitPriceError, CreateUnitPriceResponse, CreateVolumeData, CreateVolumeError, CreateVolumeResponse, DeleteAhspData, DeleteAhspError, DeleteProjectData, DeleteProjectError, DeleteRabItemData, DeleteRabItemError, DeleteScheduleData, DeleteScheduleError, DeleteUnitPriceData, DeleteUnitPriceError, DeleteVolumeData, DeleteVolumeError, ExportRabExcelData, ExportRabExcelError, ExportRabPdfData, ExportRabPdfError, ExportVolumeExcelData, ExportVolumeExcelError, GetAhspData, GetAhspError, GetAhspResponse, GetCostEstimateData, GetCostEstimateError, GetCostEstimateResponse, GetHealthData, GetHealthError, GetHealthResponse, GetMeData, GetMeError, GetMeResponse, GetProjectBoqData, GetProjectBoqError, GetProjectBoqResponse, GetProjectData, GetProjectError, GetProjectRabData, GetProjectRabError, GetProjectRabResponse, GetProjectResponse, ListAhspsData, ListAhspsError, ListAhspsResponse, ListBoqProjectsData, ListBoqProjectsError, ListBoqProjectsResponse, ListProjectsData, ListProjectsError, ListProjectsResponse, ListSchedulesData, ListSchedulesError, ListSchedulesResponse, ListUnitPricesData, ListUnitPricesError, ListUnitPricesResponse, ListVolumesData, ListVolumesError, ListVolumesResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, UpdateAhspData, UpdateAhspError, UpdateAhspResponse, UpdateProjectData, UpdateProjectError, UpdateProjectResponse, UpdateRabItemData, UpdateRabItemError, UpdateRabItemResponse, UpdateScheduleData, UpdateScheduleError, UpdateScheduleResponse, UpdateUnitPriceData, UpdateUnitPriceError, UpdateUnitPriceResponse, UpdateVolumeData, UpdateVolumeError, UpdateVolumeResponse } from '../types.gen';
+import { createAhsp, createGroup, createProject, createRabItem, createSchedule, createUnitPrice, createVolume, deleteAhsp, deleteGroup, deleteProject, deleteRabItem, deleteSchedule, deleteUnitPrice, deleteVolume, exportRabExcel, exportRabPdf, exportVolumeExcel, getAhsp, getCostEstimate, getHealth, getMe, getProject, getProjectBoq, getProjectRab, listAhsps, listBoqProjects, listGroups, listProjects, listSchedules, listUnitPrices, listVolumes, login, logout, type Options, updateAhsp, updateGroup, updateProject, updateRabItem, updateSchedule, updateUnitPrice, updateVolume } from '../sdk.gen';
+import type { CreateAhspData, CreateAhspError, CreateAhspResponse, CreateGroupData, CreateGroupError, CreateGroupResponse, CreateProjectData, CreateProjectError, CreateProjectResponse, CreateRabItemData, CreateRabItemError, CreateRabItemResponse, CreateScheduleData, CreateScheduleError, CreateScheduleResponse, CreateUnitPriceData, CreateUnitPriceError, CreateUnitPriceResponse, CreateVolumeData, CreateVolumeError, CreateVolumeResponse, DeleteAhspData, DeleteAhspError, DeleteGroupData, DeleteGroupError, DeleteProjectData, DeleteProjectError, DeleteRabItemData, DeleteRabItemError, DeleteScheduleData, DeleteScheduleError, DeleteUnitPriceData, DeleteUnitPriceError, DeleteVolumeData, DeleteVolumeError, ExportRabExcelData, ExportRabExcelError, ExportRabPdfData, ExportRabPdfError, ExportVolumeExcelData, ExportVolumeExcelError, GetAhspData, GetAhspError, GetAhspResponse, GetCostEstimateData, GetCostEstimateError, GetCostEstimateResponse, GetHealthData, GetHealthError, GetHealthResponse, GetMeData, GetMeError, GetMeResponse, GetProjectBoqData, GetProjectBoqError, GetProjectBoqResponse, GetProjectData, GetProjectError, GetProjectRabData, GetProjectRabError, GetProjectRabResponse, GetProjectResponse, ListAhspsData, ListAhspsError, ListAhspsResponse, ListBoqProjectsData, ListBoqProjectsError, ListBoqProjectsResponse, ListGroupsData, ListGroupsError, ListGroupsResponse, ListProjectsData, ListProjectsError, ListProjectsResponse, ListSchedulesData, ListSchedulesError, ListSchedulesResponse, ListUnitPricesData, ListUnitPricesError, ListUnitPricesResponse, ListVolumesData, ListVolumesError, ListVolumesResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, UpdateAhspData, UpdateAhspError, UpdateAhspResponse, UpdateGroupData, UpdateGroupError, UpdateGroupResponse, UpdateProjectData, UpdateProjectError, UpdateProjectResponse, UpdateRabItemData, UpdateRabItemError, UpdateRabItemResponse, UpdateScheduleData, UpdateScheduleError, UpdateScheduleResponse, UpdateUnitPriceData, UpdateUnitPriceError, UpdateUnitPriceResponse, UpdateVolumeData, UpdateVolumeError, UpdateVolumeResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -195,6 +195,75 @@ export const listBoqProjectsOptions = (options?: Options<ListBoqProjectsData>) =
     },
     queryKey: listBoqProjectsQueryKey(options)
 });
+
+export const listGroupsQueryKey = (options?: Options<ListGroupsData>) => createQueryKey('listGroups', options);
+
+/**
+ * List work item groups
+ */
+export const listGroupsOptions = (options?: Options<ListGroupsData>) => queryOptions<ListGroupsResponse, ListGroupsError, ListGroupsResponse, ReturnType<typeof listGroupsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listGroups({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listGroupsQueryKey(options)
+});
+
+/**
+ * Create work item group
+ */
+export const createGroupMutation = (options?: Partial<Options<CreateGroupData>>): UseMutationOptions<CreateGroupResponse, CreateGroupError, Options<CreateGroupData>> => {
+    const mutationOptions: UseMutationOptions<CreateGroupResponse, CreateGroupError, Options<CreateGroupData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createGroup({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Delete work item group
+ */
+export const deleteGroupMutation = (options?: Partial<Options<DeleteGroupData>>): UseMutationOptions<unknown, DeleteGroupError, Options<DeleteGroupData>> => {
+    const mutationOptions: UseMutationOptions<unknown, DeleteGroupError, Options<DeleteGroupData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await deleteGroup({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Update work item group
+ */
+export const updateGroupMutation = (options?: Partial<Options<UpdateGroupData>>): UseMutationOptions<UpdateGroupResponse, UpdateGroupError, Options<UpdateGroupData>> => {
+    const mutationOptions: UseMutationOptions<UpdateGroupResponse, UpdateGroupError, Options<UpdateGroupData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await updateGroup({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
 
 export const getHealthQueryKey = (options?: Options<GetHealthData>) => createQueryKey('getHealth', options);
 

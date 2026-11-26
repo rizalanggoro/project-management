@@ -7,6 +7,7 @@ type BoqItem struct {
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
 	ProjectID     uint      `json:"project_id"`
+	Group         string    `json:"group"`
 	AhspID        *uint     `json:"ahsp_id,omitempty"`
 	WorkItem      string    `json:"work_item"`
 	Unit          string    `json:"unit"`

@@ -10,6 +10,7 @@ import (
 type VolumeRowDTO struct {
 	ID            string  `json:"id"`
 	BoqItemID     string  `json:"boq_item_id"`
+	Group         string  `json:"group"`
 	WorkItem      string  `json:"work_item"`
 	Unit          string  `json:"unit"`
 	PlannedVolume string  `json:"planned_volume"`
@@ -26,6 +27,7 @@ type VolumeRowDTO struct {
 
 type CreateVolumeInput struct {
 	BoqItemID     *string `json:"boq_item_id,omitempty"`
+	Group         string  `json:"group,omitempty"`
 	AhspID        *string `json:"ahsp_id,omitempty"`
 	WorkItem      string  `json:"work_item"`
 	Unit          string  `json:"unit"`
@@ -41,6 +43,7 @@ type CreateVolumeInput struct {
 }
 
 type UpdateVolumeInput struct {
+	Group       *string `json:"group,omitempty"`
 	Date        *string `json:"date,omitempty"`
 	Length      *string `json:"length,omitempty"`
 	Width       *string `json:"width,omitempty"`
@@ -54,6 +57,7 @@ type UpdateVolumeInput struct {
 type VolumeRowQueryResult struct {
 	domain.Volume
 	WorkItem      string  `gorm:"column:work_item"`
+	Group         string  `gorm:"column:item_group"`
 	Unit          string  `gorm:"column:unit"`
 	PlannedVolume float64 `gorm:"column:planned_volume"`
 }
@@ -62,6 +66,7 @@ func toRowDTO(v *domain.Volume, b *domain.BoqItem) VolumeRowDTO {
 	dto := VolumeRowDTO{
 		ID:            utils.FormatID(v.ID),
 		BoqItemID:     utils.FormatID(v.BoqItemID),
+		Group:         b.Group,
 		WorkItem:      b.WorkItem,
 		Unit:          b.Unit,
 		PlannedVolume: fmt.Sprintf("%.4f", b.PlannedVolume),

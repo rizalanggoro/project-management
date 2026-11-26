@@ -69,14 +69,21 @@ func (s *service) Create(projectID uint, input CreateRabItemInput) (*RabItemDTO,
 	totalCost := roundHalfUp(vol * float64(price))
 
 	var boqID *uint
+	group := input.Group
 	if input.BoqItemID != nil && *input.BoqItemID != "" {
 		if parsed, err := utils.ParseID(*input.BoqItemID); err == nil {
 			boqID = &parsed
+			if g, err := s.repo.FindBoqItemGroupByID(parsed); err == nil {
+				if g != "" {
+					group = g
+				}
+			}
 		}
 	}
 
 	item := domain.RabItem{
 		ProjectID: projectID,
+		Group:     group,
 		BoqItemID: boqID,
 		WorkItem:  input.WorkItem,
 		Unit:      input.Unit,
@@ -102,6 +109,9 @@ func (s *service) Update(id uint, input UpdateRabItemInput) (*RabItemDTO, error)
 		return nil, err
 	}
 
+	if input.Group != nil {
+		item.Group = *input.Group
+	}
 	if input.WorkItem != nil {
 		item.WorkItem = *input.WorkItem
 	}

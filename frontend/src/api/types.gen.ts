@@ -50,6 +50,7 @@ export type AhspItemDto = {
 
 export type BoqItemDto = {
     ahsp_id: string;
+    group: string;
     id: string;
     planned_volume: string;
     project_id: string;
@@ -96,6 +97,11 @@ export type CreateAhspItemInput = {
     unit_price_id?: string;
 };
 
+export type CreateGroupInput = {
+    code: string;
+    name: string;
+};
+
 export type CreateProjectInput = {
     budget: string;
     implementation_plan?: string;
@@ -117,6 +123,7 @@ export type CreateProjectInput = {
 
 export type CreateRabItemInput = {
     boq_item_id?: string;
+    group?: string;
     unit: string;
     unit_price: string;
     volume: string;
@@ -148,6 +155,7 @@ export type CreateVolumeInput = {
     date?: string;
     description: string;
     formula?: string;
+    group?: string;
     height?: string;
     length?: string;
     planned_volume: string;
@@ -168,6 +176,12 @@ export type ErrorDetail = {
 
 export type ErrorResponse = {
     error: ErrorDetail;
+};
+
+export type GroupDto = {
+    code: string;
+    id: string;
+    name: string;
 };
 
 export type HealthResponse = {
@@ -217,6 +231,7 @@ export type ProjectListResponse = {
 
 export type RabItemDto = {
     boq_item_id: string;
+    group: string;
     id: string;
     project_id: string;
     total_cost: string;
@@ -255,6 +270,11 @@ export type UnitPriceDto = {
     work_item: string;
 };
 
+export type UpdateGroupInput = {
+    code?: string;
+    name?: string;
+};
+
 export type UpdateProjectInput = {
     budget?: string;
     implementation_plan?: string;
@@ -276,6 +296,7 @@ export type UpdateProjectInput = {
 };
 
 export type UpdateRabItemInput = {
+    group?: string;
     unit?: string;
     unit_price?: string;
     volume?: string;
@@ -305,6 +326,7 @@ export type UpdateVolumeInput = {
     date?: string;
     description?: string;
     formula?: string;
+    group?: string;
     height?: string;
     length?: string;
     quantity?: string;
@@ -327,6 +349,7 @@ export type VolumeRowDto = {
     date: string;
     description: string;
     formula: string;
+    group: string;
     height: string;
     id: string;
     length: string;
@@ -628,6 +651,148 @@ export type ListBoqProjectsResponses = {
 };
 
 export type ListBoqProjectsResponse = ListBoqProjectsResponses[keyof ListBoqProjectsResponses];
+
+export type ListGroupsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/groups';
+};
+
+export type ListGroupsErrors = {
+    /**
+     * Internal Server Error
+     */
+    500: ErrorResponse;
+};
+
+export type ListGroupsError = ListGroupsErrors[keyof ListGroupsErrors];
+
+export type ListGroupsResponses = {
+    /**
+     * OK
+     */
+    200: Array<GroupDto>;
+};
+
+export type ListGroupsResponse = ListGroupsResponses[keyof ListGroupsResponses];
+
+export type CreateGroupData = {
+    /**
+     * Group input
+     */
+    body: CreateGroupInput;
+    path?: never;
+    query?: never;
+    url: '/groups';
+};
+
+export type CreateGroupErrors = {
+    /**
+     * Bad Request
+     */
+    400: ErrorResponse;
+    /**
+     * Conflict
+     */
+    409: ErrorResponse;
+    /**
+     * Internal Server Error
+     */
+    500: ErrorResponse;
+};
+
+export type CreateGroupError = CreateGroupErrors[keyof CreateGroupErrors];
+
+export type CreateGroupResponses = {
+    /**
+     * Created
+     */
+    201: GroupDto;
+};
+
+export type CreateGroupResponse = CreateGroupResponses[keyof CreateGroupResponses];
+
+export type DeleteGroupData = {
+    body?: never;
+    path: {
+        /**
+         * Group ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/groups/{id}';
+};
+
+export type DeleteGroupErrors = {
+    /**
+     * Not Found
+     */
+    404: ErrorResponse;
+    /**
+     * Conflict
+     */
+    409: ErrorResponse;
+    /**
+     * Internal Server Error
+     */
+    500: ErrorResponse;
+};
+
+export type DeleteGroupError = DeleteGroupErrors[keyof DeleteGroupErrors];
+
+export type DeleteGroupResponses = {
+    /**
+     * No Content
+     */
+    204: unknown;
+};
+
+export type UpdateGroupData = {
+    /**
+     * Group update data
+     */
+    body: UpdateGroupInput;
+    path: {
+        /**
+         * Group ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/groups/{id}';
+};
+
+export type UpdateGroupErrors = {
+    /**
+     * Bad Request
+     */
+    400: ErrorResponse;
+    /**
+     * Not Found
+     */
+    404: ErrorResponse;
+    /**
+     * Conflict
+     */
+    409: ErrorResponse;
+    /**
+     * Internal Server Error
+     */
+    500: ErrorResponse;
+};
+
+export type UpdateGroupError = UpdateGroupErrors[keyof UpdateGroupErrors];
+
+export type UpdateGroupResponses = {
+    /**
+     * OK
+     */
+    200: GroupDto;
+};
+
+export type UpdateGroupResponse = UpdateGroupResponses[keyof UpdateGroupResponses];
 
 export type GetHealthData = {
     body?: never;

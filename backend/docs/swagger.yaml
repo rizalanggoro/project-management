@@ -123,6 +123,8 @@ definitions:
     properties:
       ahsp_id:
         type: string
+      group:
+        type: string
       id:
         type: string
       planned_volume:
@@ -135,6 +137,7 @@ definitions:
         type: string
     required:
     - ahsp_id
+    - group
     - id
     - planned_volume
     - project_id
@@ -239,6 +242,18 @@ definitions:
     - unit
     - unit_price
     type: object
+  CreateGroupInput:
+    properties:
+      code:
+        example: C
+        type: string
+      name:
+        example: Pekerjaan Finishing
+        type: string
+    required:
+    - code
+    - name
+    type: object
   CreateProjectInput:
     properties:
       budget:
@@ -283,6 +298,8 @@ definitions:
   CreateRabItemInput:
     properties:
       boq_item_id:
+        type: string
+      group:
         type: string
       unit:
         type: string
@@ -357,6 +374,8 @@ definitions:
         type: string
       formula:
         type: string
+      group:
+        type: string
       height:
         type: string
       length:
@@ -400,6 +419,19 @@ definitions:
         $ref: '#/definitions/ErrorDetail'
     required:
     - error
+    type: object
+  GroupDTO:
+    properties:
+      code:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    required:
+    - code
+    - id
+    - name
     type: object
   HealthResponse:
     properties:
@@ -519,6 +551,8 @@ definitions:
     properties:
       boq_item_id:
         type: string
+      group:
+        type: string
       id:
         type: string
       project_id:
@@ -535,6 +569,7 @@ definitions:
         type: string
     required:
     - boq_item_id
+    - group
     - id
     - project_id
     - total_cost
@@ -617,6 +652,15 @@ definitions:
     - unit_price
     - work_item
     type: object
+  UpdateGroupInput:
+    properties:
+      code:
+        example: C
+        type: string
+      name:
+        example: Pekerjaan Finishing
+        type: string
+    type: object
   UpdateProjectInput:
     properties:
       budget:
@@ -656,6 +700,8 @@ definitions:
     type: object
   UpdateRabItemInput:
     properties:
+      group:
+        type: string
       unit:
         type: string
       unit_price:
@@ -705,6 +751,8 @@ definitions:
         type: string
       formula:
         type: string
+      group:
+        type: string
       height:
         type: string
       length:
@@ -752,6 +800,8 @@ definitions:
         type: string
       formula:
         type: string
+      group:
+        type: string
       height:
         type: string
       id:
@@ -777,6 +827,7 @@ definitions:
     - date
     - description
     - formula
+    - group
     - height
     - id
     - length
@@ -1036,6 +1087,127 @@ paths:
       summary: List projects with BOQ status
       tags:
       - boq
+  /groups:
+    get:
+      operationId: listGroups
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/GroupDTO'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: List work item groups
+      tags:
+      - groups
+    post:
+      consumes:
+      - application/json
+      operationId: createGroup
+      parameters:
+      - description: Group input
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/CreateGroupInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/GroupDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Create work item group
+      tags:
+      - groups
+  /groups/{id}:
+    delete:
+      operationId: deleteGroup
+      parameters:
+      - description: Group ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Delete work item group
+      tags:
+      - groups
+    put:
+      consumes:
+      - application/json
+      operationId: updateGroup
+      parameters:
+      - description: Group ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Group update data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateGroupInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GroupDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Update work item group
+      tags:
+      - groups
   /health:
     get:
       description: Service and database are reachable

@@ -12,6 +12,7 @@ import (
 type Repository interface {
 	ListByProjectID(projectID uint, q string) ([]domain.RabItem, error)
 	FindByID(id uint) (*domain.RabItem, error)
+	FindBoqItemGroupByID(id uint) (string, error)
 	Create(item *domain.RabItem) error
 	Update(item *domain.RabItem) error
 	Delete(id uint) (bool, error)
@@ -49,6 +50,12 @@ func (r *repository) FindByID(id uint) (*domain.RabItem, error) {
 		return nil, err
 	}
 	return m.ToDomain(), nil
+}
+
+func (r *repository) FindBoqItemGroupByID(id uint) (string, error) {
+	var group string
+	err := r.db.Model(&model.BoqItem{}).Where("id = ?", id).Select("item_group").Scan(&group).Error
+	return group, err
 }
 
 func (r *repository) Create(item *domain.RabItem) error {

@@ -19,6 +19,7 @@ type BoqProjectSummaryDTO struct {
 type BoqItemDTO struct {
 	ID            string  `json:"id"`
 	ProjectID     string  `json:"project_id"`
+	Group         string  `json:"group"`
 	AhspID        *string `json:"ahsp_id"`
 	WorkItem      string  `json:"work_item"`
 	Unit          string  `json:"unit"`
@@ -29,6 +30,7 @@ func toItemDTO(item *domain.BoqItem) BoqItemDTO {
 	d := BoqItemDTO{
 		ID:            utils.FormatID(item.ID),
 		ProjectID:     utils.FormatID(item.ProjectID),
+		Group:         item.Group,
 		WorkItem:      item.WorkItem,
 		Unit:          item.Unit,
 		PlannedVolume: fmt.Sprintf("%.4f", item.PlannedVolume),

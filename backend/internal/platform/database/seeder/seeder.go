@@ -24,6 +24,10 @@ func Seed(db *gorm.DB) error {
 		return fmt.Errorf("seed users: %w", err)
 	}
 
+	if err := seedGroups(db); err != nil {
+		return fmt.Errorf("seed groups: %w", err)
+	}
+
 	upMap, err := seedUnitPrices(db)
 	if err != nil {
 		return fmt.Errorf("seed unit prices: %w", err)
@@ -79,6 +83,26 @@ func seedUsers(db *gorm.DB) error {
 		}
 	}
 
+	return nil
+}
+
+func seedGroups(db *gorm.DB) error {
+	groups := []model.Group{
+		{Code: "A", Name: "Pekerjaan Persiapan"},
+		{Code: "B", Name: "Pekerjaan Struktur"},
+	}
+	for _, g := range groups {
+		var existing model.Group
+		err := db.Where("lower(code) = lower(?)", g.Code).First(&existing).Error
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			if err := db.Create(&g).Error; err != nil {
+				return err
+			}
+			slog.Info("seeded group", "code", g.Code, "name", g.Name)
+		} else if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -230,6 +254,7 @@ func seedProject(db *gorm.DB, ahspMap map[string]model.Ahsp) error {
 
 		boq = model.BoqItem{
 			ProjectID:     project.ID,
+			Group:         seed.Group,
 			WorkItem:      seed.WorkItem,
 			Unit:          seed.Unit,
 			PlannedVolume: seed.PlannedVolume,
@@ -265,6 +290,7 @@ func seedProject(db *gorm.DB, ahspMap map[string]model.Ahsp) error {
 		}
 		rab := model.RabItem{
 			ProjectID: project.ID,
+			Group:     seed.Group,
 			BoqItemID: &boq.ID,
 			WorkItem:  seed.WorkItem,
 			Unit:      seed.Unit,

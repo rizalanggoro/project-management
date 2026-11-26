@@ -17,6 +17,7 @@ import (
 	"musashi/backend/internal/costestimate"
 	"musashi/backend/internal/domain"
 	"musashi/backend/internal/export"
+	"musashi/backend/internal/group"
 	"musashi/backend/internal/platform/config"
 	"musashi/backend/internal/project"
 	"musashi/backend/internal/rab"
@@ -73,6 +74,7 @@ func New(db *gorm.DB, cfg config.Config) *fiber.App {
 	// Feature handlers (Repository -> Service -> Handler)
 	authSvc := auth.NewService(auth.NewRepository(db))
 	authHandler := auth.NewHandler(authSvc)
+	groupHandler := group.NewHandler(group.NewService(group.NewRepository(db)))
 	projectHandler := project.NewHandler(project.NewService(project.NewRepository(db)))
 	scheduleHandler := schedule.NewHandler(schedule.NewService(schedule.NewRepository(db)))
 	unitPriceHandler := unitprice.NewHandler(unitprice.NewService(unitprice.NewRepository(db)))
@@ -91,6 +93,12 @@ func New(db *gorm.DB, cfg config.Config) *fiber.App {
 	// Protected routes
 	authReq := utils.AuthMiddleware(authSvc)
 	adminOnly := utils.RequireRole(domain.RoleAdmin)
+
+	// Groups
+	api.Get("/groups", authReq, groupHandler.List)
+	api.Post("/groups", authReq, adminOnly, groupHandler.Create)
+	api.Put("/groups/:id", authReq, adminOnly, groupHandler.Update)
+	api.Delete("/groups/:id", authReq, adminOnly, groupHandler.Delete)
 
 	// Projects
 	api.Get("/projects", authReq, projectHandler.List)

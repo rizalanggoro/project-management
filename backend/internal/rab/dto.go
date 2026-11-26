@@ -12,6 +12,7 @@ type RabItemDTO struct {
 	ID        string  `json:"id"`
 	ProjectID string  `json:"project_id"`
 	BoqItemID *string `json:"boq_item_id"`
+	Group     string  `json:"group"`
 	WorkItem  string  `json:"work_item"`
 	Unit      string  `json:"unit"`
 	Volume    string  `json:"volume"`
@@ -27,6 +28,7 @@ type RabResponseDTO struct {
 
 type CreateRabItemInput struct {
 	BoqItemID *string `json:"boq_item_id,omitempty"`
+	Group     string  `json:"group,omitempty"`
 	WorkItem  string  `json:"work_item"`
 	Unit      string  `json:"unit"`
 	Volume    string  `json:"volume"`
@@ -34,6 +36,7 @@ type CreateRabItemInput struct {
 }
 
 type UpdateRabItemInput struct {
+	Group     *string `json:"group,omitempty"`
 	WorkItem  *string `json:"work_item,omitempty"`
 	Unit      *string `json:"unit,omitempty"`
 	Volume    *string `json:"volume,omitempty"`
@@ -44,6 +47,7 @@ func toDTO(item *domain.RabItem) RabItemDTO {
 	dto := RabItemDTO{
 		ID:        utils.FormatID(item.ID),
 		ProjectID: utils.FormatID(item.ProjectID),
+		Group:     item.Group,
 		WorkItem:  item.WorkItem,
 		Unit:      item.Unit,
 		Volume:    fmt.Sprintf("%.4f", item.Volume),

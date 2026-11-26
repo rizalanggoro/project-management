@@ -30,6 +30,7 @@ import {
   Calendar,
   FileSpreadsheet,
   FolderKanban,
+  Layers,
   LogOut,
   Receipt,
   Tag,
@@ -54,6 +55,10 @@ const nav = [
       { to: "/volume", label: "Volume Take-off", icon: Box },
       { to: "/rab", label: "RAB", icon: Receipt },
     ],
+  },
+  {
+    group: "Master Data",
+    items: [{ to: "/groups", label: "Groups", icon: Layers }],
   },
 ] as const;
 

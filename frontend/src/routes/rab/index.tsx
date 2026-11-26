@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   listProjectsOptions,
+  listGroupsOptions,
   getProjectRabOptions,
   createRabItemMutation,
+  updateRabItemMutation,
   deleteRabItemMutation,
   getProjectBoqOptions,
   listAhspsOptions,
@@ -42,6 +44,7 @@ function RabPage() {
 
   // Form state
   const [selectedBoqId, setSelectedBoqId] = useState('')
+  const [group, setGroup] = useState('')
   const [workItem, setWorkItem] = useState('')
   const [unit, setUnit] = useState('')
   const [volume, setVolume] = useState('0')
@@ -52,6 +55,10 @@ function RabPage() {
     ...listProjectsOptions({ query: { per_page: 100 } }),
   })
   const projects = projectsData?.data ?? []
+
+  const { data: groups = [] } = useQuery({
+    ...listGroupsOptions(),
+  })
   const projectItems = projects.map((p) => ({
     value: p.id,
     label: `${p.name} ${p.section ? `(${p.section})` : ''}`,
@@ -80,6 +87,7 @@ function RabPage() {
   })
 
   const createMut = useMutation(createRabItemMutation())
+  const updateMut = useMutation(updateRabItemMutation())
   const deleteMut = useMutation(deleteRabItemMutation())
 
   const handleOpenAdd = () => {
@@ -92,6 +100,7 @@ function RabPage() {
       return
     }
     setSelectedBoqId('')
+    setGroup('')
     setWorkItem('')
     setUnit('')
     setVolume('1')
@@ -104,6 +113,7 @@ function RabPage() {
     setSelectedBoqId(boqId)
     const boq = boqItems.find((b) => b.id === boqId)
     if (boq) {
+      setGroup(boq.group || '')
       setWorkItem(boq.work_item)
       setUnit(boq.unit)
       setVolume(boq.planned_volume)
@@ -130,6 +140,7 @@ function RabPage() {
         path: { id: activeProjectId },
         body: {
           boq_item_id: selectedBoqId || undefined,
+          group: group || undefined,
           work_item: workItem.trim(),
           unit: unit.trim(),
           volume: volume || '0',
@@ -153,8 +164,28 @@ function RabPage() {
     }
   }
 
+  const handleUpdateGroup = async (id: string, nextGroup: string) => {
+    try {
+      await updateMut.mutateAsync({ path: { id }, body: { group: nextGroup } })
+      await queryClient.invalidateQueries()
+    } catch (err: any) {
+      alert(err?.message || 'Gagal mengubah grup RAB.')
+    }
+  }
+
   const items = rabData?.items ?? []
   const hasZeroPrice = items.some((it) => it.unit_price === '0')
+
+  const groupedItems = items.reduce<Record<string, typeof items>>((acc, item) => {
+    const key = item.group || '-'
+    if (!acc[key]) acc[key] = []
+    acc[key].push(item)
+    return acc
+  }, {})
+  const groupKeys = Object.keys(groupedItems)
+  const groupItems = groups.map((g) => ({ value: g.code, label: `${g.code} — ${g.name}` }))
+  const groupLabel = (key: string) =>
+    groupItems.find((g) => g.value === key)?.label || key
 
   return (
     <div className="flex flex-col gap-4 min-w-0">
@@ -271,36 +302,78 @@ function RabPage() {
                 </TableCell>
               </TableRow>
             ) : (
-              items.map((item, idx) => (
-                <TableRow key={item.id}>
-                  <TableCell className="text-center text-muted-foreground">{idx + 1}</TableCell>
-                  <TableCell className="font-medium text-foreground">{item.work_item}</TableCell>
-                  <TableCell className="text-right">{formatDecimal(item.volume)}</TableCell>
-                  <TableCell className="text-center">{item.unit}</TableCell>
-                  <TableCell className="text-right font-medium">
-                    {item.unit_price === '0' ? (
-                      <span className="text-amber-600 text-xs font-normal">Belum ada harga</span>
-                    ) : (
-                      formatRupiah(item.unit_price)
-                    )}
-                  </TableCell>
-                  <TableCell className="text-right font-semibold text-foreground">
-                    {formatRupiah(item.total_cost)}
-                  </TableCell>
-                  {isAdmin && (
-                    <TableCell className="text-center">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="text-xs text-destructive hover:bg-destructive/10"
-                        onClick={() => handleDelete(item.id)}
-                      >
-                        Delete
-                      </Button>
-                    </TableCell>
-                  )}
-                </TableRow>
-              ))
+              groupKeys.flatMap((key) => {
+                const rows = groupedItems[key]
+                const subtotal = rows.reduce((sum, it) => sum + Number(it.total_cost), 0)
+                return [
+                  <Fragment key={key}>
+                    <TableRow className="bg-muted/60">
+                      <TableCell colSpan={isAdmin ? 7 : 6} className="font-semibold text-foreground">
+                        {groupLabel(key)}
+                      </TableCell>
+                    </TableRow>
+                    {rows.map((item, idx) => (
+                      <TableRow key={item.id}>
+                        <TableCell className="text-center text-muted-foreground">{idx + 1}</TableCell>
+                        <TableCell className="font-medium text-foreground">{item.work_item}</TableCell>
+                        <TableCell className="text-right">{formatDecimal(item.volume)}</TableCell>
+                        <TableCell className="text-center">{item.unit}</TableCell>
+                        <TableCell className="text-right font-medium">
+                          {item.unit_price === '0' ? (
+                            <span className="text-amber-600 text-xs font-normal">Belum ada harga</span>
+                          ) : (
+                            formatRupiah(item.unit_price)
+                          )}
+                        </TableCell>
+                        <TableCell className="text-right font-semibold text-foreground">
+                          {formatRupiah(item.total_cost)}
+                        </TableCell>
+                        {isAdmin && (
+                          <TableCell className="text-center">
+                            <div className="flex items-center justify-center gap-2">
+                              <Select
+                                items={groupItems}
+                                value={item.group || undefined}
+                                onValueChange={(val) => { if (val) handleUpdateGroup(item.id, val) }}
+                              >
+                                <SelectTrigger className="w-16">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectGroup>
+                                    {groupItems.map((g) => (
+                                      <SelectItem key={g.value} value={g.value}>
+                                        {g.value}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="text-xs text-destructive hover:bg-destructive/10"
+                                onClick={() => handleDelete(item.id)}
+                              >
+                                Delete
+                              </Button>
+                            </div>
+                          </TableCell>
+                        )}
+                      </TableRow>
+                    ))}
+                    <TableRow className="bg-muted/20 font-medium">
+                      <TableCell colSpan={5} className="text-right text-muted-foreground">
+                        Total {groupLabel(key)}
+                      </TableCell>
+                      <TableCell className="text-right font-bold text-foreground">
+                        {formatRupiah(String(subtotal))}
+                      </TableCell>
+                      {isAdmin && <TableCell />}
+                    </TableRow>
+                  </Fragment>,
+                ]
+              })
             )}
           </TableBody>
           {items.length > 0 && (
@@ -363,6 +436,28 @@ function RabPage() {
                   </Select>
                 </Field>
               )}
+
+              <Field>
+                <FieldLabel htmlFor="rab-group">Grup Pekerjaan</FieldLabel>
+                <Select
+                  items={groupItems}
+                  value={group}
+                  onValueChange={(val) => { if (val) setGroup(val) }}
+                >
+                  <SelectTrigger id="rab-group" className="w-full">
+                    <SelectValue placeholder="-- Pilih Grup --" />
+                  </SelectTrigger>
+                  <SelectContent className="w-full min-w-72">
+                    <SelectGroup>
+                      {groupItems.map((g) => (
+                        <SelectItem key={g.value} value={g.value}>
+                          {g.label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Field>
 
               <Field>
                 <FieldLabel htmlFor="rab-item">Work Item</FieldLabel>

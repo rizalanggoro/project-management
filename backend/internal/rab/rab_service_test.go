@@ -35,6 +35,10 @@ func (m *mockRabRepo) FindByID(id uint) (*domain.RabItem, error) {
 	return nil, gorm.ErrRecordNotFound
 }
 
+func (m *mockRabRepo) FindBoqItemGroupByID(id uint) (string, error) {
+	return "", nil
+}
+
 func (m *mockRabRepo) Create(item *domain.RabItem) error {
 	if m.createFn != nil {
 		return m.createFn(item)
@@ -186,4 +190,3 @@ func TestRabHandler(t *testing.T) {
 		}
 	})
 }
-

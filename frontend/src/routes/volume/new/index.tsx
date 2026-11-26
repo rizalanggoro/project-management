@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import {
   listProjectsOptions,
+  listGroupsOptions,
   createVolumeMutation,
   listAhspsOptions,
   getProjectBoqOptions,
@@ -37,6 +38,7 @@ export const Route = createFileRoute('/volume/new/')({
 const volumeFormSchema = z.object({
   projectId: z.string().min(1, 'Pilih proyek terlebih dahulu'),
   boqItemId: z.string(),
+  group: z.string().min(1, 'Pilih grup pekerjaan'),
   ahspId: z.string(),
   workItem: z.string().min(1, 'Nama pekerjaan (Work Item) wajib diisi'),
   unit: z.string().min(1, 'Satuan (Unit) wajib diisi'),
@@ -76,6 +78,10 @@ function VolumeNewPage() {
   })
   const projects = projectsData?.data ?? []
 
+  const { data: groups = [] } = useQuery({
+    ...listGroupsOptions(),
+  })
+
   // Default projectId from search query or first project
   const initialProjectId = searchParams.projectId || (projects.length > 0 ? projects[0].id : '')
 
@@ -93,6 +99,7 @@ function VolumeNewPage() {
     defaultValues: {
       projectId: initialProjectId,
       boqItemId: 'custom',
+      group: '',
       ahspId: '',
       workItem: '',
       unit: '',
@@ -170,6 +177,8 @@ function VolumeNewPage() {
     []
   )
 
+  const groupItems = groups.map((g) => ({ value: g.code, label: `${g.code} — ${g.name}` }))
+
   const createMut = useMutation(createVolumeMutation())
 
   // Handle selecting an existing BoQ item
@@ -179,6 +188,7 @@ function VolumeNewPage() {
       setValue('workItem', '')
       setValue('unit', '')
       setValue('plannedVolume', '0')
+      setValue('group', '')
       return
     }
 
@@ -186,6 +196,7 @@ function VolumeNewPage() {
     if (item) {
       setValue('workItem', item.work_item)
       setValue('unit', item.unit)
+      setValue('group', item.group || '')
       setValue('plannedVolume', item.planned_volume || '0')
       setValue('ahspId', item.ahsp_id || '')
       const detected = detectFormula(item.unit)
@@ -231,6 +242,7 @@ function VolumeNewPage() {
         path: { id: values.projectId },
         body: {
           boq_item_id: values.boqItemId !== 'custom' ? values.boqItemId : undefined,
+          group: values.group || undefined,
           ahsp_id: values.ahspId || undefined,
           work_item: values.workItem.trim(),
           unit: values.unit.trim(),
@@ -374,6 +386,37 @@ function VolumeNewPage() {
                     </SelectContent>
                   </Select>
                 </Field>
+
+                {selectedBoqId === 'custom' && (
+                  <Field data-invalid={!!errors.group}>
+                    <FieldLabel htmlFor="new-vol-group">Grup Pekerjaan</FieldLabel>
+                    <Controller
+                      name="group"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          items={groupItems}
+                          value={field.value}
+                          onValueChange={(val) => { if (val) field.onChange(val) }}
+                        >
+                          <SelectTrigger id="new-vol-group" className="w-full">
+                            <SelectValue placeholder="-- Pilih Grup --" />
+                          </SelectTrigger>
+                          <SelectContent className="w-full min-w-72">
+                            <SelectGroup>
+                              {groupItems.map((g) => (
+                                <SelectItem key={g.value} value={g.value}>
+                                  {g.label}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    {errors.group && <FieldError>{errors.group.message}</FieldError>}
+                  </Field>
+                )}
 
                 {/* Master AHSP picker when custom */}
                 {selectedBoqId === 'custom' && ahsps.length > 0 && (

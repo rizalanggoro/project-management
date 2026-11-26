@@ -62,6 +62,10 @@ func (m *mockVolumeRepo) CreateBoqItem(b *domain.BoqItem) error {
 	return nil
 }
 
+func (m *mockVolumeRepo) UpdateBoqItemGroup(id uint, group string) error {
+	return nil
+}
+
 func (m *mockVolumeRepo) CreateVolume(v *domain.Volume) error {
 	if m.createVolumeFn != nil {
 		return m.createVolumeFn(v)
@@ -309,4 +313,3 @@ func TestVolumeHandler(t *testing.T) {
 func strPtr(s string) *string {
 	return &s
 }
-

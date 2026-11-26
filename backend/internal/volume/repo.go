@@ -15,6 +15,7 @@ type Repository interface {
 	FindBoqItemByID(id uint) (*domain.BoqItem, error)
 	FindBoqItemInProject(id uint, projectID uint) (*domain.BoqItem, error)
 	CreateBoqItem(b *domain.BoqItem) error
+	UpdateBoqItemGroup(id uint, group string) error
 	CreateVolume(v *domain.Volume) error
 	UpdateVolume(v *domain.Volume) error
 	DeleteVolume(id uint) (bool, error)
@@ -32,7 +33,7 @@ func (r *repository) ListRows(projectID uint, q string) ([]VolumeRowQueryResult,
 	var rows []VolumeRowQueryResult
 
 	query := r.db.Table("volumes").
-		Select("volumes.*, boq_items.work_item, boq_items.unit, boq_items.planned_volume").
+		Select("volumes.*, boq_items.work_item, boq_items.item_group, boq_items.unit, boq_items.planned_volume").
 		Joins("JOIN boq_items ON boq_items.id = volumes.boq_item_id").
 		Where("boq_items.project_id = ?", projectID)
 
@@ -79,6 +80,10 @@ func (r *repository) CreateBoqItem(b *domain.BoqItem) error {
 	}
 	*b = *m.ToDomain()
 	return nil
+}
+
+func (r *repository) UpdateBoqItemGroup(id uint, group string) error {
+	return r.db.Model(&model.BoqItem{}).Where("id = ?", id).Update("item_group", group).Error
 }
 
 func (r *repository) CreateVolume(v *domain.Volume) error {

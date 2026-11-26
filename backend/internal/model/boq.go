@@ -9,6 +9,7 @@ import (
 type BoqItem struct {
 	gorm.Model
 	ProjectID     uint    `gorm:"not null;index"`
+	Group         string  `gorm:"column:item_group;not null;default:''"`
 	AhspID        *uint   `gorm:"index"`
 	WorkItem      string  `gorm:"not null"`
 	Unit          string  `gorm:"not null"`
@@ -30,6 +31,7 @@ func (b *BoqItem) ToDomain() *domain.BoqItem {
 		CreatedAt:     b.CreatedAt,
 		UpdatedAt:     b.UpdatedAt,
 		ProjectID:     b.ProjectID,
+		Group:         b.Group,
 		AhspID:        b.AhspID,
 		WorkItem:      b.WorkItem,
 		Unit:          b.Unit,
@@ -52,6 +54,7 @@ func FromBoqItemDomain(d *domain.BoqItem) *BoqItem {
 	}
 	b := &BoqItem{
 		ProjectID:     d.ProjectID,
+		Group:         d.Group,
 		AhspID:        d.AhspID,
 		WorkItem:      d.WorkItem,
 		Unit:          d.Unit,
@@ -70,4 +73,3 @@ func FromBoqItemDomain(d *domain.BoqItem) *BoqItem {
 
 	return b
 }
-

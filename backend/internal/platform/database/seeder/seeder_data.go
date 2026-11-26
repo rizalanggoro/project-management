@@ -188,6 +188,7 @@ type volumeSeed struct {
 }
 
 type boqSeed struct {
+	Group          string
 	WorkItem, Unit string
 	PlannedVolume  float64
 	AhspCode       string
@@ -197,49 +198,49 @@ type boqSeed struct {
 
 var boqSeeds = []boqSeed{
 	{
-		WorkItem: "Pekerjaan persiapan, include:", Unit: "lot", PlannedVolume: 1.0, AhspCode: "", SheetPrice: 3000000,
+		Group: "A", WorkItem: "Pekerjaan persiapan, include:", Unit: "lot", PlannedVolume: 1.0, AhspCode: "", SheetPrice: 3000000,
 		Volumes: []volumeSeed{
 			{Formula: "unit_only", Length: nil, Width: nil, Height: nil, Quantity: 1.0, UnitWeight: 1.0, TotalQuantity: 1.0, Description: "Take-off dari Back Up"},
 		},
 	},
 	{
-		WorkItem: "Cutting beton existing", Unit: "m'", PlannedVolume: 50.0, AhspCode: "AHSP-CUTTING-BETON-EXISTING", SheetPrice: 62172,
+		Group: "B", WorkItem: "Cutting beton existing", Unit: "m'", PlannedVolume: 50.0, AhspCode: "AHSP-CUTTING-BETON-EXISTING", SheetPrice: 62172,
 		Volumes: []volumeSeed{
 			{Formula: "custom", Length: f(15.0), Width: f(10.0), Height: nil, Quantity: 25.0, UnitWeight: 2.0, TotalQuantity: 50.0, Description: "Take-off dari Back Up"},
 		},
 	},
 	{
-		WorkItem: "Pembobokan beton existing, t = 20 cm", Unit: "m3", PlannedVolume: 30.0, AhspCode: "", SheetPrice: 45200,
+		Group: "B", WorkItem: "Pembobokan beton existing, t = 20 cm", Unit: "m3", PlannedVolume: 30.0, AhspCode: "", SheetPrice: 45200,
 		Volumes: []volumeSeed{
 			{Formula: "box", Length: f(15.0), Width: f(10.0), Height: f(0.2), Quantity: 30.0, UnitWeight: 1.0, TotalQuantity: 30.0, Description: "Take-off dari Back Up"},
 		},
 	},
 	{
-		WorkItem: "Pembuangan puing bongkaran", Unit: "m3", PlannedVolume: 30.0, AhspCode: "", SheetPrice: 125000,
+		Group: "B", WorkItem: "Pembuangan puing bongkaran", Unit: "m3", PlannedVolume: 30.0, AhspCode: "", SheetPrice: 125000,
 		Volumes: []volumeSeed{
 			{Formula: "box", Length: f(15.0), Width: f(10.0), Height: f(0.2), Quantity: 30.0, UnitWeight: 1.0, TotalQuantity: 30.0, Description: "Take-off dari Back Up"},
 		},
 	},
 	{
-		WorkItem: "Urugan basecourse, t = 5 cm", Unit: "m3", PlannedVolume: 7.5, AhspCode: "1.3.2.2", SheetPrice: 631200,
+		Group: "B", WorkItem: "Urugan basecourse, t = 5 cm", Unit: "m3", PlannedVolume: 7.5, AhspCode: "1.3.2.2", SheetPrice: 631200,
 		Volumes: []volumeSeed{
 			{Formula: "box", Length: f(15.0), Width: f(10.0), Height: f(0.05), Quantity: 7.5, UnitWeight: 1.0, TotalQuantity: 7.5, Description: "Take-off dari Back Up"},
 		},
 	},
 	{
-		WorkItem: "Pemadatan basecourse", Unit: "m2", PlannedVolume: 150.0, AhspCode: "AHSP-PEMADATAN-BASECOURSE", SheetPrice: 41300,
+		Group: "B", WorkItem: "Pemadatan basecourse", Unit: "m2", PlannedVolume: 150.0, AhspCode: "AHSP-PEMADATAN-BASECOURSE", SheetPrice: 41300,
 		Volumes: []volumeSeed{
 			{Formula: "area_pl", Length: f(15.0), Width: f(10.0), Height: nil, Quantity: 150.0, UnitWeight: 1.0, TotalQuantity: 150.0, Description: "Take-off dari Back Up"},
 		},
 	},
 	{
-		WorkItem: "Pemasangan plastik cor", Unit: "m2", PlannedVolume: 150.0, AhspCode: "", SheetPrice: 20000,
+		Group: "B", WorkItem: "Pemasangan plastik cor", Unit: "m2", PlannedVolume: 150.0, AhspCode: "", SheetPrice: 20000,
 		Volumes: []volumeSeed{
 			{Formula: "area_pl", Length: f(15.0), Width: f(10.0), Height: nil, Quantity: 150.0, UnitWeight: 1.0, TotalQuantity: 150.0, Description: "Take-off dari Back Up"},
 		},
 	},
 	{
-		WorkItem: "Penulangan beton D13 2 lapis", Unit: "kg", PlannedVolume: 3125.0, AhspCode: "2.2.1.1.2", SheetPrice: 26500,
+		Group: "B", WorkItem: "Penulangan beton D13 2 lapis", Unit: "kg", PlannedVolume: 3125.0, AhspCode: "2.2.1.1.2", SheetPrice: 26500,
 		Volumes: []volumeSeed{
 			{Formula: "weight_rebar", Length: f(15.0), Width: nil, Height: nil, Quantity: 781.2500000000001, UnitWeight: 1.0, TotalQuantity: 781.25, Description: "sisi panjang"},
 			{Formula: "weight_rebar", Length: f(10.0), Width: nil, Height: nil, Quantity: 781.2500000000001, UnitWeight: 1.0, TotalQuantity: 781.25, Description: "sisi lebar"},
@@ -247,25 +248,25 @@ var boqSeeds = []boqSeed{
 		},
 	},
 	{
-		WorkItem: "Pengecoran beton ready mix K-400, t = 20 cm", Unit: "m3", PlannedVolume: 30.0, AhspCode: "2.2.1.6.1", SheetPrice: 1776300,
+		Group: "B", WorkItem: "Pengecoran beton ready mix K-400, t = 20 cm", Unit: "m3", PlannedVolume: 30.0, AhspCode: "2.2.1.6.1", SheetPrice: 1776300,
 		Volumes: []volumeSeed{
 			{Formula: "box", Length: f(15.0), Width: f(10.0), Height: f(0.2), Quantity: 30.0, UnitWeight: 1.0, TotalQuantity: 30.0, Description: "Take-off dari Back Up"},
 		},
 	},
 	{
-		WorkItem: "Finish grooving beton", Unit: "m2", PlannedVolume: 150.0, AhspCode: "AHSP-FINISH-GROOVING-BETON", SheetPrice: 84840,
+		Group: "B", WorkItem: "Finish grooving beton", Unit: "m2", PlannedVolume: 150.0, AhspCode: "AHSP-FINISH-GROOVING-BETON", SheetPrice: 84840,
 		Volumes: []volumeSeed{
 			{Formula: "area_pl", Length: f(15.0), Width: f(10.0), Height: nil, Quantity: 150.0, UnitWeight: 1.0, TotalQuantity: 150.0, Description: "Take-off dari Back Up"},
 		},
 	},
 	{
-		WorkItem: "Curing beton menggunakan geotekstil non woven", Unit: "m2", PlannedVolume: 150.0, AhspCode: "AHSP-CURING-GEOTEKSTIL-NON-WO", SheetPrice: 100000,
+		Group: "B", WorkItem: "Curing beton menggunakan geotekstil non woven", Unit: "m2", PlannedVolume: 150.0, AhspCode: "AHSP-CURING-GEOTEKSTIL-NON-WO", SheetPrice: 100000,
 		Volumes: []volumeSeed{
 			{Formula: "area_pl", Length: f(15.0), Width: f(10.0), Height: nil, Quantity: 150.0, UnitWeight: 1.0, TotalQuantity: 150.0, Description: "Take-off dari Back Up"},
 		},
 	},
 	{
-		WorkItem: "Joint dilatasi menggunakan sealant", Unit: "m'", PlannedVolume: 35.0, AhspCode: "AHSP-JOINT-DILATASI-MENGGUNAK", SheetPrice: 67284,
+		Group: "B", WorkItem: "Joint dilatasi menggunakan sealant", Unit: "m'", PlannedVolume: 35.0, AhspCode: "AHSP-JOINT-DILATASI-MENGGUNAK", SheetPrice: 67284,
 		Volumes: []volumeSeed{
 			{Formula: "linear_p", Length: f(35.0), Width: nil, Height: nil, Quantity: 35.0, UnitWeight: 1.0, TotalQuantity: 35.0, Description: "Take-off dari Back Up"},
 		},

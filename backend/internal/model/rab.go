@@ -9,6 +9,7 @@ import (
 type RabItem struct {
 	gorm.Model
 	ProjectID uint    `gorm:"not null;index"`
+	Group     string  `gorm:"column:item_group;not null;default:''"`
 	BoqItemID *uint   `gorm:"index"`
 	WorkItem  string  `gorm:"not null"`
 	Unit      string  `gorm:"not null"`
@@ -30,6 +31,7 @@ func (r *RabItem) ToDomain() *domain.RabItem {
 		CreatedAt: r.CreatedAt,
 		UpdatedAt: r.UpdatedAt,
 		ProjectID: r.ProjectID,
+		Group:     r.Group,
 		BoqItemID: r.BoqItemID,
 		WorkItem:  r.WorkItem,
 		Unit:      r.Unit,
@@ -45,6 +47,7 @@ func FromRabItemDomain(d *domain.RabItem) *RabItem {
 	}
 	r := &RabItem{
 		ProjectID: d.ProjectID,
+		Group:     d.Group,
 		BoqItemID: d.BoqItemID,
 		WorkItem:  d.WorkItem,
 		Unit:      d.Unit,
@@ -57,4 +60,3 @@ func FromRabItemDomain(d *domain.RabItem) *RabItem {
 	r.UpdatedAt = d.UpdatedAt
 	return r
 }
-

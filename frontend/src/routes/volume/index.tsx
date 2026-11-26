@@ -1,9 +1,12 @@
+import { Fragment } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   listProjectsOptions,
+  listGroupsOptions,
   listVolumesOptions,
   deleteVolumeMutation,
+  updateVolumeMutation,
 } from '@/api/@tanstack/react-query.gen'
 import { PageHeader } from '@/components/page-header'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -35,6 +38,9 @@ function VolumePage() {
   const { data: projectsData } = useQuery({
     ...listProjectsOptions({ query: { per_page: 100 } }),
   })
+  const { data: groups = [] } = useQuery({
+    ...listGroupsOptions(),
+  })
   const projects = projectsData?.data ?? []
   const projectItems = projects.map((p) => ({
     value: p.id,
@@ -54,6 +60,7 @@ function VolumePage() {
     enabled: !!activeProjectId,
   })
 
+  const updateMut = useMutation(updateVolumeMutation())
   const deleteMut = useMutation(deleteVolumeMutation())
 
   const handleOpenAdd = () => {
@@ -80,6 +87,26 @@ function VolumePage() {
       alert(err?.message || 'Gagal menghapus volume.')
     }
   }
+
+  const handleUpdateGroup = async (id: string, nextGroup: string) => {
+    try {
+      await updateMut.mutateAsync({ path: { id }, body: { group: nextGroup } })
+      await queryClient.invalidateQueries()
+    } catch (err: any) {
+      alert(err?.message || 'Gagal mengubah grup volume.')
+    }
+  }
+
+  const groupedRows = volumeRows.reduce<Record<string, typeof volumeRows>>((acc, r) => {
+    const key = r.group || '-'
+    if (!acc[key]) acc[key] = []
+    acc[key].push(r)
+    return acc
+  }, {})
+  const groupKeys = Object.keys(groupedRows)
+  const groupItems = groups.map((g) => ({ value: g.code, label: `${g.code} — ${g.name}` }))
+  const groupLabel = (key: string) =>
+    groupItems.find((g) => g.value === key)?.label || key
 
   return (
     <div className="flex flex-col gap-4 min-w-0">
@@ -197,39 +224,82 @@ function VolumePage() {
                 </TableCell>
               </TableRow>
             ) : (
-              volumeRows.map((r, idx) => (
-                <TableRow key={r.id}>
-                  <TableCell className="text-center text-muted-foreground">{idx + 1}</TableCell>
-                  <TableCell className="font-medium text-foreground">{r.work_item}</TableCell>
-                  <TableCell className="text-center">
-                    <FormulaBadge formula={r.formula} />
-                  </TableCell>
-                  <TableCell className="text-right text-muted-foreground">{formatDecimal(r.planned_volume)}</TableCell>
-                  <TableCell className="text-center text-muted-foreground font-mono text-xs">{r.unit}</TableCell>
-                  <TableCell className="text-center text-muted-foreground">{r.date || '-'}</TableCell>
-                  <TableCell className="text-center text-muted-foreground text-xs font-mono">
-                    {renderDimensions(r)}
-                  </TableCell>
-                  <TableCell className="text-right text-foreground font-medium">{formatDecimal(r.quantity)}</TableCell>
-                  <TableCell className="text-right text-muted-foreground">{formatDecimal(r.unit_weight)}</TableCell>
-                  <TableCell className="text-right font-bold text-foreground text-emerald-600 dark:text-emerald-400">
-                    {formatDecimal(r.total_quantity)}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground text-xs">{r.description || '-'}</TableCell>
-                  {isAdmin && (
-                    <TableCell className="text-center">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="text-xs text-destructive hover:bg-destructive/10"
-                        onClick={() => handleDelete(r.id, r.work_item)}
-                      >
-                        Hapus
-                      </Button>
-                    </TableCell>
-                  )}
-                </TableRow>
-              ))
+              groupKeys.flatMap((key) => {
+                const rows = groupedRows[key]
+                const subtotal = rows.reduce((sum, r) => sum + Number(r.total_quantity), 0)
+                return [
+                  <Fragment key={key}>
+                    <TableRow className="bg-muted/60">
+                      <TableCell colSpan={isAdmin ? 12 : 11} className="font-semibold text-foreground">
+                        {groupLabel(key)}
+                      </TableCell>
+                    </TableRow>
+                    {rows.map((r, idx) => (
+                      <TableRow key={r.id}>
+                        <TableCell className="text-center text-muted-foreground">{idx + 1}</TableCell>
+                        <TableCell className="font-medium text-foreground">{r.work_item}</TableCell>
+                        <TableCell className="text-center">
+                          <FormulaBadge formula={r.formula} />
+                        </TableCell>
+                        <TableCell className="text-right text-muted-foreground">{formatDecimal(r.planned_volume)}</TableCell>
+                        <TableCell className="text-center text-muted-foreground font-mono text-xs">{r.unit}</TableCell>
+                        <TableCell className="text-center text-muted-foreground">{r.date || '-'}</TableCell>
+                        <TableCell className="text-center text-muted-foreground text-xs font-mono">
+                          {renderDimensions(r)}
+                        </TableCell>
+                        <TableCell className="text-right text-foreground font-medium">{formatDecimal(r.quantity)}</TableCell>
+                        <TableCell className="text-right text-muted-foreground">{formatDecimal(r.unit_weight)}</TableCell>
+                        <TableCell className="text-right font-bold text-foreground text-emerald-600 dark:text-emerald-400">
+                          {formatDecimal(r.total_quantity)}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground text-xs">{r.description || '-'}</TableCell>
+                        {isAdmin && (
+                          <TableCell className="text-center">
+                            <div className="flex items-center justify-center gap-2">
+                              <Select
+                                items={groupItems}
+                                value={r.group || undefined}
+                                onValueChange={(val) => { if (val) handleUpdateGroup(r.id, val) }}
+                              >
+                                <SelectTrigger className="w-16">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectGroup>
+                                    {groupItems.map((g) => (
+                                      <SelectItem key={g.value} value={g.value}>
+                                        {g.value}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="text-xs text-destructive hover:bg-destructive/10"
+                                onClick={() => handleDelete(r.id, r.work_item)}
+                              >
+                                Hapus
+                              </Button>
+                            </div>
+                          </TableCell>
+                        )}
+                      </TableRow>
+                    ))}
+                    <TableRow className="bg-muted/20 font-medium">
+                      <TableCell colSpan={9} className="text-right text-muted-foreground">
+                        Total {groupLabel(key)}
+                      </TableCell>
+                      <TableCell className="text-right font-bold text-foreground">
+                        {formatDecimal(String(subtotal))}
+                      </TableCell>
+                      <TableCell />
+                      {isAdmin && <TableCell />}
+                    </TableRow>
+                  </Fragment>,
+                ]
+              })
             )}
           </TableBody>
         </Table>

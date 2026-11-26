@@ -180,6 +180,7 @@ func (s *service) List(projectID uint, q string) ([]VolumeRowDTO, error) {
 	data := make([]VolumeRowDTO, len(rows))
 	for i, r := range rows {
 		b := domain.BoqItem{
+			Group:         r.Group,
 			WorkItem:      r.WorkItem,
 			Unit:          r.Unit,
 			PlannedVolume: r.PlannedVolume,
@@ -219,6 +220,7 @@ func (s *service) Create(projectID uint, input CreateVolumeInput) (*VolumeRowDTO
 
 		boqItem = domain.BoqItem{
 			ProjectID:     projectID,
+			Group:         input.Group,
 			AhspID:        ahspID,
 			WorkItem:      input.WorkItem,
 			Unit:          input.Unit,
@@ -309,6 +311,12 @@ func (s *service) Update(id uint, input UpdateVolumeInput) (*VolumeRowDTO, error
 		return nil, err
 	}
 
+	if input.Group != nil {
+		if err := s.repo.UpdateBoqItemGroup(vol.BoqItemID, *input.Group); err != nil {
+			return nil, err
+		}
+		boqItem.Group = *input.Group
+	}
 	if input.Date != nil {
 		if *input.Date != "" {
 			if t, err := time.Parse("2006-01-02", *input.Date); err == nil {

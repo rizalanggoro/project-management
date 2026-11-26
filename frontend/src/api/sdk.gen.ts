@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateAhspData, CreateAhspErrors, CreateAhspResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, CreateRabItemData, CreateRabItemErrors, CreateRabItemResponses, CreateScheduleData, CreateScheduleErrors, CreateScheduleResponses, CreateUnitPriceData, CreateUnitPriceErrors, CreateUnitPriceResponses, CreateVolumeData, CreateVolumeErrors, CreateVolumeResponses, DeleteAhspData, DeleteAhspErrors, DeleteAhspResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, DeleteRabItemData, DeleteRabItemErrors, DeleteRabItemResponses, DeleteScheduleData, DeleteScheduleErrors, DeleteScheduleResponses, DeleteUnitPriceData, DeleteUnitPriceErrors, DeleteUnitPriceResponses, DeleteVolumeData, DeleteVolumeErrors, DeleteVolumeResponses, ExportRabExcelData, ExportRabExcelErrors, ExportRabExcelResponses, ExportRabPdfData, ExportRabPdfErrors, ExportRabPdfResponses, ExportVolumeExcelData, ExportVolumeExcelErrors, ExportVolumeExcelResponses, GetAhspData, GetAhspErrors, GetAhspResponses, GetCostEstimateData, GetCostEstimateErrors, GetCostEstimateResponses, GetHealthData, GetHealthErrors, GetHealthResponses, GetMeData, GetMeErrors, GetMeResponses, GetProjectBoqData, GetProjectBoqErrors, GetProjectBoqResponses, GetProjectData, GetProjectErrors, GetProjectRabData, GetProjectRabErrors, GetProjectRabResponses, GetProjectResponses, ListAhspsData, ListAhspsErrors, ListAhspsResponses, ListBoqProjectsData, ListBoqProjectsErrors, ListBoqProjectsResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, ListSchedulesData, ListSchedulesErrors, ListSchedulesResponses, ListUnitPricesData, ListUnitPricesErrors, ListUnitPricesResponses, ListVolumesData, ListVolumesErrors, ListVolumesResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, UpdateAhspData, UpdateAhspErrors, UpdateAhspResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses, UpdateRabItemData, UpdateRabItemErrors, UpdateRabItemResponses, UpdateScheduleData, UpdateScheduleErrors, UpdateScheduleResponses, UpdateUnitPriceData, UpdateUnitPriceErrors, UpdateUnitPriceResponses, UpdateVolumeData, UpdateVolumeErrors, UpdateVolumeResponses } from './types.gen';
+import type { CreateAhspData, CreateAhspErrors, CreateAhspResponses, CreateGroupData, CreateGroupErrors, CreateGroupResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, CreateRabItemData, CreateRabItemErrors, CreateRabItemResponses, CreateScheduleData, CreateScheduleErrors, CreateScheduleResponses, CreateUnitPriceData, CreateUnitPriceErrors, CreateUnitPriceResponses, CreateVolumeData, CreateVolumeErrors, CreateVolumeResponses, DeleteAhspData, DeleteAhspErrors, DeleteAhspResponses, DeleteGroupData, DeleteGroupErrors, DeleteGroupResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, DeleteRabItemData, DeleteRabItemErrors, DeleteRabItemResponses, DeleteScheduleData, DeleteScheduleErrors, DeleteScheduleResponses, DeleteUnitPriceData, DeleteUnitPriceErrors, DeleteUnitPriceResponses, DeleteVolumeData, DeleteVolumeErrors, DeleteVolumeResponses, ExportRabExcelData, ExportRabExcelErrors, ExportRabExcelResponses, ExportRabPdfData, ExportRabPdfErrors, ExportRabPdfResponses, ExportVolumeExcelData, ExportVolumeExcelErrors, ExportVolumeExcelResponses, GetAhspData, GetAhspErrors, GetAhspResponses, GetCostEstimateData, GetCostEstimateErrors, GetCostEstimateResponses, GetHealthData, GetHealthErrors, GetHealthResponses, GetMeData, GetMeErrors, GetMeResponses, GetProjectBoqData, GetProjectBoqErrors, GetProjectBoqResponses, GetProjectData, GetProjectErrors, GetProjectRabData, GetProjectRabErrors, GetProjectRabResponses, GetProjectResponses, ListAhspsData, ListAhspsErrors, ListAhspsResponses, ListBoqProjectsData, ListBoqProjectsErrors, ListBoqProjectsResponses, ListGroupsData, ListGroupsErrors, ListGroupsResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, ListSchedulesData, ListSchedulesErrors, ListSchedulesResponses, ListUnitPricesData, ListUnitPricesErrors, ListUnitPricesResponses, ListVolumesData, ListVolumesErrors, ListVolumesResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, UpdateAhspData, UpdateAhspErrors, UpdateAhspResponses, UpdateGroupData, UpdateGroupErrors, UpdateGroupResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses, UpdateRabItemData, UpdateRabItemErrors, UpdateRabItemResponses, UpdateScheduleData, UpdateScheduleErrors, UpdateScheduleResponses, UpdateUnitPriceData, UpdateUnitPriceErrors, UpdateUnitPriceResponses, UpdateVolumeData, UpdateVolumeErrors, UpdateVolumeResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -83,6 +83,40 @@ export const getMe = <ThrowOnError extends boolean = false>(options?: Options<Ge
  * List projects with BOQ status
  */
 export const listBoqProjects = <ThrowOnError extends boolean = false>(options?: Options<ListBoqProjectsData, ThrowOnError>): RequestResult<ListBoqProjectsResponses, ListBoqProjectsErrors, ThrowOnError> => (options?.client ?? client).get<ListBoqProjectsResponses, ListBoqProjectsErrors, ThrowOnError>({ url: '/boq/summary', ...options });
+
+/**
+ * List work item groups
+ */
+export const listGroups = <ThrowOnError extends boolean = false>(options?: Options<ListGroupsData, ThrowOnError>): RequestResult<ListGroupsResponses, ListGroupsErrors, ThrowOnError> => (options?.client ?? client).get<ListGroupsResponses, ListGroupsErrors, ThrowOnError>({ url: '/groups', ...options });
+
+/**
+ * Create work item group
+ */
+export const createGroup = <ThrowOnError extends boolean = false>(options: Options<CreateGroupData, ThrowOnError>): RequestResult<CreateGroupResponses, CreateGroupErrors, ThrowOnError> => (options.client ?? client).post<CreateGroupResponses, CreateGroupErrors, ThrowOnError>({
+    url: '/groups',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete work item group
+ */
+export const deleteGroup = <ThrowOnError extends boolean = false>(options: Options<DeleteGroupData, ThrowOnError>): RequestResult<DeleteGroupResponses, DeleteGroupErrors, ThrowOnError> => (options.client ?? client).delete<DeleteGroupResponses, DeleteGroupErrors, ThrowOnError>({ url: '/groups/{id}', ...options });
+
+/**
+ * Update work item group
+ */
+export const updateGroup = <ThrowOnError extends boolean = false>(options: Options<UpdateGroupData, ThrowOnError>): RequestResult<UpdateGroupResponses, UpdateGroupErrors, ThrowOnError> => (options.client ?? client).put<UpdateGroupResponses, UpdateGroupErrors, ThrowOnError>({
+    url: '/groups/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Service health

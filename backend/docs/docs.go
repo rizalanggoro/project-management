@@ -383,6 +383,189 @@ const docTemplate = `{
                 }
             }
         },
+        "/groups": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "groups"
+                ],
+                "summary": "List work item groups",
+                "operationId": "listGroups",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/GroupDTO"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "groups"
+                ],
+                "summary": "Create work item group",
+                "operationId": "createGroup",
+                "parameters": [
+                    {
+                        "description": "Group input",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/CreateGroupInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/GroupDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/groups/{id}": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "groups"
+                ],
+                "summary": "Update work item group",
+                "operationId": "updateGroup",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Group ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Group update data",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdateGroupInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/GroupDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "groups"
+                ],
+                "summary": "Delete work item group",
+                "operationId": "deleteGroup",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Group ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/health": {
             "get": {
                 "description": "Service and database are reachable",
@@ -1844,6 +2027,7 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "ahsp_id",
+                "group",
                 "id",
                 "planned_volume",
                 "project_id",
@@ -1852,6 +2036,9 @@ const docTemplate = `{
             ],
             "properties": {
                 "ahsp_id": {
+                    "type": "string"
+                },
+                "group": {
                     "type": "string"
                 },
                 "id": {
@@ -2009,6 +2196,23 @@ const docTemplate = `{
                 }
             }
         },
+        "CreateGroupInput": {
+            "type": "object",
+            "required": [
+                "code",
+                "name"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "C"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Pekerjaan Finishing"
+                }
+            }
+        },
         "CreateProjectInput": {
             "type": "object",
             "required": [
@@ -2079,6 +2283,9 @@ const docTemplate = `{
             ],
             "properties": {
                 "boq_item_id": {
+                    "type": "string"
+                },
+                "group": {
                     "type": "string"
                 },
                 "unit": {
@@ -2186,6 +2393,9 @@ const docTemplate = `{
                 "formula": {
                     "type": "string"
                 },
+                "group": {
+                    "type": "string"
+                },
                 "height": {
                     "type": "string"
                 },
@@ -2241,6 +2451,25 @@ const docTemplate = `{
             "properties": {
                 "error": {
                     "$ref": "#/definitions/ErrorDetail"
+                }
+            }
+        },
+        "GroupDTO": {
+            "type": "object",
+            "required": [
+                "code",
+                "id",
+                "name"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },
@@ -2408,6 +2637,7 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "boq_item_id",
+                "group",
                 "id",
                 "project_id",
                 "total_cost",
@@ -2418,6 +2648,9 @@ const docTemplate = `{
             ],
             "properties": {
                 "boq_item_id": {
+                    "type": "string"
+                },
+                "group": {
                     "type": "string"
                 },
                 "id": {
@@ -2547,6 +2780,19 @@ const docTemplate = `{
                 }
             }
         },
+        "UpdateGroupInput": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "C"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Pekerjaan Finishing"
+                }
+            }
+        },
         "UpdateProjectInput": {
             "type": "object",
             "properties": {
@@ -2606,6 +2852,9 @@ const docTemplate = `{
         "UpdateRabItemInput": {
             "type": "object",
             "properties": {
+                "group": {
+                    "type": "string"
+                },
                 "unit": {
                     "type": "string"
                 },
@@ -2681,6 +2930,9 @@ const docTemplate = `{
                 "formula": {
                     "type": "string"
                 },
+                "group": {
+                    "type": "string"
+                },
                 "height": {
                     "type": "string"
                 },
@@ -2742,6 +2994,7 @@ const docTemplate = `{
                 "date",
                 "description",
                 "formula",
+                "group",
                 "height",
                 "id",
                 "length",
@@ -2764,6 +3017,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "formula": {
+                    "type": "string"
+                },
+                "group": {
                     "type": "string"
                 },
                 "height": {
