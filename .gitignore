@@ -11,3 +11,4 @@ backend/*.exe
 .tmp/
 .tanstack/
 tmp/
+docs/
