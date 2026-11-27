@@ -7,7 +7,6 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogMedia,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Separator } from "@/components/ui/separator";
@@ -215,11 +214,8 @@ function Shell() {
       </SidebarProvider>
 
       <AlertDialog open={isLogoutOpen} onOpenChange={setLogoutOpen}>
-        <AlertDialogContent size="sm">
+        <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
-              <LogOut />
-            </AlertDialogMedia>
             <AlertDialogTitle>Keluar dari aplikasi?</AlertDialogTitle>
             <AlertDialogDescription>
               Sesi Anda akan berakhir. Silakan masuk kembali untuk melanjutkan.

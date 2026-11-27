@@ -1,15 +1,12 @@
-import {
-  deleteProjectMutation,
-  listProjectsOptions,
-} from "@/api/@tanstack/react-query.gen";
+import { listProjectsOptions } from "@/api/@tanstack/react-query.gen";
 import type { Project } from "@/api/types.gen";
 import {
   AddProjectDialog,
+  DeleteProjectDialog,
   EditProjectDialog,
   PROGRESS_STAGES,
   ProjectDetailDialog,
 } from "@/components/projects";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   InputGroup,
@@ -39,9 +36,9 @@ import {
 } from "@/components/ui/table";
 import { useAuth } from "@/lib/auth";
 import { formatRupiah } from "@/lib/utils";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Check, EllipsisVertical, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { EllipsisVertical, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/projects/")({
@@ -52,7 +49,6 @@ export const Route = createFileRoute("/projects/")({
 });
 
 function ProjectsPage() {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { q } = Route.useSearch();
   const { isAdmin, user, openLoginModal } = useAuth();
@@ -61,14 +57,13 @@ function ProjectsPage() {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [deletingProject, setDeletingProject] = useState<Project | null>(null);
 
   const { data, isLoading } = useQuery({
     ...listProjectsOptions({
       query: { q: q || undefined, page, per_page: 25 },
     }),
   });
-
-  const deleteMut = useMutation(deleteProjectMutation());
 
   const handleOpenAdd = () => {
     if (!user) {
@@ -86,15 +81,8 @@ function ProjectsPage() {
     setEditingProject(p);
   };
 
-  const handleDelete = async (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!confirm("Yakin ingin menghapus proyek ini?")) return;
-    await deleteMut.mutateAsync({ path: { id } });
-    await queryClient.invalidateQueries();
-  };
-
   const projects = data?.data ?? [];
-  const colSpanCount = isAdmin ? 9 : 8;
+  const colSpanCount = isAdmin ? 8 : 7;
 
   return (
     <div className="flex flex-col gap-4 min-w-0">
@@ -138,8 +126,7 @@ function ProjectsPage() {
               <TableHead>Plant</TableHead>
               <TableHead>Tanggal Rencana</TableHead>
               <TableHead className="text-right">Anggaran</TableHead>
-              <TableHead className="min-w-[240px]">Progres</TableHead>
-              <TableHead>Catatan</TableHead>
+              <TableHead className="w-24 text-center">Progres</TableHead>
               {isAdmin && (
                 <TableHead className="w-16 text-center">Aksi</TableHead>
               )}
@@ -199,31 +186,8 @@ function ProjectsPage() {
                     <TableCell className="text-right font-medium whitespace-nowrap">
                       {formatRupiah(p.budget)}
                     </TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap items-center gap-1.5 py-1">
-                        {doneStages.length === 0 ? (
-                          <Badge
-                            variant="outline"
-                            className="text-[11px] text-muted-foreground font-normal border-dashed"
-                          >
-                            Menunggu
-                          </Badge>
-                        ) : (
-                          doneStages.map((s) => (
-                            <Badge
-                              key={s.key}
-                              variant="secondary"
-                              className="text-[11px] font-medium bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 gap-1"
-                            >
-                              <Check className="size-3" />
-                              {s.label}
-                            </Badge>
-                          ))
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="max-w-xs truncate text-muted-foreground">
-                      {p.note || "-"}
+                    <TableCell className="text-center">
+                      {doneStages.length}/{PROGRESS_STAGES.length}
                     </TableCell>
                     {isAdmin && (
                       <TableCell
@@ -236,14 +200,13 @@ function ProjectsPage() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="size-8 text-muted-foreground hover:text-foreground"
                               />
                             }
                           >
                             <EllipsisVertical />
                             <span className="sr-only">Aksi</span>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-32">
+                          <DropdownMenuContent align="end">
                             <DropdownMenuGroup>
                               <DropdownMenuItem onClick={() => handleOpenEdit(p)}>
                                 <Pencil />
@@ -251,7 +214,7 @@ function ProjectsPage() {
                               </DropdownMenuItem>
                               <DropdownMenuItem
                                 variant="destructive"
-                                onClick={(e) => handleDelete(p.id, e)}
+                                onClick={() => setDeletingProject(p)}
                               >
                                 <Trash2 />
                                 <span>Hapus</span>
@@ -272,6 +235,14 @@ function ProjectsPage() {
       <AddProjectDialog
         open={isAddOpen}
         onOpenChange={setIsAddOpen}
+      />
+
+      <DeleteProjectDialog
+        project={deletingProject}
+        open={Boolean(deletingProject)}
+        onOpenChange={(open) => {
+          if (!open) setDeletingProject(null);
+        }}
       />
 
       <EditProjectDialog

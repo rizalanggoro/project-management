@@ -145,14 +145,13 @@ function GroupsPage() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="size-8 text-muted-foreground hover:text-foreground"
                             />
                           }
                         >
                           <EllipsisVertical />
                           <span className="sr-only">Aksi</span>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-32">
+                        <DropdownMenuContent align="end">
                           <DropdownMenuGroup>
                             <DropdownMenuItem onClick={() => openEdit(g)}>
                               <Pencil />
