@@ -18,49 +18,16 @@ const (
 	ProgressDone    ProgressStatus = "done"
 )
 
-type ProjectSection string
-
-const (
-	ProjectSectionGABuilding ProjectSection = "GA Building"
-	ProjectSectionEHS        ProjectSection = "EHS"
-	ProjectSectionWellfare   ProjectSection = "Wellfare"
-)
-
-func IsValidSection(s string) bool {
-	switch s {
-	case string(ProjectSectionGABuilding), string(ProjectSectionEHS), string(ProjectSectionWellfare):
-		return true
-	default:
-		return false
-	}
-}
-
-type ProjectPlant string
-
-const (
-	ProjectPlantCikarang ProjectPlant = "Cikarang"
-	ProjectPlantKarawang ProjectPlant = "Karawang"
-)
-
-func IsValidPlant(p string) bool {
-	switch p {
-	case string(ProjectPlantCikarang), string(ProjectPlantKarawang):
-		return true
-	default:
-		return false
-	}
-}
-
 type Project struct {
-	ID                 uint           `json:"id"`
-	CreatedAt          time.Time      `json:"created_at"`
-	UpdatedAt          time.Time      `json:"updated_at"`
-	Name               string         `json:"name"`
-	Section            string         `json:"section"`
-	Plant              string         `json:"plant"`
-	ImplementationPlan *time.Time     `json:"implementation_plan"`
-	Budget             int64          `json:"budget"`
-	Note               string         `json:"note"`
+	ID                   uint           `json:"id"`
+	CreatedAt            time.Time      `json:"created_at"`
+	UpdatedAt            time.Time      `json:"updated_at"`
+	Name                 string         `json:"name"`
+	Section              string         `json:"section"`
+	Plant                string         `json:"plant"`
+	ImplementationPlan   *time.Time     `json:"implementation_plan"`
+	Budget               int64          `json:"budget"`
+	Note                 string         `json:"note"`
 	Status               ProjectStatus  `json:"status"`
 	ProgressPPT          ProgressStatus `json:"progress_ppt"`
 	ProgressDrawing      ProgressStatus `json:"progress_drawing"`

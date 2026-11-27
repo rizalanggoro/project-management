@@ -28,6 +28,13 @@ func Seed(db *gorm.DB) error {
 		return fmt.Errorf("seed groups: %w", err)
 	}
 
+	if err := seedProjectSections(db); err != nil {
+		return fmt.Errorf("seed project sections: %w", err)
+	}
+	if err := seedProjectPlants(db); err != nil {
+		return fmt.Errorf("seed project plants: %w", err)
+	}
+
 	upMap, err := seedUnitPrices(db)
 	if err != nil {
 		return fmt.Errorf("seed unit prices: %w", err)
@@ -99,6 +106,47 @@ func seedGroups(db *gorm.DB) error {
 				return err
 			}
 			slog.Info("seeded group", "code", g.Code, "name", g.Name)
+		} else if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func seedProjectSections(db *gorm.DB) error {
+	sections := []model.ProjectSection{
+		{Code: "GA Building", Name: "GA Building"},
+		{Code: "EHS", Name: "EHS"},
+		{Code: "Wellfare", Name: "Wellfare"},
+	}
+	for _, s := range sections {
+		var existing model.ProjectSection
+		err := db.Where("lower(code) = lower(?)", s.Code).First(&existing).Error
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			if err := db.Create(&s).Error; err != nil {
+				return err
+			}
+			slog.Info("seeded project section", "code", s.Code, "name", s.Name)
+		} else if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func seedProjectPlants(db *gorm.DB) error {
+	plants := []model.ProjectPlant{
+		{Code: "Cikarang", Name: "Cikarang"},
+		{Code: "Karawang", Name: "Karawang"},
+	}
+	for _, p := range plants {
+		var existing model.ProjectPlant
+		err := db.Where("lower(code) = lower(?)", p.Code).First(&existing).Error
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			if err := db.Create(&p).Error; err != nil {
+				return err
+			}
+			slog.Info("seeded project plant", "code", p.Code, "name", p.Name)
 		} else if err != nil {
 			return err
 		}
@@ -223,8 +271,8 @@ func seedProject(db *gorm.DB, ahspMap map[string]model.Ahsp) error {
 		plan := now.AddDate(0, 1, 0)
 		project = model.Project{
 			Name:               projectName,
-			Section:            string(domain.ProjectSectionGABuilding),
-			Plant:              string(domain.ProjectPlantCikarang),
+			Section:            "GA Building",
+			Plant:              "Cikarang",
 			ImplementationPlan: &plan,
 			Budget:             projectBudget,
 			Note:               "Data seed hasil ekstraksi dari Renovasi Beton Bertulang.xlsx",

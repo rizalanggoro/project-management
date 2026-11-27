@@ -20,13 +20,13 @@ type ProjectListResponse struct {
 }
 
 type Project struct {
-	ID                 string  `json:"id"`
-	Name               string  `json:"name"`
-	Section            string  `json:"section"`
-	Plant              string  `json:"plant"`
-	ImplementationPlan *string `json:"implementation_plan"`
-	Budget             string  `json:"budget"`
-	Note               string  `json:"note"`
+	ID                   string  `json:"id"`
+	Name                 string  `json:"name"`
+	Section              string  `json:"section"`
+	Plant                string  `json:"plant"`
+	ImplementationPlan   *string `json:"implementation_plan"`
+	Budget               string  `json:"budget"`
+	Note                 string  `json:"note"`
 	Status               string  `json:"status"`
 	ProgressPPT          string  `json:"progress_ppt"`
 	ProgressDrawing      string  `json:"progress_drawing"`
@@ -38,8 +38,8 @@ type Project struct {
 	ProgressPO           string  `json:"progress_po"`
 	ProgressConstruction string  `json:"progress_construction"`
 	ProgressBAST         string  `json:"progress_bast"`
-	CreatedAt          string  `json:"created_at"`
-	UpdatedAt          string  `json:"updated_at"`
+	CreatedAt            string  `json:"created_at"`
+	UpdatedAt            string  `json:"updated_at"`
 }
 
 type ProjectDTO = Project

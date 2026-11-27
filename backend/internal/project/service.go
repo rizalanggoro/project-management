@@ -16,8 +16,8 @@ var (
 	ErrProjectNotFound      = errors.New("project not found")
 	ErrProjectNameRequired  = errors.New("project name is required")
 	ErrProjectAlreadyExists = errors.New("project with that name already exists")
-	ErrInvalidSection       = errors.New("section must be one of: GA Building, EHS, Wellfare")
-	ErrInvalidPlant         = errors.New("plant must be one of: Cikarang, Karawang")
+	ErrSectionNotFound      = errors.New("section not found")
+	ErrPlantNotFound        = errors.New("plant not found")
 )
 
 type Service interface {
@@ -28,12 +28,56 @@ type Service interface {
 	Delete(id uint) error
 }
 
-type service struct {
-	repo Repository
+type SectionRepository interface {
+	FindByCode(code string, excludeID *uint) (*domain.ProjectSectionRecord, error)
 }
 
-func NewService(repo Repository) Service {
-	return &service{repo: repo}
+type PlantRepository interface {
+	FindByCode(code string, excludeID *uint) (*domain.ProjectPlantRecord, error)
+}
+
+type service struct {
+	repo     Repository
+	sections SectionRepository
+	plants   PlantRepository
+}
+
+func NewService(repo Repository, sections SectionRepository, plants PlantRepository) Service {
+	return &service{repo: repo, sections: sections, plants: plants}
+}
+
+func (s *service) resolveSection(code string) error {
+	if code == "" {
+		return ErrSectionNotFound
+	}
+	section, err := s.sections.FindByCode(code, nil)
+	if err != nil || section == nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return ErrSectionNotFound
+		}
+		if err != nil {
+			return err
+		}
+		return ErrSectionNotFound
+	}
+	return nil
+}
+
+func (s *service) resolvePlant(code string) error {
+	if code == "" {
+		return ErrPlantNotFound
+	}
+	plant, err := s.plants.FindByCode(code, nil)
+	if err != nil || plant == nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return ErrPlantNotFound
+		}
+		if err != nil {
+			return err
+		}
+		return ErrPlantNotFound
+	}
+	return nil
 }
 
 func (s *service) List(q string, page, perPage int) ([]ProjectDTO, int64, error) {
@@ -93,19 +137,13 @@ func (s *service) Create(input CreateProjectInput) (*ProjectDTO, error) {
 	}
 
 	sec := strings.TrimSpace(input.Section)
-	if sec == "" {
-		sec = string(domain.ProjectSectionGABuilding)
-	}
-	if !domain.IsValidSection(sec) {
-		return nil, ErrInvalidSection
+	if err := s.resolveSection(sec); err != nil {
+		return nil, err
 	}
 
 	pl := strings.TrimSpace(input.Plant)
-	if pl == "" {
-		pl = string(domain.ProjectPlantCikarang)
-	}
-	if !domain.IsValidPlant(pl) {
-		return nil, ErrInvalidPlant
+	if err := s.resolvePlant(pl); err != nil {
+		return nil, err
 	}
 
 	p := domain.Project{
@@ -157,15 +195,15 @@ func (s *service) Update(id uint, input UpdateProjectInput) (*ProjectDTO, error)
 	}
 	if input.Section != nil {
 		sec := strings.TrimSpace(*input.Section)
-		if !domain.IsValidSection(sec) {
-			return nil, ErrInvalidSection
+		if err := s.resolveSection(sec); err != nil {
+			return nil, err
 		}
 		p.Section = sec
 	}
 	if input.Plant != nil {
 		pl := strings.TrimSpace(*input.Plant)
-		if !domain.IsValidPlant(pl) {
-			return nil, ErrInvalidPlant
+		if err := s.resolvePlant(pl); err != nil {
+			return nil, err
 		}
 		p.Plant = pl
 	}

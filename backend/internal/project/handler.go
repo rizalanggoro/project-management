@@ -9,6 +9,8 @@ import (
 	"gorm.io/gorm"
 
 	"musashi/backend/internal/platform/httperr"
+	"musashi/backend/internal/projectplant"
+	"musashi/backend/internal/projectsection"
 	"musashi/backend/utils"
 )
 
@@ -81,10 +83,10 @@ func (h *Handler) Create(c fiber.Ctx) error {
 		if errors.Is(err, ErrProjectNameRequired) {
 			return httperr.BadRequest(c, "Project name is required", map[string]string{"name": "Project name is required"})
 		}
-		if errors.Is(err, ErrInvalidSection) {
+		if errors.Is(err, ErrSectionNotFound) {
 			return httperr.BadRequest(c, err.Error(), map[string]string{"section": err.Error()})
 		}
-		if errors.Is(err, ErrInvalidPlant) {
+		if errors.Is(err, ErrPlantNotFound) {
 			return httperr.BadRequest(c, err.Error(), map[string]string{"plant": err.Error()})
 		}
 		if errors.Is(err, ErrProjectAlreadyExists) {
@@ -154,10 +156,10 @@ func (h *Handler) Update(c fiber.Ctx) error {
 		if errors.Is(err, ErrProjectNotFound) {
 			return httperr.NotFound(c, "Project not found")
 		}
-		if errors.Is(err, ErrInvalidSection) {
+		if errors.Is(err, ErrSectionNotFound) {
 			return httperr.BadRequest(c, err.Error(), map[string]string{"section": err.Error()})
 		}
-		if errors.Is(err, ErrInvalidPlant) {
+		if errors.Is(err, ErrPlantNotFound) {
 			return httperr.BadRequest(c, err.Error(), map[string]string{"plant": err.Error()})
 		}
 		if errors.Is(err, ErrProjectAlreadyExists) {
@@ -195,23 +197,31 @@ func (h *Handler) Delete(c fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusNoContent)
 }
 
+func newServiceFromDB(db *gorm.DB) Service {
+	return NewService(
+		NewRepository(db),
+		projectsection.NewRepository(db),
+		projectplant.NewRepository(db),
+	)
+}
+
 // Backward-compatible helpers
 func ListHandler(db *gorm.DB) fiber.Handler {
-	return NewHandler(NewService(NewRepository(db))).List
+	return NewHandler(newServiceFromDB(db)).List
 }
 
 func CreateHandler(db *gorm.DB) fiber.Handler {
-	return NewHandler(NewService(NewRepository(db))).Create
+	return NewHandler(newServiceFromDB(db)).Create
 }
 
 func GetHandler(db *gorm.DB) fiber.Handler {
-	return NewHandler(NewService(NewRepository(db))).Get
+	return NewHandler(newServiceFromDB(db)).Get
 }
 
 func UpdateHandler(db *gorm.DB) fiber.Handler {
-	return NewHandler(NewService(NewRepository(db))).Update
+	return NewHandler(newServiceFromDB(db)).Update
 }
 
 func DeleteHandler(db *gorm.DB) fiber.Handler {
-	return NewHandler(NewService(NewRepository(db))).Delete
+	return NewHandler(newServiceFromDB(db)).Delete
 }

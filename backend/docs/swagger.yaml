@@ -295,6 +295,30 @@ definitions:
     - plant
     - section
     type: object
+  CreateProjectPlantInput:
+    properties:
+      code:
+        example: Cikarang
+        type: string
+      name:
+        example: Cikarang
+        type: string
+    required:
+    - code
+    - name
+    type: object
+  CreateProjectSectionInput:
+    properties:
+      code:
+        example: GA Building
+        type: string
+      name:
+        example: GA Building
+        type: string
+    required:
+    - code
+    - name
+    type: object
   CreateRabItemInput:
     properties:
       boq_item_id:
@@ -570,6 +594,32 @@ definitions:
     - data
     - meta
     type: object
+  ProjectPlantDTO:
+    properties:
+      code:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    required:
+    - code
+    - id
+    - name
+    type: object
+  ProjectSectionDTO:
+    properties:
+      code:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    required:
+    - code
+    - id
+    - name
+    type: object
   RabItemDTO:
     properties:
       boq_item_id:
@@ -741,6 +791,24 @@ definitions:
       section:
         type: string
       status:
+        type: string
+    type: object
+  UpdateProjectPlantInput:
+    properties:
+      code:
+        example: Cikarang
+        type: string
+      name:
+        example: Cikarang
+        type: string
+    type: object
+  UpdateProjectSectionInput:
+    properties:
+      code:
+        example: GA Building
+        type: string
+      name:
+        example: GA Building
         type: string
     type: object
   UpdateRabItemInput:
@@ -1289,6 +1357,248 @@ paths:
       summary: Service health
       tags:
       - system
+  /project-plants:
+    get:
+      operationId: listProjectPlants
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ProjectPlantDTO'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: List project plants
+      tags:
+      - project-plants
+    post:
+      consumes:
+      - application/json
+      operationId: createProjectPlant
+      parameters:
+      - description: Project plant input
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/CreateProjectPlantInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/ProjectPlantDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Create project plant
+      tags:
+      - project-plants
+  /project-plants/{id}:
+    delete:
+      operationId: deleteProjectPlant
+      parameters:
+      - description: Project plant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Delete project plant
+      tags:
+      - project-plants
+    put:
+      consumes:
+      - application/json
+      operationId: updateProjectPlant
+      parameters:
+      - description: Project plant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Project plant update data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateProjectPlantInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ProjectPlantDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Update project plant
+      tags:
+      - project-plants
+  /project-sections:
+    get:
+      operationId: listProjectSections
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ProjectSectionDTO'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: List project sections
+      tags:
+      - project-sections
+    post:
+      consumes:
+      - application/json
+      operationId: createProjectSection
+      parameters:
+      - description: Project section input
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/CreateProjectSectionInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/ProjectSectionDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Create project section
+      tags:
+      - project-sections
+  /project-sections/{id}:
+    delete:
+      operationId: deleteProjectSection
+      parameters:
+      - description: Project section ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Delete project section
+      tags:
+      - project-sections
+    put:
+      consumes:
+      - application/json
+      operationId: updateProjectSection
+      parameters:
+      - description: Project section ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Project section update data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateProjectSectionInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ProjectSectionDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Update project section
+      tags:
+      - project-sections
   /projects:
     get:
       operationId: listProjects

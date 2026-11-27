@@ -69,6 +69,39 @@ func (m *mockProjectRepo) Delete(id uint) (bool, error) {
 	return true, nil
 }
 
+type mockSectionRepo struct {
+	codes map[string]bool
+}
+
+func (m *mockSectionRepo) FindByCode(code string, excludeID *uint) (*domain.ProjectSectionRecord, error) {
+	if m != nil && m.codes[strings.ToLower(strings.TrimSpace(code))] {
+		return &domain.ProjectSectionRecord{Code: code}, nil
+	}
+	return nil, gorm.ErrRecordNotFound
+}
+
+type mockPlantRepo struct {
+	codes map[string]bool
+}
+
+func (m *mockPlantRepo) FindByCode(code string, excludeID *uint) (*domain.ProjectPlantRecord, error) {
+	if m != nil && m.codes[strings.ToLower(strings.TrimSpace(code))] {
+		return &domain.ProjectPlantRecord{Code: code}, nil
+	}
+	return nil, gorm.ErrRecordNotFound
+}
+
+func masterRepos() (SectionRepository, PlantRepository) {
+	return &mockSectionRepo{codes: map[string]bool{
+			"ga building": true,
+			"ehs":         true,
+			"wellfare":    true,
+		}}, &mockPlantRepo{codes: map[string]bool{
+			"cikarang": true,
+			"karawang": true,
+		}}
+}
+
 func TestProjectService(t *testing.T) {
 	t.Run("List default pagination and query", func(t *testing.T) {
 		repo := &mockProjectRepo{
@@ -82,7 +115,8 @@ func TestProjectService(t *testing.T) {
 				}, 2, nil
 			},
 		}
-		svc := NewService(repo)
+		sections, plants := masterRepos()
+		svc := NewService(repo, sections, plants)
 		list, total, err := svc.List("", 0, 0)
 		if err != nil || total != 2 || len(list) != 2 {
 			t.Fatalf("unexpected list result: %v, total: %d", err, total)
@@ -98,7 +132,8 @@ func TestProjectService(t *testing.T) {
 				return nil, gorm.ErrRecordNotFound
 			},
 		}
-		svc := NewService(repo)
+		sections, plants := masterRepos()
+		svc := NewService(repo, sections, plants)
 
 		got, err := svc.Get(1)
 		if err != nil || got.Name != "Proj 1" {
@@ -120,7 +155,8 @@ func TestProjectService(t *testing.T) {
 				return nil, gorm.ErrRecordNotFound
 			},
 		}
-		svc := NewService(repo)
+		sections, plants := masterRepos()
+		svc := NewService(repo, sections, plants)
 
 		// Empty name
 		_, err := svc.Create(CreateProjectInput{Name: "   "})
@@ -136,14 +172,14 @@ func TestProjectService(t *testing.T) {
 
 		// Invalid section
 		_, err = svc.Create(CreateProjectInput{Name: "New Proj", Section: "InvalidSec"})
-		if !errors.Is(err, ErrInvalidSection) {
-			t.Fatalf("expected ErrInvalidSection, got %v", err)
+		if !errors.Is(err, ErrSectionNotFound) {
+			t.Fatalf("expected ErrSectionNotFound, got %v", err)
 		}
 
 		// Invalid plant
 		_, err = svc.Create(CreateProjectInput{Name: "New Proj", Section: "GA Building", Plant: "InvalidPlant"})
-		if !errors.Is(err, ErrInvalidPlant) {
-			t.Fatalf("expected ErrInvalidPlant, got %v", err)
+		if !errors.Is(err, ErrPlantNotFound) {
+			t.Fatalf("expected ErrPlantNotFound, got %v", err)
 		}
 
 		// Success
@@ -175,7 +211,8 @@ func TestProjectService(t *testing.T) {
 				return nil, gorm.ErrRecordNotFound
 			},
 		}
-		svc := NewService(repo)
+		sections, plants := masterRepos()
+		svc := NewService(repo, sections, plants)
 
 		// Not found
 		_, err := svc.Update(99, UpdateProjectInput{Name: strPtr("New")})
@@ -191,14 +228,14 @@ func TestProjectService(t *testing.T) {
 
 		// Invalid section update
 		_, err = svc.Update(1, UpdateProjectInput{Section: strPtr("Wrong")})
-		if !errors.Is(err, ErrInvalidSection) {
-			t.Fatalf("expected ErrInvalidSection, got %v", err)
+		if !errors.Is(err, ErrSectionNotFound) {
+			t.Fatalf("expected ErrSectionNotFound, got %v", err)
 		}
 
 		// Invalid plant update
 		_, err = svc.Update(1, UpdateProjectInput{Plant: strPtr("Wrong")})
-		if !errors.Is(err, ErrInvalidPlant) {
-			t.Fatalf("expected ErrInvalidPlant, got %v", err)
+		if !errors.Is(err, ErrPlantNotFound) {
+			t.Fatalf("expected ErrPlantNotFound, got %v", err)
 		}
 
 		// Success update
@@ -221,7 +258,8 @@ func TestProjectService(t *testing.T) {
 				return id == 1, nil
 			},
 		}
-		svc := NewService(repo)
+		sections, plants := masterRepos()
+		svc := NewService(repo, sections, plants)
 
 		if err := svc.Delete(1); err != nil {
 			t.Fatalf("expected success, got %v", err)
@@ -245,7 +283,8 @@ func TestProjectHandler(t *testing.T) {
 			return nil, gorm.ErrRecordNotFound
 		},
 	}
-	svc := NewService(repo)
+	sections, plants := masterRepos()
+	svc := NewService(repo, sections, plants)
 	handler := NewHandler(svc)
 
 	app := fiber.New()
@@ -280,7 +319,7 @@ func TestProjectHandler(t *testing.T) {
 	})
 
 	t.Run("HTTP Create success", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodPost, "/projects", strings.NewReader(`{"name":"New Proj"}`))
+		req := httptest.NewRequest(http.MethodPost, "/projects", strings.NewReader(`{"name":"New Proj","section":"GA Building","plant":"Cikarang"}`))
 		req.Header.Set("Content-Type", "application/json")
 		resp, err := app.Test(req)
 		if err != nil || resp.StatusCode != http.StatusCreated {
@@ -292,4 +331,3 @@ func TestProjectHandler(t *testing.T) {
 func strPtr(s string) *string {
 	return &s
 }
-

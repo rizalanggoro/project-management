@@ -10,12 +10,12 @@ import (
 
 type Project struct {
 	gorm.Model
-	Name               string                `gorm:"not null"`
-	Section            string                `gorm:"not null;default:'GA Building'"`
-	Plant              string                `gorm:"not null;default:'Cikarang'"`
-	ImplementationPlan *time.Time            `gorm:"type:date"`
-	Budget             int64                 `gorm:"not null;default:0"`
-	Note               string                `gorm:"column:note;not null;default:''"`
+	Name                 string                `gorm:"not null"`
+	Section              string                `gorm:"not null"`
+	Plant                string                `gorm:"not null"`
+	ImplementationPlan   *time.Time            `gorm:"type:date"`
+	Budget               int64                 `gorm:"not null;default:0"`
+	Note                 string                `gorm:"column:note;not null;default:''"`
 	Status               domain.ProjectStatus  `gorm:"type:text;default:'planning'"`
 	ProgressPPT          domain.ProgressStatus `gorm:"column:progress_ppt;type:text;default:'pending'"`
 	ProgressDrawing      domain.ProgressStatus `gorm:"column:progress_drawing;type:text;default:'pending'"`
@@ -42,15 +42,15 @@ func (p *Project) ToDomain() *domain.Project {
 		return nil
 	}
 	d := &domain.Project{
-		ID:                 p.ID,
-		CreatedAt:          p.CreatedAt,
-		UpdatedAt:          p.UpdatedAt,
-		Name:               p.Name,
-		Section:            p.Section,
-		Plant:              p.Plant,
-		ImplementationPlan: p.ImplementationPlan,
-		Budget:             p.Budget,
-		Note:               p.Note,
+		ID:                   p.ID,
+		CreatedAt:            p.CreatedAt,
+		UpdatedAt:            p.UpdatedAt,
+		Name:                 p.Name,
+		Section:              p.Section,
+		Plant:                p.Plant,
+		ImplementationPlan:   p.ImplementationPlan,
+		Budget:               p.Budget,
+		Note:                 p.Note,
 		Status:               p.Status,
 		ProgressPPT:          p.ProgressPPT,
 		ProgressDrawing:      p.ProgressDrawing,
@@ -91,12 +91,12 @@ func FromProjectDomain(d *domain.Project) *Project {
 		return nil
 	}
 	p := &Project{
-		Name:               d.Name,
-		Section:            d.Section,
-		Plant:              d.Plant,
-		ImplementationPlan: d.ImplementationPlan,
-		Budget:             d.Budget,
-		Note:               d.Note,
+		Name:                 d.Name,
+		Section:              d.Section,
+		Plant:                d.Plant,
+		ImplementationPlan:   d.ImplementationPlan,
+		Budget:               d.Budget,
+		Note:                 d.Note,
 		Status:               d.Status,
 		ProgressPPT:          d.ProgressPPT,
 		ProgressDrawing:      d.ProgressDrawing,
@@ -134,4 +134,3 @@ func FromProjectDomain(d *domain.Project) *Project {
 
 	return p
 }
-

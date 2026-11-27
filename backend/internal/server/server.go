@@ -20,6 +20,8 @@ import (
 	"musashi/backend/internal/group"
 	"musashi/backend/internal/platform/config"
 	"musashi/backend/internal/project"
+	"musashi/backend/internal/projectplant"
+	"musashi/backend/internal/projectsection"
 	"musashi/backend/internal/rab"
 	"musashi/backend/internal/schedule"
 	"musashi/backend/internal/unitprice"
@@ -76,7 +78,11 @@ func New(db *gorm.DB, cfg config.Config) *fiber.App {
 	authSvc := auth.NewService(auth.NewRepository(db))
 	authHandler := auth.NewHandler(authSvc)
 	groupHandler := group.NewHandler(group.NewService(group.NewRepository(db)))
-	projectHandler := project.NewHandler(project.NewService(project.NewRepository(db)))
+	sectionRepo := projectsection.NewRepository(db)
+	plantRepo := projectplant.NewRepository(db)
+	projectHandler := project.NewHandler(project.NewService(project.NewRepository(db), sectionRepo, plantRepo))
+	sectionHandler := projectsection.NewHandler(projectsection.NewService(sectionRepo))
+	plantHandler := projectplant.NewHandler(projectplant.NewService(plantRepo))
 	scheduleHandler := schedule.NewHandler(schedule.NewService(schedule.NewRepository(db)))
 	unitPriceCategoryRepo := unitpricecategory.NewRepository(db)
 	unitPriceHandler := unitprice.NewHandler(unitprice.NewService(unitprice.NewRepository(db), unitPriceCategoryRepo))
@@ -102,6 +108,18 @@ func New(db *gorm.DB, cfg config.Config) *fiber.App {
 	api.Post("/groups", authReq, adminOnly, groupHandler.Create)
 	api.Put("/groups/:id", authReq, adminOnly, groupHandler.Update)
 	api.Delete("/groups/:id", authReq, adminOnly, groupHandler.Delete)
+
+	// Project Sections
+	api.Get("/project-sections", authReq, sectionHandler.List)
+	api.Post("/project-sections", authReq, adminOnly, sectionHandler.Create)
+	api.Put("/project-sections/:id", authReq, adminOnly, sectionHandler.Update)
+	api.Delete("/project-sections/:id", authReq, adminOnly, sectionHandler.Delete)
+
+	// Project Plants
+	api.Get("/project-plants", authReq, plantHandler.List)
+	api.Post("/project-plants", authReq, adminOnly, plantHandler.Create)
+	api.Put("/project-plants/:id", authReq, adminOnly, plantHandler.Update)
+	api.Delete("/project-plants/:id", authReq, adminOnly, plantHandler.Delete)
 
 	// Projects
 	api.Get("/projects", authReq, projectHandler.List)
