@@ -26,11 +26,11 @@ function BoqPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'complete':
-        return <Badge variant="default" className="text-[11px] font-normal">Lengkap</Badge>
+        return <Badge variant="default">Lengkap</Badge>
       case 'partial':
-        return <Badge variant="secondary" className="text-[11px] font-normal">Sebagian</Badge>
+        return <Badge variant="secondary">Sebagian</Badge>
       default:
-        return <Badge variant="outline" className="text-[11px] font-normal text-muted-foreground">Kosong</Badge>
+        return <Badge variant="outline">Kosong</Badge>
     }
   }
 
@@ -42,7 +42,7 @@ function BoqPage() {
           BOQ (Bill of Quantities)
         </h1>
         <div className="flex items-center justify-between gap-4">
-          <InputGroup className="w-64">
+          <InputGroup>
             <InputGroupAddon>
               <Search data-icon="inline-start" />
             </InputGroupAddon>
@@ -77,31 +77,31 @@ function BoqPage() {
       </div>
 
       <div className="rounded-md border bg-card overflow-hidden">
-        <Table className="min-w-[650px]">
+        <Table>
           <TableHeader>
             <TableRow>
-              <TableHead rowSpan={2} className="w-12 text-center">No</TableHead>
+              <TableHead rowSpan={2}>No</TableHead>
               <TableHead rowSpan={2}>Proyek</TableHead>
-              <TableHead colSpan={2} className="text-center border-b">Volume</TableHead>
-              <TableHead colSpan={2} className="text-center border-b">RAB</TableHead>
+              <TableHead colSpan={2}>Volume</TableHead>
+              <TableHead colSpan={2}>RAB</TableHead>
             </TableRow>
             <TableRow>
-              <TableHead className="w-28 text-center text-xs">Status</TableHead>
-              <TableHead className="w-32 text-center text-xs">Ekspor</TableHead>
-              <TableHead className="w-28 text-center text-xs">Status</TableHead>
-              <TableHead className="w-40 text-center text-xs">Ekspor</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Ekspor</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Ekspor</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
+                <TableCell colSpan={6}>
                   Memuat data...
                 </TableCell>
               </TableRow>
             ) : projects.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="h-48 text-center">
+                <TableCell colSpan={6}>
                   <Empty>
                     <EmptyHeader>
                       <EmptyTitle>Belum ada proyek BOQ</EmptyTitle>
@@ -115,8 +115,8 @@ function BoqPage() {
             ) : (
               projects.map((p, idx) => (
                 <TableRow key={p.id}>
-                  <TableCell className="text-center text-muted-foreground">{idx + 1}</TableCell>
-                  <TableCell className="font-medium text-foreground">
+                  <TableCell>{idx + 1}</TableCell>
+                  <TableCell>
                     <button
                       type="button"
                       onClick={() => navigate({ to: `/projects` })}
@@ -130,12 +130,11 @@ function BoqPage() {
                   </TableCell>
 
                   {/* Volume Status & Export */}
-                  <TableCell className="text-center">{getStatusBadge(p.volume_status)}</TableCell>
-                  <TableCell className="text-center">
+                  <TableCell>{getStatusBadge(p.volume_status)}</TableCell>
+                  <TableCell>
                     <Button
                       size="sm"
                       variant="outline"
-                      className="h-8 text-xs"
                       render={<a href={`/api/v1/projects/${p.id}/exports/volume.xlsx`} download />}
                       nativeButton={false}
                     >
@@ -145,13 +144,12 @@ function BoqPage() {
                   </TableCell>
 
                   {/* RAB Status & Export */}
-                  <TableCell className="text-center">{getStatusBadge(p.rab_status)}</TableCell>
-                  <TableCell className="text-center">
+                  <TableCell>{getStatusBadge(p.rab_status)}</TableCell>
+                  <TableCell>
                     <div className="flex items-center justify-center gap-1.5">
                       <Button
                         size="sm"
                         variant="outline"
-                        className="h-8 text-xs"
                         render={<a href={`/api/v1/projects/${p.id}/exports/rab.xlsx`} download />}
                         nativeButton={false}
                       >
@@ -161,7 +159,6 @@ function BoqPage() {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="h-8 text-xs"
                         render={<a href={`/api/v1/projects/${p.id}/exports/rab.pdf`} target="_blank" rel="noreferrer" />}
                         nativeButton={false}
                       >

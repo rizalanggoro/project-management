@@ -35,11 +35,11 @@ export function ProjectDetailDialog({
 
   return (
     <Dialog open={open} onOpenChange={(val) => !val && onClose()}>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-xl">
+          <DialogTitle>
             <span>{project.name}</span>
-            <Badge variant="outline" className="font-normal">
+            <Badge variant="outline">
               {project.section || "Umum"} · {project.plant || "Lokasi"}
             </Badge>
           </DialogTitle>
@@ -113,7 +113,6 @@ export function ProjectDetailDialog({
                   <Badge
                     key={s.key}
                     variant="secondary"
-                    className="h-auto flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
                   >
                     <Check className="size-3.5 stroke-[2.5]" />
                     <span>{s.label}</span>
@@ -122,7 +121,6 @@ export function ProjectDetailDialog({
                   <Badge
                     key={s.key}
                     variant="outline"
-                    className="h-auto flex items-center gap-1.5 px-2.5 py-1 text-xs text-muted-foreground border-dashed bg-muted/20 font-normal"
                   >
                     <span className="size-1.5 rounded-full bg-muted-foreground/40" />
                     <span>{s.label}</span>
@@ -133,7 +131,7 @@ export function ProjectDetailDialog({
           </div>
         </div>
 
-        <DialogFooter className="sm:justify-between">
+        <DialogFooter>
           <div className="flex gap-2">
             <Button
               size="sm"

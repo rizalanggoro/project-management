@@ -287,10 +287,10 @@ function VolumeNewPage() {
 
         {activeProject && (
           <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="text-xs">
+            <Badge variant="secondary">
               {activeProject.plant}
             </Badge>
-            <Badge variant="outline" className="text-xs">
+            <Badge variant="outline">
               {activeProject.section}
             </Badge>
           </div>
@@ -308,17 +308,17 @@ function VolumeNewPage() {
         <div className="lg:col-span-8 flex flex-col gap-6">
           <FieldGroup>
             {/* Card 1: Informasi Proyek & Item Pekerjaan */}
-            <Card className="shadow-xs">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-base flex items-center gap-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>
                   <Building2 className="size-4 text-primary" />
                   <span>Pilih Proyek & Item Pekerjaan</span>
                 </CardTitle>
-                <CardDescription className="text-xs">
+                <CardDescription>
                   Hubungkan pengukuran ini dengan item BoQ proyek atau buat pekerjaan baru.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="flex flex-col gap-4">
+              <CardContent>
                 {/* Proyek Selector */}
                 <Field data-invalid={!!errors.projectId}>
                   <FieldLabel htmlFor="new-vol-project">Proyek Terkait</FieldLabel>
@@ -340,10 +340,10 @@ function VolumeNewPage() {
                           }
                         }}
                       >
-                        <SelectTrigger id="new-vol-project" className="w-full">
+                        <SelectTrigger id="new-vol-project">
                           <SelectValue placeholder="Pilih Proyek" />
                         </SelectTrigger>
-                        <SelectContent className="w-full min-w-72">
+                        <SelectContent>
                           <SelectGroup>
                             {projectItems.map((p) => (
                               <SelectItem key={p.value} value={p.value}>
@@ -362,10 +362,10 @@ function VolumeNewPage() {
                 <Field>
                   <FieldLabel htmlFor="new-vol-boq">Pilih dari Item BoQ Proyek</FieldLabel>
                   <Select items={boqSelectItems} value={selectedBoqId} onValueChange={(val) => { if (val) handleSelectBoqItem(val) }}>
-                    <SelectTrigger id="new-vol-boq" className="w-full">
+                    <SelectTrigger id="new-vol-boq">
                       <SelectValue placeholder="-- Pilih Item BoQ Proyek --" />
                     </SelectTrigger>
-                    <SelectContent className="w-full min-w-72">
+                    <SelectContent>
                       <SelectGroup>
                         {boqSelectItems.map((b) => (
                           <SelectItem key={b.value} value={b.value}>
@@ -389,10 +389,10 @@ function VolumeNewPage() {
                           value={field.value}
                           onValueChange={(val) => { if (val) field.onChange(val) }}
                         >
-                          <SelectTrigger id="new-vol-group" className="w-full">
+                          <SelectTrigger id="new-vol-group">
                             <SelectValue placeholder="-- Pilih Grup --" />
                           </SelectTrigger>
-                          <SelectContent className="w-full min-w-72">
+                          <SelectContent>
                             <SelectGroup>
                               {groupItems.map((g) => (
                                 <SelectItem key={g.value} value={g.value}>
@@ -413,10 +413,10 @@ function VolumeNewPage() {
                   <Field>
                     <FieldLabel htmlFor="new-vol-ahsp">Pilih dari Master AHSP (Opsional)</FieldLabel>
                     <Select items={ahspSelectItems} value={selectedAhspId} onValueChange={(val) => { if (val) handleSelectAhsp(val) }}>
-                      <SelectTrigger id="new-vol-ahsp" className="w-full">
+                      <SelectTrigger id="new-vol-ahsp">
                         <SelectValue placeholder="-- Salin nama pekerjaan dari AHSP --" />
                       </SelectTrigger>
-                      <SelectContent className="w-full min-w-72">
+                      <SelectContent>
                         <SelectGroup>
                           {ahspSelectItems.map((a) => (
                             <SelectItem key={a.value} value={a.value}>
@@ -480,22 +480,22 @@ function VolumeNewPage() {
             </Card>
 
             {/* Card 2: Metode Rumus & Dimensi Pengukuran */}
-            <Card className="shadow-xs">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-base flex items-center gap-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>
                   <Ruler className="size-4 text-primary" />
                   <span>Metode Rumus & Dimensi Pengukuran</span>
                 </CardTitle>
-                <CardDescription className="text-xs">
+                <CardDescription>
                   Pilih rumus yang sesuai dengan karakteristik fisik pekerjaan dan masukkan dimensi lapangannya.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="flex flex-col gap-4">
+              <CardContent>
                 {/* Formula Select */}
                 <Field data-invalid={!!errors.formula}>
                   <div className="flex items-center justify-between">
                     <FieldLabel htmlFor="new-vol-formula">Pilihan Rumus Perhitungan</FieldLabel>
-                    <Badge variant="outline" className="text-[11px] font-mono">
+                    <Badge variant="outline">
                       Kategori: {currentFormulaConfig.category}
                     </Badge>
                   </div>
@@ -510,10 +510,10 @@ function VolumeNewPage() {
                           if (val) field.onChange(val as FormulaType)
                         }}
                       >
-                        <SelectTrigger id="new-vol-formula" className="w-full">
+                        <SelectTrigger id="new-vol-formula">
                           <SelectValue placeholder="Pilih Rumus" />
                         </SelectTrigger>
-                        <SelectContent className="w-full min-w-72">
+                        <SelectContent>
                           <SelectGroup>
                             {formulaSelectItems.map((cfg) => (
                               <SelectItem key={cfg.value} value={cfg.value}>
@@ -603,14 +603,14 @@ function VolumeNewPage() {
 
         {/* Right Column: Sticky Summary & Calculation Card (4 cols) */}
         <div className="lg:col-span-4 sticky top-6 flex flex-col gap-4">
-          <Card className="border-primary/30 shadow-md bg-card">
-            <CardHeader className="pb-3 border-b bg-primary/5 rounded-t-xl">
-              <CardTitle className="text-sm font-semibold flex items-center justify-between text-primary">
+          <Card>
+            <CardHeader>
+              <CardTitle>
                 <span>Ringkasan Kalkulasi</span>
                 <Calculator className="size-4" />
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-4 flex flex-col gap-4">
+            <CardContent>
               {/* Formula Expression */}
               <div className="flex flex-col gap-1 p-3 rounded-md bg-muted/50 border text-xs">
                 <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
@@ -675,7 +675,6 @@ function VolumeNewPage() {
                 <Button
                   type="submit"
                   size="default"
-                  className="w-full gap-2 font-semibold shadow-xs"
                   disabled={isSubmitting || createMut.isPending}
                 >
                   <Save className="size-4" />
@@ -688,7 +687,6 @@ function VolumeNewPage() {
                   type="button"
                   variant="outline"
                   size="default"
-                  className="w-full"
                   onClick={() => navigate({ to: '/volume', search: { projectId: activeProjectId } })}
                 >
                   Batal

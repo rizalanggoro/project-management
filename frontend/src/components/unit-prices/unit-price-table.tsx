@@ -46,29 +46,29 @@ export function UnitPriceTable({
 
   return (
     <div className="rounded-md border bg-card overflow-hidden">
-      <Table className="min-w-[750px]">
+      <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-12 text-center">No</TableHead>
-            <TableHead className="w-28">Kode</TableHead>
-            <TableHead className="w-28">Kategori</TableHead>
+            <TableHead>No</TableHead>
+            <TableHead>Kode</TableHead>
+            <TableHead>Kategori</TableHead>
             <TableHead>Item Pekerjaan</TableHead>
-            <TableHead className="w-20 text-center">Satuan</TableHead>
-            <TableHead className="w-36 text-right">Harga Satuan</TableHead>
+            <TableHead>Satuan</TableHead>
+            <TableHead>Harga Satuan</TableHead>
             <TableHead>Catatan</TableHead>
-            {isAdmin && <TableHead className="w-20 text-center">Aksi</TableHead>}
+            {isAdmin && <TableHead>Aksi</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
           {isLoading ? (
             <TableRow>
-              <TableCell colSpan={colSpan} className="h-32 text-center text-muted-foreground">
+              <TableCell colSpan={colSpan}>
                 Memuat data...
               </TableCell>
             </TableRow>
           ) : items.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={colSpan} className="h-48 text-center">
+              <TableCell colSpan={colSpan}>
                 <Empty>
                   <EmptyHeader>
                     <EmptyTitle>Tidak ada harga satuan</EmptyTitle>
@@ -84,19 +84,19 @@ export function UnitPriceTable({
           ) : (
             items.map((item, idx) => (
               <TableRow key={item.id}>
-                <TableCell className="text-center text-muted-foreground">{idx + 1}</TableCell>
-                <TableCell className="font-mono text-xs font-semibold">{item.code}</TableCell>
+                <TableCell>{idx + 1}</TableCell>
+                <TableCell>{item.code}</TableCell>
                 <TableCell>
-                  <Badge variant="outline" className="text-[10px] font-normal uppercase">
+                  <Badge variant="outline">
                     {item.category}
                   </Badge>
                 </TableCell>
-                <TableCell className="font-medium text-foreground">{item.work_item}</TableCell>
-                <TableCell className="text-center text-muted-foreground">{item.unit}</TableCell>
-                <TableCell className="text-right font-medium">{formatRupiah(item.unit_price)}</TableCell>
-                <TableCell className="text-muted-foreground">{item.note || "-"}</TableCell>
+                <TableCell>{item.work_item}</TableCell>
+                <TableCell>{item.unit}</TableCell>
+                <TableCell>{formatRupiah(item.unit_price)}</TableCell>
+                <TableCell>{item.note || "-"}</TableCell>
                 {isAdmin && (
-                  <TableCell className="text-center">
+                  <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger
                         render={

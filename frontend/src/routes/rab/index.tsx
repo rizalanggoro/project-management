@@ -207,7 +207,7 @@ function RabPage() {
           RAB (Rencana Anggaran Biaya)
         </h1>
         <div className="flex items-center justify-between gap-4">
-          <InputGroup className="w-64">
+          <InputGroup>
             <InputGroupAddon>
               <Search data-icon="inline-start" />
             </InputGroupAddon>
@@ -249,10 +249,10 @@ function RabPage() {
                 }
               }}
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger>
                 <SelectValue placeholder="Pilih Proyek..." />
               </SelectTrigger>
-              <SelectContent className="w-80">
+              <SelectContent>
                 <SelectGroup>
                   {projectItems.map((p) => (
                     <SelectItem key={p.value} value={p.value}>
@@ -299,28 +299,28 @@ function RabPage() {
       )}
 
       <div className="rounded-md border bg-card overflow-hidden">
-        <Table className="min-w-[700px]">
+        <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-12 text-center">No</TableHead>
+              <TableHead>No</TableHead>
               <TableHead>Item Pekerjaan</TableHead>
-              <TableHead className="w-28 text-right">Volume</TableHead>
-              <TableHead className="w-20 text-center">Satuan</TableHead>
-              <TableHead className="w-40 text-right">Harga Satuan</TableHead>
-              <TableHead className="w-44 text-right">Total Biaya</TableHead>
-              {isAdmin && <TableHead className="w-20 text-center">Aksi</TableHead>}
+              <TableHead>Volume</TableHead>
+              <TableHead>Satuan</TableHead>
+              <TableHead>Harga Satuan</TableHead>
+              <TableHead>Total Biaya</TableHead>
+              {isAdmin && <TableHead>Aksi</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={isAdmin ? 7 : 6} className="h-32 text-center text-muted-foreground">
+                <TableCell colSpan={isAdmin ? 7 : 6}>
                   Memuat data...
                 </TableCell>
               </TableRow>
             ) : items.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={isAdmin ? 7 : 6} className="h-48 text-center">
+                <TableCell colSpan={isAdmin ? 7 : 6}>
                   <Empty>
                     <EmptyHeader>
                       <EmptyTitle>Belum ada data RAB</EmptyTitle>
@@ -337,29 +337,29 @@ function RabPage() {
                 const subtotal = rows.reduce((sum, it) => sum + Number(it.total_cost), 0)
                 return [
                   <Fragment key={key}>
-                    <TableRow className="bg-muted/60">
-                      <TableCell colSpan={isAdmin ? 7 : 6} className="font-semibold text-foreground">
+                    <TableRow>
+                      <TableCell colSpan={isAdmin ? 7 : 6}>
                         {groupLabel(key)}
                       </TableCell>
                     </TableRow>
                     {rows.map((item, idx) => (
                       <TableRow key={item.id}>
-                        <TableCell className="text-center text-muted-foreground">{idx + 1}</TableCell>
-                        <TableCell className="font-medium text-foreground">{item.work_item}</TableCell>
-                        <TableCell className="text-right">{formatDecimal(item.volume)}</TableCell>
-                        <TableCell className="text-center">{item.unit}</TableCell>
-                        <TableCell className="text-right font-medium">
+                        <TableCell>{idx + 1}</TableCell>
+                        <TableCell>{item.work_item}</TableCell>
+                        <TableCell>{formatDecimal(item.volume)}</TableCell>
+                        <TableCell>{item.unit}</TableCell>
+                        <TableCell>
                           {item.unit_price === '0' ? (
                             <span className="text-amber-600 text-xs font-normal">Belum ada harga</span>
                           ) : (
                             formatRupiah(item.unit_price)
                           )}
                         </TableCell>
-                        <TableCell className="text-right font-semibold text-foreground">
+                        <TableCell>
                           {formatRupiah(item.total_cost)}
                         </TableCell>
                         {isAdmin && (
-                          <TableCell className="text-center">
+                          <TableCell>
                             <DropdownMenu>
                               <DropdownMenuTrigger
                                 render={
@@ -417,11 +417,11 @@ function RabPage() {
                         )}
                       </TableRow>
                     ))}
-                    <TableRow className="bg-muted/20 font-medium">
-                      <TableCell colSpan={5} className="text-right text-muted-foreground">
+                    <TableRow>
+                      <TableCell colSpan={5}>
                         Total {groupLabel(key)}
                       </TableCell>
-                      <TableCell className="text-right font-bold text-foreground">
+                      <TableCell>
                         {formatRupiah(String(subtotal))}
                       </TableCell>
                       {isAdmin && <TableCell />}
@@ -433,11 +433,11 @@ function RabPage() {
           </TableBody>
           {items.length > 0 && (
             <TableFooter>
-              <TableRow className="font-bold text-base">
-                <TableCell colSpan={5} className="text-right">
+              <TableRow>
+                <TableCell colSpan={5}>
                   TOTAL BIAYA KESELURUHAN (RAB):
                 </TableCell>
-                <TableCell className="text-right font-extrabold text-foreground">
+                <TableCell>
                   {formatRupiah(rabData?.total_rab || '0')}
                 </TableCell>
                 {isAdmin && <TableCell></TableCell>}
@@ -449,7 +449,7 @@ function RabPage() {
 
       {/* Modal Add RAB Item */}
       <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Tambah Item RAB</DialogTitle>
             <DialogDescription>Tambahkan baris rencana anggaran biaya proyek.</DialogDescription>
@@ -476,10 +476,10 @@ function RabPage() {
                       if (val) handleSelectBoqItem(val)
                     }}
                   >
-                    <SelectTrigger id="rab-boq" className="w-full">
+                    <SelectTrigger id="rab-boq">
                       <SelectValue placeholder="-- Pilih Item BOQ --" />
                     </SelectTrigger>
-                    <SelectContent className="w-full min-w-72">
+                    <SelectContent>
                       <SelectGroup>
                         {boqItems.map((b) => (
                           <SelectItem key={b.id} value={b.id}>
@@ -499,10 +499,10 @@ function RabPage() {
                   value={group}
                   onValueChange={(val) => { if (val) setGroup(val) }}
                 >
-                  <SelectTrigger id="rab-group" className="w-full">
+                  <SelectTrigger id="rab-group">
                     <SelectValue placeholder="-- Pilih Grup --" />
                   </SelectTrigger>
-                  <SelectContent className="w-full min-w-72">
+                  <SelectContent>
                     <SelectGroup>
                       {groupItems.map((g) => (
                         <SelectItem key={g.value} value={g.value}>
@@ -561,8 +561,8 @@ function RabPage() {
               </Field>
 
               {/* Live Subtotal Card */}
-              <Card className="bg-muted/40">
-                <CardContent className="p-3">
+              <Card>
+                <CardContent>
                   <div className="flex items-center justify-between text-xs text-muted-foreground">
                     <span>Estimasi Total:</span>
                     <strong className="text-sm font-bold text-foreground">

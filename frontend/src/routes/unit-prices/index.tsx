@@ -107,7 +107,7 @@ function UnitPricesPage() {
         </h1>
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <InputGroup className="w-64">
+            <InputGroup>
               <InputGroupAddon>
                 <Search data-icon="inline-start" />
               </InputGroupAddon>

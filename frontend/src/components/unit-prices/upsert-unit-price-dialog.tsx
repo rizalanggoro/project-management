@@ -326,7 +326,7 @@ export function UpsertUnitPriceDialog({
 }: UpsertUnitPriceDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent>
         {open && (
           <UpsertUnitPriceForm
             item={item ?? null}

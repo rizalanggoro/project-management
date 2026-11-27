@@ -42,12 +42,12 @@ function AuthPage() {
       <div className="absolute top-4 right-4">
         <ModeToggle />
       </div>
-      <Card className="w-full max-w-sm">
-        <CardHeader className="text-center">
+      <Card>
+        <CardHeader>
           <div className="mx-auto mb-2 flex size-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <Construction className="size-5" />
           </div>
-          <CardTitle className="text-xl">Manajemen Proyek</CardTitle>
+          <CardTitle>Manajemen Proyek</CardTitle>
           <CardDescription>
             Estimasi Biaya &amp; Manajemen Proyek Konstruksi
           </CardDescription>
@@ -89,14 +89,14 @@ function AuthPage() {
               </Field>
             </FieldGroup>
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting}>
               <LogIn data-icon="inline-start" />
               {isSubmitting ? 'Memproses...' : 'Masuk'}
             </Button>
           </form>
         </CardContent>
 
-        <CardFooter className="flex flex-col gap-1 border-t pt-4 text-center text-xs text-muted-foreground">
+        <CardFooter>
           <span>Akun default admin:</span>
           <span className="font-mono text-[11px] text-foreground">
             admin@musashi.local / admin123

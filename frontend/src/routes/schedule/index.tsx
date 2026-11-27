@@ -163,7 +163,7 @@ function SchedulePage() {
           Jadwal
         </h1>
         <div className="flex items-center justify-between gap-4">
-          <InputGroup className="w-64">
+          <InputGroup>
             <InputGroupAddon>
               <Search data-icon="inline-start" />
             </InputGroupAddon>
@@ -204,10 +204,10 @@ function SchedulePage() {
               }
             }}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger>
               <SelectValue placeholder="Pilih Proyek" />
             </SelectTrigger>
-            <SelectContent className="w-80">
+            <SelectContent>
               <SelectGroup>
                 {projectItems.map((p) => (
                   <SelectItem key={p.value} value={p.value}>
@@ -221,31 +221,31 @@ function SchedulePage() {
       </div>
 
       <div className="rounded-md border bg-card overflow-hidden">
-        <Table className="min-w-[850px]">
+        <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-12 text-center">No</TableHead>
-              <TableHead className="w-28">Kode</TableHead>
+              <TableHead>No</TableHead>
+              <TableHead>Kode</TableHead>
               <TableHead>Item Pekerjaan</TableHead>
-              <TableHead className="w-28 text-center">Tanggal Mulai</TableHead>
-              <TableHead className="w-28 text-center">Tanggal Selesai</TableHead>
-              <TableHead className="w-24 text-center">Durasi</TableHead>
-              <TableHead className="w-24 text-right">Bobot (%)</TableHead>
-              <TableHead className="w-24 text-right">Progres (%)</TableHead>
-              <TableHead className="w-28 text-center">Status</TableHead>
-              {isAdmin && <TableHead className="w-20 text-center">Aksi</TableHead>}
+              <TableHead>Tanggal Mulai</TableHead>
+              <TableHead>Tanggal Selesai</TableHead>
+              <TableHead>Durasi</TableHead>
+              <TableHead>Bobot (%)</TableHead>
+              <TableHead>Progres (%)</TableHead>
+              <TableHead>Status</TableHead>
+              {isAdmin && <TableHead>Aksi</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={isAdmin ? 10 : 9} className="h-32 text-center text-muted-foreground">
+                <TableCell colSpan={isAdmin ? 10 : 9}>
                   Memuat data...
                 </TableCell>
               </TableRow>
             ) : filtered.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={isAdmin ? 10 : 9} className="h-48 text-center">
+                <TableCell colSpan={isAdmin ? 10 : 9}>
                   <Empty>
                     <EmptyHeader>
                       <EmptyTitle>Belum ada jadwal pekerjaan</EmptyTitle>
@@ -259,21 +259,21 @@ function SchedulePage() {
             ) : (
               filtered.map((s, idx) => (
                 <TableRow key={s.id}>
-                  <TableCell className="text-center text-muted-foreground">{idx + 1}</TableCell>
-                  <TableCell className="font-mono text-xs font-semibold">{s.code || '-'}</TableCell>
-                  <TableCell className="font-medium text-foreground">{s.work_item}</TableCell>
-                  <TableCell className="text-center text-muted-foreground">{s.start_date}</TableCell>
-                  <TableCell className="text-center text-muted-foreground">{s.end_date}</TableCell>
-                  <TableCell className="text-center">{s.duration} hari</TableCell>
-                  <TableCell className="text-right font-medium">{s.weight}%</TableCell>
-                  <TableCell className="text-right font-medium">{s.progress}%</TableCell>
-                  <TableCell className="text-center">
-                    <Badge variant={getStatusBadgeVariant(s.status)} className="capitalize text-xs font-normal">
+                  <TableCell>{idx + 1}</TableCell>
+                  <TableCell>{s.code || '-'}</TableCell>
+                  <TableCell>{s.work_item}</TableCell>
+                  <TableCell>{s.start_date}</TableCell>
+                  <TableCell>{s.end_date}</TableCell>
+                  <TableCell>{s.duration} hari</TableCell>
+                  <TableCell>{s.weight}%</TableCell>
+                  <TableCell>{s.progress}%</TableCell>
+                  <TableCell>
+                    <Badge variant={getStatusBadgeVariant(s.status)}>
                       {statusLabels[s.status] ?? s.status}
                     </Badge>
                   </TableCell>
                   {isAdmin && (
-                    <TableCell className="text-center">
+                    <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger
                           render={
@@ -309,7 +309,7 @@ function SchedulePage() {
 
       {/* Modal Add Schedule */}
       <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Tambah Item Jadwal</DialogTitle>
             <DialogDescription>Tambahkan jadwal tahapan pekerjaan proyek.</DialogDescription>
@@ -403,10 +403,10 @@ function SchedulePage() {
                     value={status}
                     onValueChange={(val) => setStatus(val as any)}
                   >
-                    <SelectTrigger id="sch-status" className="w-full">
+                    <SelectTrigger id="sch-status">
                       <SelectValue placeholder="Status" />
                     </SelectTrigger>
-                    <SelectContent className="w-full min-w-36">
+                    <SelectContent>
                       <SelectGroup>
                         <SelectItem value="planning">Perencanaan</SelectItem>
                         <SelectItem value="on_going">Sedang Berjalan</SelectItem>

@@ -257,7 +257,7 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <FieldGroup className="flex flex-col gap-4">
+            <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="ahsp-code">
                   Kode AHSP <span className="text-destructive">*</span>
@@ -267,7 +267,6 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
                   placeholder="mis. AHSP-BETON-01"
-                  className="font-mono bg-card"
                   required
                 />
               </Field>
@@ -281,7 +280,6 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
                   value={workItem}
                   onChange={(e) => setWorkItem(e.target.value)}
                   placeholder="mis. Pembuatan 1 m3 Beton Mutu K-225"
-                  className="bg-card"
                   required
                 />
               </Field>
@@ -295,7 +293,6 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
                   value={unit}
                   onChange={(e) => setUnit(e.target.value)}
                   placeholder="mis. m3, m2, kg, OH"
-                  className="bg-card"
                   required
                 />
               </Field>
@@ -308,7 +305,6 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
                   onChange={(e) => setNote(e.target.value)}
                   placeholder="Catatan metode kerja, spesifikasi standar, atau referensi SNI..."
                   rows={2}
-                  className="bg-card"
                 />
               </Field>
 
@@ -350,7 +346,7 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
                 Item ditautkan langsung dari Master Harga Satuan (HSD). Anda cukup memasukkan koefisien kebutuhan.
               </p>
             </div>
-            <Badge variant="outline" className="gap-1 font-mono text-xs">
+            <Badge variant="outline">
               Total Item: {items.length}
             </Badge>
           </div>
@@ -394,12 +390,12 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
 
         {/* Section 3: Summary & Overhead */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="md:col-span-1 border-muted">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-semibold text-muted-foreground">
+          <Card>
+            <CardHeader>
+              <CardTitle>
                 Total Biaya Langsung
               </CardTitle>
-              <CardDescription className="text-xs">Tenaga kerja, bahan, dan peralatan</CardDescription>
+              <CardDescription>Tenaga kerja, bahan, dan peralatan</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold font-mono text-foreground">
@@ -408,10 +404,10 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
             </CardContent>
           </Card>
 
-          <Card className="md:col-span-1 border-muted">
-            <CardHeader className="pb-3">
+          <Card>
+            <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-semibold text-muted-foreground">
+                <CardTitle>
                   Biaya Umum & Keuntungan
                 </CardTitle>
                 <div className="flex items-center gap-1.5">
@@ -421,12 +417,11 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
                     min="0"
                     value={overheadPct}
                     onChange={(e) => setOverheadPct(e.target.value)}
-                    className="h-7 w-16 text-center font-bold text-xs bg-card"
                   />
                   <span className="text-xs font-semibold">%</span>
                 </div>
               </div>
-              <CardDescription className="text-xs">{overheadPct}% dari biaya langsung</CardDescription>
+              <CardDescription>{overheadPct}% dari biaya langsung</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold font-mono text-foreground">
@@ -435,12 +430,12 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
             </CardContent>
           </Card>
 
-          <Card className="md:col-span-1 border-primary/40 bg-primary/5">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-bold text-primary">
+          <Card>
+            <CardHeader>
+              <CardTitle>
                 Harga Satuan Pekerjaan (AHSP)
               </CardTitle>
-              <CardDescription className="text-xs">
+              <CardDescription>
                 Harga per 1 {unit ? <span className="font-semibold text-foreground">{unit}</span> : 'satuan'}
               </CardDescription>
             </CardHeader>
@@ -499,9 +494,9 @@ function ComponentRow({
   const cost = Math.round(coef * price)
 
   return (
-    <TableRow className="text-xs hover:bg-muted/30">
-      <TableCell className="text-center text-muted-foreground font-mono">{no}</TableCell>
-      <TableCell className="p-2">
+    <TableRow>
+      <TableCell>{no}</TableCell>
+      <TableCell>
         <div className="flex items-center gap-2">
           <span title="Terhubung ke Master Harga Satuan">
             <LinkIcon className="size-3.5 text-primary shrink-0" />
@@ -509,30 +504,29 @@ function ComponentRow({
           <span className="font-medium text-foreground">{item.description}</span>
         </div>
       </TableCell>
-      <TableCell className="p-2 font-mono text-xs text-muted-foreground">
+      <TableCell>
         {item.code || '-'}
       </TableCell>
-      <TableCell className="p-2 text-center font-mono text-xs text-foreground">
+      <TableCell>
         {item.unit}
       </TableCell>
-      <TableCell className="p-2 text-right">
+      <TableCell>
         <Input
           type="number"
           step="any"
           value={item.coefficient}
           onChange={(e) => onUpdateCoefficient(item.id, e.target.value)}
           placeholder="0.0000"
-          className="h-8 text-xs text-right font-mono bg-card w-28 ml-auto"
           required
         />
       </TableCell>
-      <TableCell className="p-2 text-right font-mono text-xs text-muted-foreground">
+      <TableCell>
         {formatRupiah(item.unit_price)}
       </TableCell>
-      <TableCell className="text-right font-mono font-semibold text-foreground p-2">
+      <TableCell>
         {formatRupiah(cost)}
       </TableCell>
-      <TableCell className="p-2 text-center">
+      <TableCell>
         <Button
           type="button"
           variant="ghost"
@@ -571,32 +565,32 @@ function CategoryCard({
 
   return (
     <Card>
-      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 pb-3">
-        <CardTitle className="text-base">{title}</CardTitle>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
         <Button type="button" variant="outline" onClick={() => onOpenPicker(category)}>
           <Plus data-icon="inline-start" />
           Pilih dari HSD
         </Button>
       </CardHeader>
-      <CardContent className="p-0 sm:p-4">
+      <CardContent>
         <div className="rounded-lg border bg-card overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="bg-muted/50">
-                <TableHead className="w-12 text-center">No</TableHead>
-                <TableHead className="min-w-[280px]">Uraian Item (Terhubung ke Master HSD)</TableHead>
-                <TableHead className="w-32">Kode</TableHead>
-                <TableHead className="w-20 text-center">Satuan</TableHead>
-                <TableHead className="w-36 text-right">Koefisien</TableHead>
-                <TableHead className="w-36 text-right">Harga Satuan (Rp)</TableHead>
-                <TableHead className="w-36 text-right">Jumlah Biaya (Rp)</TableHead>
-                <TableHead className="w-12 text-center"></TableHead>
+              <TableRow>
+                <TableHead>No</TableHead>
+                <TableHead>Uraian Item (Terhubung ke Master HSD)</TableHead>
+                <TableHead>Kode</TableHead>
+                <TableHead>Satuan</TableHead>
+                <TableHead>Koefisien</TableHead>
+                <TableHead>Harga Satuan (Rp)</TableHead>
+                <TableHead>Jumlah Biaya (Rp)</TableHead>
+                <TableHead></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {categoryItems.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="p-0">
+                  <TableCell colSpan={8}>
                     <Empty>
                       <EmptyHeader>
                         <EmptyMedia variant="icon">{icon}</EmptyMedia>
@@ -625,11 +619,11 @@ function CategoryCard({
                   />
                 ))
               )}
-              <TableRow className="border-t bg-muted/20 font-medium text-xs">
-                <TableCell colSpan={6} className="text-right font-semibold text-muted-foreground">
+              <TableRow>
+                <TableCell colSpan={6}>
                   Jumlah {title}:
                 </TableCell>
-                <TableCell className="text-right font-bold text-foreground">
+                <TableCell>
                   {formatRupiah(total)}
                 </TableCell>
                 <TableCell />

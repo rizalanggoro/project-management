@@ -146,7 +146,6 @@ function CategoryForm({
                   <Input
                     {...field}
                     id="upc-code"
-                    className="uppercase"
                     aria-invalid={fieldState.invalid}
                     placeholder="LABOR"
                   />
@@ -165,7 +164,6 @@ function CategoryForm({
                   <Input
                     {...field}
                     id="upc-prefix"
-                    className="uppercase"
                     aria-invalid={fieldState.invalid}
                     placeholder="LBR"
                   />
@@ -235,7 +233,7 @@ function CategoryForm({
                     onCheckedChange={field.onChange}
                     aria-invalid={fieldState.invalid}
                   />
-                  <FieldLabel htmlFor="upc-active" className="font-normal">
+                  <FieldLabel htmlFor="upc-active">
                     Aktif
                   </FieldLabel>
                 </Field>
@@ -265,7 +263,7 @@ export function UpsertUnitPriceCategoryDialog({
 }: UpsertUnitPriceCategoryDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent>
         {open && (
           <CategoryForm
             item={item ?? null}

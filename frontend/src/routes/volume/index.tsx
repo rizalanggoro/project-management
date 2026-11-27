@@ -128,7 +128,7 @@ function VolumePage() {
           Volume Take-off
         </h1>
         <div className="flex items-center justify-between gap-4">
-          <InputGroup className="w-64">
+          <InputGroup>
             <InputGroupAddon>
               <Search data-icon="inline-start" />
             </InputGroupAddon>
@@ -170,10 +170,10 @@ function VolumePage() {
                 }
               }}
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger>
                 <SelectValue placeholder="Pilih Proyek" />
               </SelectTrigger>
-              <SelectContent className="w-80">
+              <SelectContent>
                 <SelectGroup>
                   {projectItems.map((item) => (
                     <SelectItem key={item.value} value={item.value}>
@@ -187,10 +187,10 @@ function VolumePage() {
 
           {activeProject && (
             <div className="hidden sm:flex items-center gap-2">
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant="secondary">
                 {activeProject.plant}
               </Badge>
-              <Badge variant="outline" className="text-xs">
+              <Badge variant="outline">
                 {activeProject.section}
               </Badge>
             </div>
@@ -215,34 +215,35 @@ function VolumePage() {
       </div>
 
       {/* Table Data Take-off */}
-      <div className="rounded-md border bg-card overflow-hidden shadow-xs">
-        <Table className="min-w-[900px]">
+      <div className="rounded-md border bg-card overflow-x-auto shadow-xs">
+        <div className="w-max">
+        <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-10 text-center">No</TableHead>
-              <TableHead className="min-w-44">Item Pekerjaan</TableHead>
-              <TableHead className="w-28 text-center">Metode / Rumus</TableHead>
-              <TableHead className="w-24 text-right">Vol Rencana</TableHead>
-              <TableHead className="w-16 text-center">Satuan</TableHead>
-              <TableHead className="w-24 text-center">Tanggal</TableHead>
-              <TableHead className="w-40 text-center">Dimensi Pengukuran</TableHead>
-              <TableHead className="w-24 text-right">Kuantitas</TableHead>
-              <TableHead className="w-24 text-right">Satuan / Berat</TableHead>
-              <TableHead className="w-28 text-right font-bold">Total Kuantitas</TableHead>
-              <TableHead className="min-w-32">Deskripsi</TableHead>
-              {isAdmin && <TableHead className="w-16 text-center">Aksi</TableHead>}
+              <TableHead>No</TableHead>
+              <TableHead>Item Pekerjaan</TableHead>
+              <TableHead>Metode / Rumus</TableHead>
+              <TableHead>Vol Rencana</TableHead>
+              <TableHead>Satuan</TableHead>
+              <TableHead>Tanggal</TableHead>
+              <TableHead>Dimensi Pengukuran</TableHead>
+              <TableHead>Kuantitas</TableHead>
+              <TableHead>Satuan / Berat</TableHead>
+              <TableHead>Total Kuantitas</TableHead>
+              <TableHead>Deskripsi</TableHead>
+              {isAdmin && <TableHead>Aksi</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={isAdmin ? 12 : 11} className="h-32 text-center text-muted-foreground">
+                <TableCell colSpan={isAdmin ? 12 : 11}>
                   Memuat data volume take-off...
                 </TableCell>
               </TableRow>
             ) : volumeRows.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={isAdmin ? 12 : 11} className="h-48 text-center">
+                <TableCell colSpan={isAdmin ? 12 : 11}>
                   <Empty>
                     <EmptyHeader>
                       <EmptyTitle>Tidak ada data take-off volume</EmptyTitle>
@@ -259,32 +260,32 @@ function VolumePage() {
                 const subtotal = rows.reduce((sum, r) => sum + Number(r.total_quantity), 0)
                 return [
                   <Fragment key={key}>
-                    <TableRow className="bg-muted/60">
-                      <TableCell colSpan={isAdmin ? 12 : 11} className="font-semibold text-foreground">
+                    <TableRow>
+                      <TableCell colSpan={isAdmin ? 12 : 11}>
                         {groupLabel(key)}
                       </TableCell>
                     </TableRow>
                     {rows.map((r, idx) => (
                       <TableRow key={r.id}>
-                        <TableCell className="text-center text-muted-foreground">{idx + 1}</TableCell>
-                        <TableCell className="font-medium text-foreground">{r.work_item}</TableCell>
-                        <TableCell className="text-center">
+                        <TableCell>{idx + 1}</TableCell>
+                        <TableCell>{r.work_item}</TableCell>
+                        <TableCell>
                           <FormulaBadge formula={r.formula} />
                         </TableCell>
-                        <TableCell className="text-right text-muted-foreground">{formatDecimal(r.planned_volume)}</TableCell>
-                        <TableCell className="text-center text-muted-foreground font-mono text-xs">{r.unit}</TableCell>
-                        <TableCell className="text-center text-muted-foreground">{r.date || '-'}</TableCell>
-                        <TableCell className="text-center text-muted-foreground text-xs font-mono">
+                        <TableCell>{formatDecimal(r.planned_volume)}</TableCell>
+                        <TableCell>{r.unit}</TableCell>
+                        <TableCell>{r.date || '-'}</TableCell>
+                        <TableCell>
                           {renderDimensions(r)}
                         </TableCell>
-                        <TableCell className="text-right text-foreground font-medium">{formatDecimal(r.quantity)}</TableCell>
-                        <TableCell className="text-right text-muted-foreground">{formatDecimal(r.unit_weight)}</TableCell>
-                        <TableCell className="text-right font-bold text-foreground text-emerald-600 dark:text-emerald-400">
+                        <TableCell>{formatDecimal(r.quantity)}</TableCell>
+                        <TableCell>{formatDecimal(r.unit_weight)}</TableCell>
+                        <TableCell>
                           {formatDecimal(r.total_quantity)}
                         </TableCell>
-                        <TableCell className="text-muted-foreground text-xs">{r.description || '-'}</TableCell>
+                        <TableCell>{r.description || '-'}</TableCell>
                         {isAdmin && (
-                          <TableCell className="text-center">
+                          <TableCell>
                             <DropdownMenu>
                               <DropdownMenuTrigger
                                 render={
@@ -342,11 +343,11 @@ function VolumePage() {
                         )}
                       </TableRow>
                     ))}
-                    <TableRow className="bg-muted/20 font-medium">
-                      <TableCell colSpan={9} className="text-right text-muted-foreground">
+                    <TableRow>
+                      <TableCell colSpan={9}>
                         Total {groupLabel(key)}
                       </TableCell>
-                      <TableCell className="text-right font-bold text-foreground">
+                      <TableCell>
                         {formatDecimal(String(subtotal))}
                       </TableCell>
                       <TableCell />
@@ -358,6 +359,7 @@ function VolumePage() {
             )}
           </TableBody>
         </Table>
+        </div>
       </div>
     </div>
   )

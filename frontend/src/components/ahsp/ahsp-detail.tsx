@@ -21,40 +21,40 @@ type Group = {
 function ComponentTable({ group, items }: { group: Group; items: AhspItemDto[] }) {
   return (
     <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="text-base">{group.label}</CardTitle>
+      <CardHeader>
+        <CardTitle>{group.label}</CardTitle>
       </CardHeader>
-      <CardContent className="p-0 sm:p-4">
+      <CardContent>
         <div className="rounded-md border overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="bg-muted/50">
-                <TableHead className="w-12 text-center">No</TableHead>
+              <TableRow>
+                <TableHead>No</TableHead>
                 <TableHead>Uraian</TableHead>
-                <TableHead className="w-32">Kode</TableHead>
-                <TableHead className="w-20 text-center">Satuan</TableHead>
-                <TableHead className="w-28 text-right">Koefisien</TableHead>
-                <TableHead className="w-36 text-right">Harga Satuan</TableHead>
-                <TableHead className="w-36 text-right">Jumlah Biaya</TableHead>
+                <TableHead>Kode</TableHead>
+                <TableHead>Satuan</TableHead>
+                <TableHead>Koefisien</TableHead>
+                <TableHead>Harga Satuan</TableHead>
+                <TableHead>Jumlah Biaya</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {items.map((item, idx) => (
-                <TableRow key={item.id} className="text-xs">
-                  <TableCell className="text-center text-muted-foreground">{idx + 1}</TableCell>
-                  <TableCell className="font-medium">{item.description}</TableCell>
-                  <TableCell className="font-mono text-muted-foreground">{item.code || '-'}</TableCell>
-                  <TableCell className="text-center">{item.unit}</TableCell>
-                  <TableCell className="text-right font-mono">{formatDecimal(item.coefficient, 4)}</TableCell>
-                  <TableCell className="text-right font-mono">{formatRupiah(item.unit_price)}</TableCell>
-                  <TableCell className="text-right font-mono font-semibold">{formatRupiah(item.cost)}</TableCell>
+                <TableRow key={item.id}>
+                  <TableCell>{idx + 1}</TableCell>
+                  <TableCell>{item.description}</TableCell>
+                  <TableCell>{item.code || '-'}</TableCell>
+                  <TableCell>{item.unit}</TableCell>
+                  <TableCell>{formatDecimal(item.coefficient, 4)}</TableCell>
+                  <TableCell>{formatRupiah(item.unit_price)}</TableCell>
+                  <TableCell>{formatRupiah(item.cost)}</TableCell>
                 </TableRow>
               ))}
-              <TableRow className="bg-muted/20 font-medium text-xs">
-                <TableCell colSpan={6} className="text-right text-muted-foreground">
+              <TableRow>
+                <TableCell colSpan={6}>
                   Jumlah {group.label}
                 </TableCell>
-                <TableCell className="text-right font-bold">{formatRupiah(group.total)}</TableCell>
+                <TableCell>{formatRupiah(group.total)}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -74,9 +74,9 @@ export function AhspDetail({ ahsp }: { ahsp: AhspDetailDto }) {
   return (
     <div className="flex flex-col gap-6">
       <Card>
-        <CardHeader className="pb-3">
+        <CardHeader>
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <CardTitle className="text-base">{ahsp.work_item}</CardTitle>
+            <CardTitle>{ahsp.work_item}</CardTitle>
             <Badge variant={ahsp.status === 'final' ? 'default' : 'secondary'}>
               {ahsp.status}
             </Badge>
@@ -102,7 +102,7 @@ export function AhspDetail({ ahsp }: { ahsp: AhspDetailDto }) {
 
       {ahsp.items.length === 0 ? (
         <Card>
-          <CardContent className="py-6">
+          <CardContent>
             <Empty>
               <EmptyHeader>
                 <EmptyTitle>Belum ada komponen biaya</EmptyTitle>
@@ -122,16 +122,16 @@ export function AhspDetail({ ahsp }: { ahsp: AhspDetailDto }) {
 
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm text-muted-foreground">Total Biaya Langsung</CardTitle>
+          <CardHeader>
+            <CardTitle>Total Biaya Langsung</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-xl font-bold font-mono">{formatRupiah(ahsp.total_cost)}</p>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm text-muted-foreground">
+          <CardHeader>
+            <CardTitle>
               Biaya Umum & Keuntungan ({formatDecimal(ahsp.overhead_profit_pct, 2)}%)
             </CardTitle>
           </CardHeader>
@@ -141,9 +141,9 @@ export function AhspDetail({ ahsp }: { ahsp: AhspDetailDto }) {
             </p>
           </CardContent>
         </Card>
-        <Card className="border-primary/40 bg-primary/5">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-bold text-primary">Harga Satuan Pekerjaan</CardTitle>
+        <Card>
+          <CardHeader>
+            <CardTitle>Harga Satuan Pekerjaan</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-xl font-extrabold font-mono text-primary">

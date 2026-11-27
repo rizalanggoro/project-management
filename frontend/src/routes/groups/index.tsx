@@ -108,22 +108,22 @@ function GroupsPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-12 text-center">No</TableHead>
-              <TableHead className="w-32">Kode</TableHead>
+              <TableHead>No</TableHead>
+              <TableHead>Kode</TableHead>
               <TableHead>Nama Grup</TableHead>
-              {isAdmin && <TableHead className="w-32 text-center">Aksi</TableHead>}
+              {isAdmin && <TableHead>Aksi</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={isAdmin ? 4 : 3} className="h-32 text-center text-muted-foreground">
+                <TableCell colSpan={isAdmin ? 4 : 3}>
                   Memuat data...
                 </TableCell>
               </TableRow>
             ) : groups.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={isAdmin ? 4 : 3} className="h-48 text-center">
+                <TableCell colSpan={isAdmin ? 4 : 3}>
                   <Empty>
                     <EmptyHeader>
                       <EmptyTitle>Belum ada grup pekerjaan</EmptyTitle>
@@ -134,11 +134,11 @@ function GroupsPage() {
             ) : (
               groups.map((g, idx) => (
                 <TableRow key={g.id}>
-                  <TableCell className="text-center text-muted-foreground">{idx + 1}</TableCell>
-                  <TableCell className="font-mono font-semibold">{g.code}</TableCell>
-                  <TableCell className="font-medium">{g.name}</TableCell>
+                  <TableCell>{idx + 1}</TableCell>
+                  <TableCell>{g.code}</TableCell>
+                  <TableCell>{g.name}</TableCell>
                   {isAdmin && (
-                    <TableCell className="text-center">
+                    <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger
                           render={
@@ -177,7 +177,7 @@ function GroupsPage() {
       </div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>{editingId ? 'Ubah Grup' : 'Tambah Grup'}</DialogTitle>
             <DialogDescription>Atur kode dan nama grup pekerjaan.</DialogDescription>

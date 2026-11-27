@@ -39,7 +39,7 @@ export function UnitPriceCategoryFilter({
           }
         }}
       >
-        <SelectTrigger className="w-44">
+        <SelectTrigger>
           <SelectValue placeholder="Kategori" />
         </SelectTrigger>
         <SelectContent>

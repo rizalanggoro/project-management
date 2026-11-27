@@ -63,7 +63,7 @@ function AhspPage() {
           AHSP
         </h1>
         <div className="flex items-center justify-between gap-4">
-          <InputGroup className="w-64">
+          <InputGroup>
             <InputGroupAddon>
               <Search data-icon="inline-start" />
             </InputGroupAddon>
@@ -88,29 +88,30 @@ function AhspPage() {
         </div>
       </div>
 
-      <div className="rounded-md border bg-card overflow-hidden">
-        <Table className="min-w-[700px]">
+      <div className="rounded-md border bg-card overflow-x-auto">
+        <div className="w-max">
+        <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-12 text-center">No</TableHead>
-              <TableHead className="w-36">Kode</TableHead>
+              <TableHead>No</TableHead>
+              <TableHead>Kode</TableHead>
               <TableHead>Item Pekerjaan</TableHead>
-              <TableHead className="w-24 text-center">Satuan</TableHead>
-              <TableHead className="w-40 text-right">Harga Satuan</TableHead>
+              <TableHead>Satuan</TableHead>
+              <TableHead>Harga Satuan</TableHead>
               <TableHead>Catatan</TableHead>
-              {isAdmin && <TableHead className="w-20 text-center">Aksi</TableHead>}
+              {isAdmin && <TableHead>Aksi</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={isAdmin ? 7 : 6} className="h-32 text-center text-muted-foreground">
+                <TableCell colSpan={isAdmin ? 7 : 6}>
                   Memuat data...
                 </TableCell>
               </TableRow>
             ) : ahsps.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={isAdmin ? 7 : 6} className="h-48 text-center">
+                <TableCell colSpan={isAdmin ? 7 : 6}>
                   <Empty>
                     <EmptyHeader>
                       <EmptyTitle>Belum ada data AHSP</EmptyTitle>
@@ -125,7 +126,6 @@ function AhspPage() {
               ahsps.map((a, idx) => (
                 <TableRow
                   key={a.id}
-                  className="cursor-pointer hover:bg-muted/50"
                   tabIndex={0}
                   onClick={() => navigate({ to: '/ahsp/$id', params: { id: a.id } })}
                   onKeyDown={(e) => {
@@ -134,17 +134,16 @@ function AhspPage() {
                     }
                   }}
                 >
-                  <TableCell className="text-center text-muted-foreground">{idx + 1}</TableCell>
-                  <TableCell className="font-mono text-xs font-semibold">{a.code}</TableCell>
-                  <TableCell className="font-medium text-foreground">{a.work_item}</TableCell>
-                  <TableCell className="text-center">{a.unit}</TableCell>
-                  <TableCell className="text-right font-medium text-foreground">
+                  <TableCell>{idx + 1}</TableCell>
+                  <TableCell>{a.code}</TableCell>
+                  <TableCell>{a.work_item}</TableCell>
+                  <TableCell>{a.unit}</TableCell>
+                  <TableCell>
                     {formatRupiah(a.unit_price_of_work)}
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{a.note || '-'}</TableCell>
+                  <TableCell>{a.note || '-'}</TableCell>
                   {isAdmin && (
                     <TableCell
-                      className="text-center"
                       onClick={(e) => e.stopPropagation()}
                       onKeyDown={(e) => e.stopPropagation()}
                     >
@@ -190,6 +189,7 @@ function AhspPage() {
             )}
           </TableBody>
         </Table>
+        </div>
       </div>
     </div>
   )

@@ -99,7 +99,7 @@ export function UnitPricePickerDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-3xl">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>{meta.title}</DialogTitle>
           <DialogDescription>
@@ -120,9 +120,9 @@ export function UnitPricePickerDialog({
 
         <div className="rounded-md border max-h-80 overflow-y-auto">
           <Table>
-            <TableHeader className="sticky top-0 bg-background">
+            <TableHeader>
               <TableRow>
-                <TableHead className="w-12 text-center">
+                <TableHead>
                   <Checkbox
                     checked={isAllSelected}
                     onCheckedChange={toggleSelectAll}
@@ -130,22 +130,22 @@ export function UnitPricePickerDialog({
                     aria-label="Pilih semua"
                   />
                 </TableHead>
-                <TableHead className="w-32">Kode</TableHead>
+                <TableHead>Kode</TableHead>
                 <TableHead>Uraian Pekerjaan / Item</TableHead>
-                <TableHead className="w-20 text-center">Satuan</TableHead>
-                <TableHead className="w-36 text-right">Harga Satuan</TableHead>
+                <TableHead>Satuan</TableHead>
+                <TableHead>Harga Satuan</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
+                  <TableCell colSpan={5}>
                     Memuat data master harga...
                   </TableCell>
                 </TableRow>
               ) : allUnitPrices.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-32 text-center">
+                  <TableCell colSpan={5}>
                     <Empty>
                       <EmptyHeader>
                         <EmptyTitle>Tidak ada item</EmptyTitle>
@@ -166,17 +166,11 @@ export function UnitPricePickerDialog({
                   return (
                     <TableRow
                       key={p.id}
-                      className={
-                        isAlreadyInAhsp
-                          ? 'opacity-50 cursor-not-allowed'
-                          : 'cursor-pointer'
-                      }
                       onClick={() => {
                         if (!isAlreadyInAhsp) toggleSelect(p.id)
                       }}
                     >
                       <TableCell
-                        className="text-center"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <Checkbox
@@ -186,23 +180,23 @@ export function UnitPricePickerDialog({
                           aria-label={`Pilih ${p.work_item}`}
                         />
                       </TableCell>
-                      <TableCell className="font-mono text-xs font-semibold">
+                      <TableCell>
                         {p.code}
                       </TableCell>
-                      <TableCell className="font-medium text-foreground">
+                      <TableCell>
                         <div className="flex items-center gap-2">
                           <span>{p.work_item}</span>
                           {isAlreadyInAhsp && (
-                            <Badge variant="secondary" className="text-[10px]">
+                            <Badge variant="secondary">
                               Sudah ada
                             </Badge>
                           )}
                         </div>
                       </TableCell>
-                      <TableCell className="text-center font-mono text-xs">
+                      <TableCell>
                         {p.unit}
                       </TableCell>
-                      <TableCell className="text-right font-mono font-semibold text-foreground">
+                      <TableCell>
                         {formatRupiah(p.unit_price)}
                       </TableCell>
                     </TableRow>

@@ -91,7 +91,7 @@ function ProjectsPage() {
           Proyek
         </h1>
         <div className="flex items-center justify-between gap-4">
-          <InputGroup className="w-64">
+          <InputGroup>
             <InputGroupAddon>
               <Search data-icon="inline-start" />
             </InputGroupAddon>
@@ -117,18 +117,18 @@ function ProjectsPage() {
       </div>
 
       <div className="rounded-md border bg-card overflow-hidden">
-        <Table className="min-w-[800px]">
+        <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-12 text-center">No</TableHead>
+              <TableHead>No</TableHead>
               <TableHead>Proyek</TableHead>
               <TableHead>Bagian</TableHead>
               <TableHead>Plant</TableHead>
               <TableHead>Tanggal Rencana</TableHead>
-              <TableHead className="text-right">Anggaran</TableHead>
-              <TableHead className="w-24 text-center">Progres</TableHead>
+              <TableHead>Anggaran</TableHead>
+              <TableHead>Progres</TableHead>
               {isAdmin && (
-                <TableHead className="w-16 text-center">Aksi</TableHead>
+                <TableHead>Aksi</TableHead>
               )}
             </TableRow>
           </TableHeader>
@@ -137,7 +137,6 @@ function ProjectsPage() {
               <TableRow>
                 <TableCell
                   colSpan={colSpanCount}
-                  className="h-32 text-center text-muted-foreground"
                 >
                   Memuat data...
                 </TableCell>
@@ -146,7 +145,6 @@ function ProjectsPage() {
               <TableRow>
                 <TableCell
                   colSpan={colSpanCount}
-                  className="h-48 text-center"
                 >
                   <Empty>
                     <EmptyHeader>
@@ -170,28 +168,26 @@ function ProjectsPage() {
                   <TableRow
                     key={p.id}
                     onClick={() => setSelectedProject(p)}
-                    className="cursor-pointer"
                   >
-                    <TableCell className="text-center text-muted-foreground">
+                    <TableCell>
                       {(page - 1) * 25 + idx + 1}
                     </TableCell>
-                    <TableCell className="font-medium text-foreground whitespace-nowrap">
+                    <TableCell>
                       {p.name}
                     </TableCell>
                     <TableCell>{p.section || "-"}</TableCell>
                     <TableCell>{p.plant || "-"}</TableCell>
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell>
                       {p.implementation_plan || "-"}
                     </TableCell>
-                    <TableCell className="text-right font-medium whitespace-nowrap">
+                    <TableCell>
                       {formatRupiah(p.budget)}
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell>
                       {doneStages.length}/{PROGRESS_STAGES.length}
                     </TableCell>
                     {isAdmin && (
                       <TableCell
-                        className="text-center"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <DropdownMenu>

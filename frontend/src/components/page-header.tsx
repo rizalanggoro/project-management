@@ -32,7 +32,7 @@ export function PageHeader({
 
         <div className="flex items-center gap-3">
           {onSearch && (
-            <InputGroup className="w-64">
+            <InputGroup>
               <InputGroupAddon>
                 <Search data-icon="inline-start" />
               </InputGroupAddon>

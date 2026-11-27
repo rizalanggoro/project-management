@@ -43,28 +43,28 @@ export function UnitPriceCategoryTable({
 
   return (
     <div className="rounded-md border bg-card overflow-hidden">
-      <Table className="min-w-[600px]">
+      <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-12 text-center">No</TableHead>
-            <TableHead className="w-28">Kode</TableHead>
+            <TableHead>No</TableHead>
+            <TableHead>Kode</TableHead>
             <TableHead>Nama</TableHead>
-            <TableHead className="w-24">Prefix</TableHead>
-            <TableHead className="w-20 text-center">Urutan</TableHead>
-            <TableHead className="w-24 text-center">Status</TableHead>
-            {isAdmin && <TableHead className="w-32 text-center">Aksi</TableHead>}
+            <TableHead>Prefix</TableHead>
+            <TableHead>Urutan</TableHead>
+            <TableHead>Status</TableHead>
+            {isAdmin && <TableHead>Aksi</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
           {isLoading ? (
             <TableRow>
-              <TableCell colSpan={colSpan} className="h-32 text-center text-muted-foreground">
+              <TableCell colSpan={colSpan}>
                 Memuat data...
               </TableCell>
             </TableRow>
           ) : items.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={colSpan} className="h-48 text-center">
+              <TableCell colSpan={colSpan}>
                 <Empty>
                   <EmptyHeader>
                     <EmptyTitle>Belum ada kategori</EmptyTitle>
@@ -78,28 +78,28 @@ export function UnitPriceCategoryTable({
           ) : (
             items.map((item, idx) => (
               <TableRow key={item.id}>
-                <TableCell className="text-center text-muted-foreground">
+                <TableCell>
                   {idx + 1}
                 </TableCell>
-                <TableCell className="font-mono text-xs font-semibold">
+                <TableCell>
                   {item.code}
                 </TableCell>
-                <TableCell className="font-medium">{item.name}</TableCell>
+                <TableCell>{item.name}</TableCell>
                 <TableCell>
-                  <Badge variant="outline" className="font-mono">
+                  <Badge variant="outline">
                     {item.code_prefix}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-center text-muted-foreground">
+                <TableCell>
                   {item.sort_order}
                 </TableCell>
-                <TableCell className="text-center">
+                <TableCell>
                   <Badge variant={item.is_active ? "secondary" : "outline"}>
                     {item.is_active ? "Aktif" : "Nonaktif"}
                   </Badge>
                 </TableCell>
                 {isAdmin && (
-                  <TableCell className="text-center">
+                  <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger
                         render={
