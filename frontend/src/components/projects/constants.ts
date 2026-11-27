@@ -1,18 +1,3 @@
-export const PROJECT_SECTIONS = [
-  "GA Building",
-  "EHS",
-  "Wellfare",
-] as const;
-
-export type ProjectSection = (typeof PROJECT_SECTIONS)[number];
-
-export const PROJECT_PLANTS = [
-  "Cikarang",
-  "Karawang",
-] as const;
-
-export type ProjectPlant = (typeof PROJECT_PLANTS)[number];
-
 export type ProgressKey =
   | "progress_ppt"
   | "progress_drawing"

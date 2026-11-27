@@ -1,4 +1,8 @@
-import { updateProjectMutation } from "@/api/@tanstack/react-query.gen";
+import {
+  listProjectPlantsOptions,
+  listProjectSectionsOptions,
+  updateProjectMutation,
+} from "@/api/@tanstack/react-query.gen";
 import type { Project } from "@/api/types.gen";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -32,16 +36,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toSelectItems } from "@/lib/master-data";
+import { buildProjectBody } from "@/lib/project-forms";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import {
-  PROJECT_PLANTS,
-  PROJECT_SECTIONS,
-  PROGRESS_STAGES,
-  type ProjectPlant,
-  type ProjectSection,
-  type StageOption,
-} from "./constants";
+import { PROGRESS_STAGES, type StageOption } from "./constants";
 
 export interface EditProjectDialogProps {
   project: Project | null;
@@ -62,19 +61,18 @@ function EditProjectForm({
   const queryClient = useQueryClient();
   const anchor = useComboboxAnchor();
 
+  const { data: sections = [] } = useQuery({
+    ...listProjectSectionsOptions(),
+  });
+  const { data: plants = [] } = useQuery({
+    ...listProjectPlantsOptions(),
+  });
+  const sectionItems = toSelectItems(sections);
+  const plantItems = toSelectItems(plants);
+
   const [name, setName] = useState(project.name || "");
-  const [section, setSection] = useState<ProjectSection>(() => {
-    if (PROJECT_SECTIONS.includes(project.section as ProjectSection)) {
-      return project.section as ProjectSection;
-    }
-    return "GA Building";
-  });
-  const [plant, setPlant] = useState<ProjectPlant>(() => {
-    if (PROJECT_PLANTS.includes(project.plant as ProjectPlant)) {
-      return project.plant as ProjectPlant;
-    }
-    return "Cikarang";
-  });
+  const [section, setSection] = useState(project.section || "");
+  const [plant, setPlant] = useState(project.plant || "");
   const [planDate, setPlanDate] = useState(project.implementation_plan || "");
   const [budget, setBudget] = useState(project.budget || "");
   const [note, setNote] = useState(project.note || "");
@@ -92,34 +90,22 @@ function EditProjectForm({
       setFormError("Nama proyek wajib diisi.");
       return;
     }
-    if (!PROJECT_SECTIONS.includes(section)) {
-      setFormError("Bagian harus berupa salah satu dari: GA Building, EHS, atau Wellfare.");
+    if (!section) {
+      setFormError("Pilih bagian proyek.");
       return;
     }
-    if (!PROJECT_PLANTS.includes(plant)) {
-      setFormError("Plant harus berupa salah satu dari: Cikarang atau Karawang.");
+    if (!plant) {
+      setFormError("Pilih plant proyek.");
       return;
     }
 
     try {
-      const progressPayload = Object.fromEntries(
-        PROGRESS_STAGES.map((s) => [
-          s.key,
-          stages.some((sel) => sel.key === s.key) ? "done" : "pending",
-        ])
-      );
-
       await updateMut.mutateAsync({
         path: { id: project.id },
-        body: {
-          name: name.trim(),
-          section,
-          plant,
-          implementation_plan: planDate || undefined,
-          budget: budget ? budget.replace(/\D/g, "") : "0",
-          note: note.trim(),
-          ...progressPayload,
-        },
+        body: buildProjectBody(
+          { name, section, plant, planDate, budget, note, stages },
+          PROGRESS_STAGES
+        ),
       });
 
       await queryClient.invalidateQueries();
@@ -131,7 +117,7 @@ function EditProjectForm({
   };
 
   return (
-    <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+    <DialogContent>
       <DialogHeader>
         <DialogTitle>Ubah Proyek</DialogTitle>
         <DialogDescription>
@@ -145,7 +131,7 @@ function EditProjectForm({
         </Alert>
       )}
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit}>
         <FieldGroup>
           <Field>
             <FieldLabel htmlFor="edit-proj-name">Nama Proyek</FieldLabel>
@@ -158,79 +144,73 @@ function EditProjectForm({
             />
           </Field>
 
-          <div className="grid grid-cols-2 gap-4">
-            <Field>
-              <FieldLabel htmlFor="edit-proj-section">Bagian</FieldLabel>
-              <Select
-                items={PROJECT_SECTIONS.map((sec) => ({ value: sec, label: sec }))}
-                value={section}
-                onValueChange={(val) => {
-                  if (val && PROJECT_SECTIONS.includes(val as ProjectSection)) {
-                    setSection(val as ProjectSection);
-                  }
-                }}
-              >
-                <SelectTrigger id="edit-proj-section" className="w-full">
-                  <SelectValue placeholder="Pilih Bagian..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {PROJECT_SECTIONS.map((sec) => (
-                      <SelectItem key={sec} value={sec}>
-                        {sec}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="edit-proj-plant">Plant</FieldLabel>
-              <Select
-                items={PROJECT_PLANTS.map((pl) => ({ value: pl, label: pl }))}
-                value={plant}
-                onValueChange={(val) => {
-                  if (val && PROJECT_PLANTS.includes(val as ProjectPlant)) {
-                    setPlant(val as ProjectPlant);
-                  }
-                }}
-              >
-                <SelectTrigger id="edit-proj-plant" className="w-full">
-                  <SelectValue placeholder="Pilih Plant..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {PROJECT_PLANTS.map((pl) => (
-                      <SelectItem key={pl} value={pl}>
-                        {pl}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </Field>
-          </div>
+          <Field>
+            <FieldLabel htmlFor="edit-proj-section">Bagian</FieldLabel>
+            <Select
+              items={sectionItems}
+              value={section}
+              onValueChange={(val) => {
+                if (val) setSection(val);
+              }}
+            >
+              <SelectTrigger id="edit-proj-section">
+                <SelectValue placeholder="Pilih Bagian..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {sectionItems.map((sec) => (
+                    <SelectItem key={sec.value} value={sec.value}>
+                      {sec.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </Field>
 
-          <div className="grid grid-cols-2 gap-4">
-            <Field>
-              <FieldLabel htmlFor="edit-proj-plan">Tanggal Rencana</FieldLabel>
-              <Input
-                id="edit-proj-plan"
-                type="date"
-                value={planDate}
-                onChange={(e) => setPlanDate(e.target.value)}
-              />
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="edit-proj-budget">Anggaran (Rp)</FieldLabel>
-              <Input
-                id="edit-proj-budget"
-                value={budget}
-                onChange={(e) => setBudget(e.target.value)}
-                placeholder="Contoh: 150000000"
-              />
-            </Field>
-          </div>
+          <Field>
+            <FieldLabel htmlFor="edit-proj-plant">Plant</FieldLabel>
+            <Select
+              items={plantItems}
+              value={plant}
+              onValueChange={(val) => {
+                if (val) setPlant(val);
+              }}
+            >
+              <SelectTrigger id="edit-proj-plant">
+                <SelectValue placeholder="Pilih Plant..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {plantItems.map((pl) => (
+                    <SelectItem key={pl.value} value={pl.value}>
+                      {pl.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="edit-proj-plan">Tanggal Rencana</FieldLabel>
+            <Input
+              id="edit-proj-plan"
+              type="date"
+              value={planDate}
+              onChange={(e) => setPlanDate(e.target.value)}
+            />
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="edit-proj-budget">Anggaran (Rp)</FieldLabel>
+            <Input
+              id="edit-proj-budget"
+              value={budget}
+              onChange={(e) => setBudget(e.target.value)}
+              placeholder="Contoh: 150000000"
+            />
+          </Field>
 
           <Field>
             <FieldLabel htmlFor="edit-proj-note">Catatan</FieldLabel>

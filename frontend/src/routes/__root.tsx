@@ -36,12 +36,14 @@ import {
 } from "@tanstack/react-router";
 import {
   Box,
+  Building2,
   Calculator,
   Calendar,
   FileSpreadsheet,
   FolderKanban,
   Layers,
   LogOut,
+  MapPin,
   Receipt,
   Tag,
   Tags,
@@ -76,6 +78,8 @@ const nav = [
         label: "Kategori Harga Satuan",
         icon: Tags,
       },
+      { to: "/project-sections", label: "Bagian Proyek", icon: Building2 },
+      { to: "/project-plants", label: "Plant Proyek", icon: MapPin },
     ],
   },
 ] as const;
@@ -126,7 +130,7 @@ function Shell() {
     <TooltipProvider>
       <SidebarProvider defaultOpen>
         <Sidebar variant="inset">
-          <SidebarHeader className="h-14 justify-center border-b px-4">
+          <SidebarHeader>
             <Link
               to="/projects"
               className="flex items-center gap-2 font-bold tracking-tight text-lg text-foreground"
@@ -162,7 +166,7 @@ function Shell() {
             ))}
           </SidebarContent>
 
-          <SidebarFooter className="border-t p-2">
+          <SidebarFooter>
             <SidebarMenu>
               <SidebarMenuItem>
                 <div className="flex items-center gap-2.5 px-2 py-1.5">
@@ -183,7 +187,6 @@ function Shell() {
                 <SidebarMenuButton
                   onClick={() => setLogoutOpen(true)}
                   tooltip="Keluar"
-                  className="text-destructive hover:bg-destructive/10 hover:text-destructive focus:text-destructive"
                 >
                   <LogOut />
                   <span>Keluar</span>
@@ -193,12 +196,13 @@ function Shell() {
           </SidebarFooter>
         </Sidebar>
 
-        <SidebarInset className="min-w-0">
+        <div className="min-w-0 flex-1">
+        <SidebarInset>
           {/* Top Navbar */}
           <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center justify-between gap-2 border-b bg-background px-4 md:rounded-t-xl">
             <div className="flex items-center gap-2">
-              <SidebarTrigger className="-ml-1" />
-              <Separator orientation="vertical" className="mr-2 h-4" />
+              <SidebarTrigger />
+              <Separator orientation="vertical" />
             </div>
 
             <div className="flex items-center gap-3">
@@ -207,10 +211,11 @@ function Shell() {
           </header>
 
           {/* Main Page Area */}
-          <main className="flex-1 p-6 min-w-0 overflow-x-hidden">
+          <main className="flex-1 p-6 min-w-0">
             <Outlet />
           </main>
         </SidebarInset>
+        </div>
       </SidebarProvider>
 
       <AlertDialog open={isLogoutOpen} onOpenChange={setLogoutOpen}>

@@ -1,4 +1,8 @@
-import { createProjectMutation } from "@/api/@tanstack/react-query.gen";
+import {
+  createProjectMutation,
+  listProjectPlantsOptions,
+  listProjectSectionsOptions,
+} from "@/api/@tanstack/react-query.gen";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -44,25 +48,22 @@ import {
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
+import { toSelectItems } from "@/lib/master-data";
+import { buildProjectBody } from "@/lib/project-forms";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
 import { ChevronDownIcon } from "lucide-react";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
-import {
-  PROJECT_PLANTS,
-  PROJECT_SECTIONS,
-  PROGRESS_STAGES,
-  type StageOption,
-} from "./constants";
+import { PROGRESS_STAGES, type StageOption } from "./constants";
 
 const formSchema = z.object({
   name: z.string().trim().min(1, "Nama proyek wajib diisi."),
-  section: z.enum(PROJECT_SECTIONS),
-  plant: z.enum(PROJECT_PLANTS),
+  section: z.string().min(1, "Pilih bagian proyek."),
+  plant: z.string().min(1, "Pilih plant proyek."),
   planDate: z.date().optional(),
   budget: z.string(),
   note: z.string(),
@@ -85,12 +86,22 @@ export function AddProjectDialog({
   const queryClient = useQueryClient();
   const anchor = useComboboxAnchor();
 
+  const { data: sections = [] } = useQuery({
+    ...listProjectSectionsOptions(),
+  });
+  const { data: plants = [] } = useQuery({
+    ...listProjectPlantsOptions(),
+  });
+
+  const sectionItems = toSelectItems(sections);
+  const plantItems = toSelectItems(plants);
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      section: "GA Building",
-      plant: "Cikarang",
+      section: "",
+      plant: "",
       planDate: undefined,
       budget: "",
       note: "",
@@ -115,25 +126,11 @@ export function AddProjectDialog({
 
   const onSubmit = async (values: FormValues) => {
     try {
-      const progressPayload = Object.fromEntries(
-        PROGRESS_STAGES.map((s) => [
-          s.key,
-          values.stages.some((sel) => sel.key === s.key) ? "done" : "pending",
-        ])
-      );
-
       await createMut.mutateAsync({
-        body: {
-          name: values.name.trim(),
-          section: values.section,
-          plant: values.plant,
-          implementation_plan: values.planDate
-            ? format(values.planDate, "yyyy-MM-dd")
-            : undefined,
-          budget: values.budget.replace(/\D/g, "") || "0",
-          note: values.note.trim(),
-          ...progressPayload,
-        },
+        body: buildProjectBody(
+          { ...values, planDate: values.planDate },
+          PROGRESS_STAGES
+        ),
       });
 
       await queryClient.invalidateQueries();
@@ -162,7 +159,7 @@ export function AddProjectDialog({
           </Alert>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit(onSubmit)}>
           <FieldGroup>
             <Controller
               name="name"
@@ -191,10 +188,7 @@ export function AddProjectDialog({
                   <FieldLabel htmlFor={field.name}>Bagian</FieldLabel>
                   <Select
                     name={field.name}
-                    items={PROJECT_SECTIONS.map((sec) => ({
-                      value: sec,
-                      label: sec,
-                    }))}
+                    items={sectionItems}
                     value={field.value}
                     onValueChange={field.onChange}
                   >
@@ -203,9 +197,9 @@ export function AddProjectDialog({
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        {PROJECT_SECTIONS.map((sec) => (
-                          <SelectItem key={sec} value={sec}>
-                            {sec}
+                        {sectionItems.map((sec) => (
+                          <SelectItem key={sec.value} value={sec.value}>
+                            {sec.label}
                           </SelectItem>
                         ))}
                       </SelectGroup>
@@ -226,10 +220,7 @@ export function AddProjectDialog({
                   <FieldLabel htmlFor={field.name}>Plant</FieldLabel>
                   <Select
                     name={field.name}
-                    items={PROJECT_PLANTS.map((pl) => ({
-                      value: pl,
-                      label: pl,
-                    }))}
+                    items={plantItems}
                     value={field.value}
                     onValueChange={field.onChange}
                   >
@@ -238,9 +229,9 @@ export function AddProjectDialog({
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        {PROJECT_PLANTS.map((pl) => (
-                          <SelectItem key={pl} value={pl}>
-                            {pl}
+                        {plantItems.map((pl) => (
+                          <SelectItem key={pl.value} value={pl.value}>
+                            {pl.label}
                           </SelectItem>
                         ))}
                       </SelectGroup>
@@ -266,7 +257,6 @@ export function AddProjectDialog({
                           id={field.name}
                           variant="outline"
                           data-empty={!field.value}
-                          className="w-[212px] justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
                           aria-invalid={fieldState.invalid}
                         >
                           {field.value ? (
@@ -278,7 +268,7 @@ export function AddProjectDialog({
                         </Button>
                       }
                     />
-                    <PopoverContent className="w-auto p-0" align="start">
+                    <PopoverContent align="start">
                       <Calendar
                         mode="single"
                         selected={field.value}
