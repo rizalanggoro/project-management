@@ -103,9 +103,9 @@ function GroupsPage() {
           <TableHeader>
             <TableRow>
               <TableHead className="w-12 text-center">No</TableHead>
-              <TableHead className="w-32">Code</TableHead>
+              <TableHead className="w-32">Kode</TableHead>
               <TableHead>Nama Grup</TableHead>
-              {isAdmin && <TableHead className="w-32 text-center">Action</TableHead>}
+              {isAdmin && <TableHead className="w-32 text-center">Aksi</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -161,7 +161,7 @@ function GroupsPage() {
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor="group-code">Code</FieldLabel>
+                <FieldLabel htmlFor="group-code">Kode</FieldLabel>
                 <Input
                   id="group-code"
                   value={code}

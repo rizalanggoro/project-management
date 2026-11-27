@@ -28,6 +28,13 @@ export const Route = createFileRoute('/schedule/')({
   }),
 })
 
+const statusLabels: Record<string, string> = {
+  planning: 'Perencanaan',
+  on_going: 'Sedang Berjalan',
+  done: 'Selesai',
+  late: 'Terlambat',
+}
+
 function SchedulePage() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
@@ -88,7 +95,7 @@ function SchedulePage() {
     e.preventDefault()
     setErrorMessage('')
     if (!workItem.trim() || !startDate || !endDate) {
-      setErrorMessage('Work item, start date, dan end date wajib diisi.')
+      setErrorMessage('Item pekerjaan, tanggal mulai, dan tanggal selesai wajib diisi.')
       return
     }
 
@@ -108,7 +115,7 @@ function SchedulePage() {
       await queryClient.invalidateQueries()
       setIsAddOpen(false)
     } catch (err: any) {
-      setErrorMessage(err?.message || 'Gagal menyimpan schedule.')
+      setErrorMessage(err?.message || 'Gagal menyimpan jadwal.')
     }
   }
 
@@ -118,7 +125,7 @@ function SchedulePage() {
       await deleteMut.mutateAsync({ path: { id } })
       await queryClient.invalidateQueries()
     } catch (err: any) {
-      alert(err?.message || 'Gagal menghapus schedule.')
+      alert(err?.message || 'Gagal menghapus jadwal.')
     }
   }
 
@@ -146,7 +153,7 @@ function SchedulePage() {
     <div className="flex flex-col gap-4 min-w-0">
       <div className="flex flex-col gap-4">
         <h1 className="text-2xl font-bold tracking-tight text-foreground">
-          Schedule
+          Jadwal
         </h1>
         <div className="flex items-center justify-between gap-4">
           <InputGroup className="w-64">
@@ -154,7 +161,7 @@ function SchedulePage() {
               <Search data-icon="inline-start" />
             </InputGroupAddon>
             <InputGroupInput
-              placeholder="Search..."
+              placeholder="Cari..."
               value={q || ''}
               onChange={(e) =>
                 navigate({
@@ -169,7 +176,7 @@ function SchedulePage() {
           </InputGroup>
           <Button onClick={handleOpenAdd}>
             <Plus data-icon="inline-start" />
-            Schedule
+            Jadwal
           </Button>
         </div>
       </div>
@@ -211,22 +218,22 @@ function SchedulePage() {
           <TableHeader>
             <TableRow>
               <TableHead className="w-12 text-center">No</TableHead>
-              <TableHead className="w-28">Code</TableHead>
-              <TableHead>Work Item</TableHead>
-              <TableHead className="w-28 text-center">Start Date</TableHead>
-              <TableHead className="w-28 text-center">End Date</TableHead>
-              <TableHead className="w-24 text-center">Duration</TableHead>
-              <TableHead className="w-24 text-right">Weight (%)</TableHead>
-              <TableHead className="w-24 text-right">Progress (%)</TableHead>
+              <TableHead className="w-28">Kode</TableHead>
+              <TableHead>Item Pekerjaan</TableHead>
+              <TableHead className="w-28 text-center">Tanggal Mulai</TableHead>
+              <TableHead className="w-28 text-center">Tanggal Selesai</TableHead>
+              <TableHead className="w-24 text-center">Durasi</TableHead>
+              <TableHead className="w-24 text-right">Bobot (%)</TableHead>
+              <TableHead className="w-24 text-right">Progres (%)</TableHead>
               <TableHead className="w-28 text-center">Status</TableHead>
-              {isAdmin && <TableHead className="w-20 text-center">Action</TableHead>}
+              {isAdmin && <TableHead className="w-20 text-center">Aksi</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
               <TableRow>
                 <TableCell colSpan={isAdmin ? 10 : 9} className="h-32 text-center text-muted-foreground">
-                  Loading data...
+                  Memuat data...
                 </TableCell>
               </TableRow>
             ) : filtered.length === 0 ? (
@@ -255,7 +262,7 @@ function SchedulePage() {
                   <TableCell className="text-right font-medium">{s.progress}%</TableCell>
                   <TableCell className="text-center">
                     <Badge variant={getStatusBadgeVariant(s.status)} className="capitalize text-xs font-normal">
-                      {s.status.replace('_', ' ')}
+                      {statusLabels[s.status] ?? s.status}
                     </Badge>
                   </TableCell>
                   {isAdmin && (
@@ -266,7 +273,7 @@ function SchedulePage() {
                         className="text-xs text-destructive hover:bg-destructive/10"
                         onClick={() => handleDelete(s.id, s.work_item)}
                       >
-                        Delete
+                        Hapus
                       </Button>
                     </TableCell>
                   )}
@@ -281,7 +288,7 @@ function SchedulePage() {
       <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Add Schedule Item</DialogTitle>
+            <DialogTitle>Tambah Item Jadwal</DialogTitle>
             <DialogDescription>Tambahkan jadwal tahapan pekerjaan proyek.</DialogDescription>
           </DialogHeader>
 
@@ -295,7 +302,7 @@ function SchedulePage() {
             <FieldGroup>
               <div className="grid grid-cols-3 gap-3">
                 <Field>
-                  <FieldLabel htmlFor="sch-code">Code</FieldLabel>
+                  <FieldLabel htmlFor="sch-code">Kode</FieldLabel>
                   <Input
                     id="sch-code"
                     value={code}
@@ -305,7 +312,7 @@ function SchedulePage() {
                 </Field>
                 <div className="col-span-2">
                   <Field>
-                    <FieldLabel htmlFor="sch-workitem">Work Item</FieldLabel>
+                    <FieldLabel htmlFor="sch-workitem">Item Pekerjaan</FieldLabel>
                     <Input
                       id="sch-workitem"
                       value={workItem}
@@ -319,7 +326,7 @@ function SchedulePage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <Field>
-                  <FieldLabel htmlFor="sch-start">Start Date</FieldLabel>
+                  <FieldLabel htmlFor="sch-start">Tanggal Mulai</FieldLabel>
                   <Input
                     id="sch-start"
                     type="date"
@@ -329,7 +336,7 @@ function SchedulePage() {
                   />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="sch-end">End Date</FieldLabel>
+                  <FieldLabel htmlFor="sch-end">Tanggal Selesai</FieldLabel>
                   <Input
                     id="sch-end"
                     type="date"
@@ -342,7 +349,7 @@ function SchedulePage() {
 
               <div className="grid grid-cols-3 gap-3">
                 <Field>
-                  <FieldLabel htmlFor="sch-weight">Weight (%)</FieldLabel>
+                  <FieldLabel htmlFor="sch-weight">Bobot (%)</FieldLabel>
                   <Input
                     id="sch-weight"
                     type="number"
@@ -352,7 +359,7 @@ function SchedulePage() {
                   />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="sch-prog">Progress (%)</FieldLabel>
+                  <FieldLabel htmlFor="sch-prog">Progres (%)</FieldLabel>
                   <Input
                     id="sch-prog"
                     type="number"
@@ -365,10 +372,10 @@ function SchedulePage() {
                   <FieldLabel htmlFor="sch-status">Status</FieldLabel>
                   <Select
                     items={[
-                      { value: 'planning', label: 'Planning' },
-                      { value: 'on_going', label: 'On Going' },
-                      { value: 'done', label: 'Done' },
-                      { value: 'late', label: 'Late' },
+                      { value: 'planning', label: 'Perencanaan' },
+                      { value: 'on_going', label: 'Sedang Berjalan' },
+                      { value: 'done', label: 'Selesai' },
+                      { value: 'late', label: 'Terlambat' },
                     ]}
                     value={status}
                     onValueChange={(val) => setStatus(val as any)}
@@ -378,10 +385,10 @@ function SchedulePage() {
                     </SelectTrigger>
                     <SelectContent className="w-full min-w-36">
                       <SelectGroup>
-                        <SelectItem value="planning">Planning</SelectItem>
-                        <SelectItem value="on_going">On Going</SelectItem>
-                        <SelectItem value="done">Done</SelectItem>
-                        <SelectItem value="late">Late</SelectItem>
+                        <SelectItem value="planning">Perencanaan</SelectItem>
+                        <SelectItem value="on_going">Sedang Berjalan</SelectItem>
+                        <SelectItem value="done">Selesai</SelectItem>
+                        <SelectItem value="late">Terlambat</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -391,10 +398,10 @@ function SchedulePage() {
 
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setIsAddOpen(false)}>
-                Cancel
+                Batal
               </Button>
               <Button type="submit" disabled={createMut.isPending}>
-                {createMut.isPending ? 'Saving...' : 'Save'}
+                {createMut.isPending ? 'Menyimpan...' : 'Simpan'}
               </Button>
             </DialogFooter>
           </form>

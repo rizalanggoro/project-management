@@ -132,7 +132,7 @@ export function AhspDetail({ ahsp }: { ahsp: AhspDetailDto }) {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm text-muted-foreground">
-              Overhead & Keuntungan ({formatDecimal(ahsp.overhead_profit_pct, 2)}%)
+              Biaya Umum & Keuntungan ({formatDecimal(ahsp.overhead_profit_pct, 2)}%)
             </CardTitle>
           </CardHeader>
           <CardContent>

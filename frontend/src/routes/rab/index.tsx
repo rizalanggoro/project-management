@@ -199,7 +199,7 @@ function RabPage() {
               <Search data-icon="inline-start" />
             </InputGroupAddon>
             <InputGroupInput
-              placeholder="Search..."
+              placeholder="Cari..."
               value={q || ''}
               onChange={(e) =>
                 navigate({
@@ -214,7 +214,7 @@ function RabPage() {
           </InputGroup>
           <Button onClick={handleOpenAdd}>
             <Plus data-icon="inline-start" />
-            RAB Item
+            Item RAB
           </Button>
         </div>
       </div>
@@ -281,7 +281,7 @@ function RabPage() {
         <Alert>
           <AlertCircle />
           <AlertTitle>Perhatian</AlertTitle>
-          <AlertDescription>Terdapat item pekerjaan yang belum memiliki harga satuan (Unit Price = Rp0).</AlertDescription>
+          <AlertDescription>Terdapat item pekerjaan yang belum memiliki harga (Rp0).</AlertDescription>
         </Alert>
       )}
 
@@ -290,19 +290,19 @@ function RabPage() {
           <TableHeader>
             <TableRow>
               <TableHead className="w-12 text-center">No</TableHead>
-              <TableHead>Work Item</TableHead>
+              <TableHead>Item Pekerjaan</TableHead>
               <TableHead className="w-28 text-right">Volume</TableHead>
-              <TableHead className="w-20 text-center">Unit</TableHead>
-              <TableHead className="w-40 text-right">Unit Price</TableHead>
-              <TableHead className="w-44 text-right">Total Cost</TableHead>
-              {isAdmin && <TableHead className="w-20 text-center">Action</TableHead>}
+              <TableHead className="w-20 text-center">Satuan</TableHead>
+              <TableHead className="w-40 text-right">Harga Satuan</TableHead>
+              <TableHead className="w-44 text-right">Total Biaya</TableHead>
+              {isAdmin && <TableHead className="w-20 text-center">Aksi</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
               <TableRow>
                 <TableCell colSpan={isAdmin ? 7 : 6} className="h-32 text-center text-muted-foreground">
-                  Loading data...
+                  Memuat data...
                 </TableCell>
               </TableRow>
             ) : items.length === 0 ? (
@@ -372,7 +372,7 @@ function RabPage() {
                                 className="text-xs text-destructive hover:bg-destructive/10"
                                 onClick={() => handleDelete(item.id)}
                               >
-                                Delete
+                                Hapus
                               </Button>
                             </div>
                           </TableCell>
@@ -413,7 +413,7 @@ function RabPage() {
       <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Add RAB Item</DialogTitle>
+            <DialogTitle>Tambah Item RAB</DialogTitle>
             <DialogDescription>Tambahkan baris rencana anggaran biaya proyek.</DialogDescription>
           </DialogHeader>
 
@@ -477,7 +477,7 @@ function RabPage() {
               </Field>
 
               <Field>
-                <FieldLabel htmlFor="rab-item">Work Item</FieldLabel>
+                <FieldLabel htmlFor="rab-item">Item Pekerjaan</FieldLabel>
                 <Input
                   id="rab-item"
                   value={workItem}
@@ -489,7 +489,7 @@ function RabPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <Field>
-                  <FieldLabel htmlFor="rab-unit">Unit</FieldLabel>
+                  <FieldLabel htmlFor="rab-unit">Satuan</FieldLabel>
                   <Input
                     id="rab-unit"
                     value={unit}
@@ -512,7 +512,7 @@ function RabPage() {
               </div>
 
               <Field>
-                <FieldLabel htmlFor="rab-price">Unit Price (Rp)</FieldLabel>
+                <FieldLabel htmlFor="rab-price">Harga Satuan (Rp)</FieldLabel>
                 <Input
                   id="rab-price"
                   value={unitPrice}
@@ -537,10 +537,10 @@ function RabPage() {
 
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setIsAddOpen(false)}>
-                Cancel
+                Batal
               </Button>
               <Button type="submit" disabled={createMut.isPending}>
-                {createMut.isPending ? 'Saving...' : 'Save Item'}
+                {createMut.isPending ? 'Menyimpan...' : 'Simpan Item'}
               </Button>
             </DialogFooter>
           </form>

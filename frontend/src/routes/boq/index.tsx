@@ -26,11 +26,11 @@ function BoqPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'complete':
-        return <Badge variant="default" className="text-[11px] font-normal">Complete</Badge>
+        return <Badge variant="default" className="text-[11px] font-normal">Lengkap</Badge>
       case 'partial':
-        return <Badge variant="secondary" className="text-[11px] font-normal">Partial</Badge>
+        return <Badge variant="secondary" className="text-[11px] font-normal">Sebagian</Badge>
       default:
-        return <Badge variant="outline" className="text-[11px] font-normal text-muted-foreground">Empty</Badge>
+        return <Badge variant="outline" className="text-[11px] font-normal text-muted-foreground">Kosong</Badge>
     }
   }
 
@@ -47,7 +47,7 @@ function BoqPage() {
               <Search data-icon="inline-start" />
             </InputGroupAddon>
             <InputGroupInput
-              placeholder="Search projects..."
+              placeholder="Cari proyek..."
               value={q || ''}
               onChange={(e) => {
                 const val = e.target.value
@@ -81,22 +81,22 @@ function BoqPage() {
           <TableHeader>
             <TableRow>
               <TableHead rowSpan={2} className="w-12 text-center">No</TableHead>
-              <TableHead rowSpan={2}>Project</TableHead>
+              <TableHead rowSpan={2}>Proyek</TableHead>
               <TableHead colSpan={2} className="text-center border-b">Volume</TableHead>
               <TableHead colSpan={2} className="text-center border-b">RAB</TableHead>
             </TableRow>
             <TableRow>
               <TableHead className="w-28 text-center text-xs">Status</TableHead>
-              <TableHead className="w-32 text-center text-xs">Export</TableHead>
+              <TableHead className="w-32 text-center text-xs">Ekspor</TableHead>
               <TableHead className="w-28 text-center text-xs">Status</TableHead>
-              <TableHead className="w-40 text-center text-xs">Export</TableHead>
+              <TableHead className="w-40 text-center text-xs">Ekspor</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
               <TableRow>
                 <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
-                  Loading data...
+                  Memuat data...
                 </TableCell>
               </TableRow>
             ) : projects.length === 0 ? (
@@ -125,7 +125,7 @@ function BoqPage() {
                       {p.name}
                     </button>
                     <div className="text-xs text-muted-foreground">
-                      {p.section || 'General'} · {p.plant || 'Site'}
+                      {p.section || 'Umum'} · {p.plant || 'Lokasi'}
                     </div>
                   </TableCell>
 

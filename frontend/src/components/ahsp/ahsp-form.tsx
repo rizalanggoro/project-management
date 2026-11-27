@@ -48,7 +48,7 @@ type LocalItem = CreateAhspItemInput & { id: string }
 type Category = 'LABOR' | 'MATERIALS' | 'EQUIPMENT'
 
 const statusOptions: { label: string; value: 'draft' | 'final' }[] = [
-  { label: 'Draft', value: 'draft' },
+  { label: 'Draf', value: 'draft' },
   { label: 'Final / Disetujui', value: 'final' },
 ]
 
@@ -232,12 +232,12 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
       {/* Page Title */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-foreground">
-          {isEdit ? 'Edit Analisa Harga Satuan (AHSP)' : 'Tambah AHSP Baru'}
+          {isEdit ? 'Ubah Analisa Harga Satuan (AHSP)' : 'Tambah AHSP Baru'}
         </h1>
         <p className="text-xs text-muted-foreground">
           {isEdit
             ? `Perbarui rincian item koefisien dan harga untuk ${code || 'AHSP'}`
-            : 'Pilih item dari Master Unit Price (HSD) lalu tentukan koefisien masing-masing komponen'}
+            : 'Pilih item dari Master Harga Satuan (HSD) lalu tentukan koefisien masing-masing komponen'}
         </p>
       </div>
 
@@ -251,7 +251,7 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
         {/* Section 1: Header AHSP Info */}
         <Card>
           <CardHeader>
-            <CardTitle>Informasi Pekerjaan (Header)</CardTitle>
+            <CardTitle>Informasi Pekerjaan</CardTitle>
             <CardDescription>
               Tentukan kode klasifikasi, uraian pekerjaan, satuan pengukuran, dan catatan spesifikasi.
             </CardDescription>
@@ -266,7 +266,7 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
                   id="ahsp-code"
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
-                  placeholder="e.g. AHSP-BETON-01"
+                  placeholder="mis. AHSP-BETON-01"
                   className="font-mono bg-card"
                   required
                 />
@@ -280,7 +280,7 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
                   id="ahsp-work-item"
                   value={workItem}
                   onChange={(e) => setWorkItem(e.target.value)}
-                  placeholder="e.g. Pembuatan 1 m3 Beton Mutu K-225"
+                  placeholder="mis. Pembuatan 1 m3 Beton Mutu K-225"
                   className="bg-card"
                   required
                 />
@@ -294,7 +294,7 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
                   id="ahsp-unit"
                   value={unit}
                   onChange={(e) => setUnit(e.target.value)}
-                  placeholder="e.g. m3, m2, kg, OH"
+                  placeholder="mis. m3, m2, kg, OH"
                   className="bg-card"
                   required
                 />
@@ -347,11 +347,11 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
                 Rincian Komponen Koefisien & Harga Satuan
               </h2>
               <p className="text-xs text-muted-foreground">
-                Item ditautkan langsung dari Master Unit Price (HSD). Anda cukup memasukkan koefisien kebutuhan.
+                Item ditautkan langsung dari Master Harga Satuan (HSD). Anda cukup memasukkan koefisien kebutuhan.
               </p>
             </div>
             <Badge variant="outline" className="gap-1 font-mono text-xs">
-              Total Items: {items.length}
+              Total Item: {items.length}
             </Badge>
           </div>
 
@@ -412,7 +412,7 @@ function AhspFormContent({ id, initialData }: { id?: string; initialData?: AhspD
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-semibold text-muted-foreground">
-                  Overhead & Keuntungan
+                  Biaya Umum & Keuntungan
                 </CardTitle>
                 <div className="flex items-center gap-1.5">
                   <Input
@@ -503,7 +503,7 @@ function ComponentRow({
       <TableCell className="text-center text-muted-foreground font-mono">{no}</TableCell>
       <TableCell className="p-2">
         <div className="flex items-center gap-2">
-          <span title="Terhubung ke Master Unit Price">
+          <span title="Terhubung ke Master Harga Satuan">
             <LinkIcon className="size-3.5 text-primary shrink-0" />
           </span>
           <span className="font-medium text-foreground">{item.description}</span>
@@ -602,13 +602,13 @@ function CategoryCard({
                         <EmptyMedia variant="icon">{icon}</EmptyMedia>
                         <EmptyTitle>Belum ada {emptyLabel}</EmptyTitle>
                         <EmptyDescription>
-                          Pilih item dari Master Unit Price (HSD) untuk menambahkan komponen biaya.
+                          Pilih item dari Master Harga Satuan (HSD) untuk menambahkan komponen biaya.
                         </EmptyDescription>
                       </EmptyHeader>
                       <EmptyContent>
                         <Button type="button" variant="outline" onClick={() => onOpenPicker(category)}>
                           <Plus data-icon="inline-start" />
-                          Pilih dari Master Unit Price
+                          Pilih dari Master Harga Satuan
                         </Button>
                       </EmptyContent>
                     </Empty>

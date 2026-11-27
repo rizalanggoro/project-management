@@ -103,7 +103,7 @@ function UnitPricesPage() {
     <div className="flex flex-col gap-4 min-w-0">
       <div className="flex flex-col gap-4">
         <h1 className="text-2xl font-bold tracking-tight text-foreground">
-          Unit Prices
+          Harga Satuan
         </h1>
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
@@ -112,7 +112,7 @@ function UnitPricesPage() {
                 <Search data-icon="inline-start" />
               </InputGroupAddon>
               <InputGroupInput
-                placeholder="Search..."
+                placeholder="Cari..."
                 value={q || ""}
                 onChange={(e) =>
                   navigate({
@@ -132,7 +132,7 @@ function UnitPricesPage() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start">
                 <DropdownMenuGroup>
-                  <DropdownMenuLabel>Category</DropdownMenuLabel>
+                  <DropdownMenuLabel>Kategori</DropdownMenuLabel>
                   <DropdownMenuRadioGroup
                     value={currentCategory}
                     onValueChange={(val) =>
@@ -162,12 +162,12 @@ function UnitPricesPage() {
                 variant="outline"
                 onClick={() => navigate({ to: "/unit-prices/categories" })}
               >
-                Categories
+                Kategori
               </Button>
             )}
             <Button onClick={handleOpenAdd}>
               <Plus data-icon="inline-start" />
-              Unit Price
+              Tambah Harga Satuan
             </Button>
           </div>
         </div>

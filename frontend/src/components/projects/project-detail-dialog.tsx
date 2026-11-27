@@ -40,7 +40,7 @@ export function ProjectDetailDialog({
           <DialogTitle className="flex items-center gap-2 text-xl">
             <span>{project.name}</span>
             <Badge variant="outline" className="font-normal">
-              {project.section || "General"} · {project.plant || "Site"}
+              {project.section || "Umum"} · {project.plant || "Lokasi"}
             </Badge>
           </DialogTitle>
           <DialogDescription>
@@ -52,7 +52,7 @@ export function ProjectDetailDialog({
         <div className="flex flex-col gap-4">
           <div className="flex flex-col divide-y divide-border/60 rounded-lg border bg-muted/20 text-sm">
             <div className="flex items-center justify-between px-4 py-2.5">
-              <span className="text-muted-foreground">Budget</span>
+              <span className="text-muted-foreground">Anggaran</span>
               <span className="font-semibold text-foreground">
                 {formatRupiah(cost?.budget ?? project.budget)}
               </span>
@@ -70,13 +70,13 @@ export function ProjectDetailDialog({
               </span>
             </div>
             <div className="flex items-center justify-between px-4 py-2.5 bg-muted/30">
-              <span className="text-muted-foreground">Variance (Budget - RAB)</span>
+              <span className="text-muted-foreground">Selisih (Anggaran - RAB)</span>
               <span className="font-semibold text-foreground">
                 {formatRupiah(cost?.variance ?? "0")}
               </span>
             </div>
             <div className="flex items-center justify-between px-4 py-2.5 bg-muted/30">
-              <span className="text-muted-foreground">Sisa Anggaran (Budget - SPB)</span>
+              <span className="text-muted-foreground">Sisa Anggaran (Anggaran - SPB)</span>
               <span className="font-semibold text-emerald-600 dark:text-emerald-400">
                 {formatRupiah(cost?.sisa ?? "0")}
               </span>
@@ -88,13 +88,13 @@ export function ProjectDetailDialog({
             <div className="flex flex-col gap-1.5 text-xs text-muted-foreground px-1">
               {project.implementation_plan && (
                 <div>
-                  <span className="font-medium text-foreground">Plan Date:</span>{" "}
+                  <span className="font-medium text-foreground">Tanggal Rencana:</span>{" "}
                   {project.implementation_plan}
                 </div>
               )}
               {project.note && (
                 <div>
-                  <span className="font-medium text-foreground">Note:</span>{" "}
+                  <span className="font-medium text-foreground">Catatan:</span>{" "}
                   {project.note}
                 </div>
               )}
@@ -104,7 +104,7 @@ export function ProjectDetailDialog({
           {/* Read-Only Progress Stages Status */}
           <div className="flex flex-col gap-2">
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Progress Stages
+              Tahapan Progres
             </span>
             <div className="flex flex-wrap items-center gap-2 pt-1">
               {PROGRESS_STAGES.map((s) => {
@@ -140,7 +140,7 @@ export function ProjectDetailDialog({
               variant="outline"
               onClick={() => onNavigate(`/schedule?projectId=${project.id}`)}
             >
-              Schedule
+              Jadwal
             </Button>
             <Button
               size="sm"
@@ -158,7 +158,7 @@ export function ProjectDetailDialog({
             </Button>
           </div>
           <Button variant="ghost" size="sm" onClick={onClose}>
-            Close
+            Tutup
           </Button>
         </DialogFooter>
       </DialogContent>

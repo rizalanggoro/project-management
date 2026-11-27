@@ -40,8 +40,8 @@ const volumeFormSchema = z.object({
   boqItemId: z.string(),
   group: z.string().min(1, 'Pilih grup pekerjaan'),
   ahspId: z.string(),
-  workItem: z.string().min(1, 'Nama pekerjaan (Work Item) wajib diisi'),
-  unit: z.string().min(1, 'Satuan (Unit) wajib diisi'),
+  workItem: z.string().min(1, 'Nama pekerjaan wajib diisi'),
+  unit: z.string().min(1, 'Satuan wajib diisi'),
   formula: z.enum([
     'box',
     'cylinder',
@@ -60,7 +60,7 @@ const volumeFormSchema = z.object({
   length: z.string(),
   width: z.string(),
   height: z.string(),
-  unitWeight: z.string().min(1, 'Unit / pengali wajib diisi'),
+  unitWeight: z.string().min(1, 'Satuan / pengali wajib diisi'),
   description: z.string(),
 })
 
@@ -153,7 +153,7 @@ function VolumeNewPage() {
       { value: 'custom', label: '+ Buat Item Baru (Input Bebas / Master AHSP)' },
       ...projectBoqItems.map((b) => ({
         value: b.id,
-        label: `${b.work_item} (${b.unit}) — Plan: ${formatDecimal(b.planned_volume)}`,
+        label: `${b.work_item} (${b.unit}) — Rencana: ${formatDecimal(b.planned_volume)}`,
       })),
     ],
     [projectBoqItems]
@@ -433,7 +433,7 @@ function VolumeNewPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="sm:col-span-2">
                     <Field data-invalid={!!errors.workItem}>
-                      <FieldLabel htmlFor="new-vol-workitem">Nama Pekerjaan (Work Item)</FieldLabel>
+                      <FieldLabel htmlFor="new-vol-workitem">Nama Pekerjaan</FieldLabel>
                       <Input
                         id="new-vol-workitem"
                         {...register('workItem')}
@@ -444,7 +444,7 @@ function VolumeNewPage() {
                     </Field>
                   </div>
                   <Field data-invalid={!!errors.unit}>
-                    <FieldLabel htmlFor="new-vol-unit">Satuan (Unit)</FieldLabel>
+                    <FieldLabel htmlFor="new-vol-unit">Satuan</FieldLabel>
                     <Input
                       id="new-vol-unit"
                       value={unit}
@@ -459,7 +459,7 @@ function VolumeNewPage() {
                 {/* Planned Volume & Date */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Field>
-                    <FieldLabel htmlFor="new-vol-planned">Target Volume (Planned Volume)</FieldLabel>
+                    <FieldLabel htmlFor="new-vol-planned">Target Volume (Volume Rencana)</FieldLabel>
                     <Input
                       id="new-vol-planned"
                       type="number"

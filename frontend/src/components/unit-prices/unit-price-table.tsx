@@ -49,20 +49,20 @@ export function UnitPriceTable({
         <TableHeader>
           <TableRow>
             <TableHead className="w-12 text-center">No</TableHead>
-            <TableHead className="w-28">Code</TableHead>
-            <TableHead className="w-28">Category</TableHead>
-            <TableHead>Work Item</TableHead>
-            <TableHead className="w-20 text-center">Unit</TableHead>
-            <TableHead className="w-36 text-right">Unit Price</TableHead>
-            <TableHead>Note</TableHead>
-            {isAdmin && <TableHead className="w-20 text-center">Action</TableHead>}
+            <TableHead className="w-28">Kode</TableHead>
+            <TableHead className="w-28">Kategori</TableHead>
+            <TableHead>Item Pekerjaan</TableHead>
+            <TableHead className="w-20 text-center">Satuan</TableHead>
+            <TableHead className="w-36 text-right">Harga Satuan</TableHead>
+            <TableHead>Catatan</TableHead>
+            {isAdmin && <TableHead className="w-20 text-center">Aksi</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
           {isLoading ? (
             <TableRow>
               <TableCell colSpan={colSpan} className="h-32 text-center text-muted-foreground">
-                Loading data...
+                Memuat data...
               </TableCell>
             </TableRow>
           ) : items.length === 0 ? (

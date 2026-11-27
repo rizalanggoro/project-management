@@ -41,16 +41,16 @@ import { useEffect } from "react";
 
 const nav = [
   {
-    group: "Monitoring",
+    group: "Pemantauan",
     items: [
-      { to: "/projects", label: "Projects", icon: FolderKanban },
-      { to: "/schedule", label: "Schedule", icon: Calendar },
+      { to: "/projects", label: "Proyek", icon: FolderKanban },
+      { to: "/schedule", label: "Jadwal", icon: Calendar },
     ],
   },
   {
-    group: "Cost Estimate",
+    group: "Estimasi Biaya",
     items: [
-      { to: "/unit-prices", label: "Unit Prices", icon: Tag },
+      { to: "/unit-prices", label: "Harga Satuan", icon: Tag },
       { to: "/ahsp", label: "AHSP", icon: Calculator },
       { to: "/boq", label: "BOQ", icon: FileSpreadsheet },
       { to: "/volume", label: "Volume Take-off", icon: Box },
@@ -58,12 +58,12 @@ const nav = [
     ],
   },
   {
-    group: "Master Data",
+    group: "Data Master",
     items: [
-      { to: "/groups", label: "Groups", icon: Layers },
+      { to: "/groups", label: "Grup Pekerjaan", icon: Layers },
       {
         to: "/unit-prices/categories",
-        label: "Unit Price Categories",
+        label: "Kategori Harga Satuan",
         icon: Tags,
       },
     ],
@@ -120,7 +120,7 @@ function Shell() {
               to="/projects"
               className="flex items-center gap-2 font-bold tracking-tight text-lg text-foreground"
             >
-              <span>Project Monitoring</span>
+              <span>Pemantauan Proyek</span>
             </Link>
           </SidebarHeader>
 

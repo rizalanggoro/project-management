@@ -120,7 +120,7 @@ function VolumePage() {
               <Search data-icon="inline-start" />
             </InputGroupAddon>
             <InputGroupInput
-              placeholder="Search..."
+              placeholder="Cari..."
               value={q || ''}
               onChange={(e) =>
                 navigate({
@@ -196,7 +196,7 @@ function VolumePage() {
             })}
           >
             <FileSpreadsheet className="size-3.5 text-emerald-600" />
-            <span>Export Excel</span>
+            <span>Ekspor Excel</span>
           </a>
         )}
       </div>
@@ -207,17 +207,17 @@ function VolumePage() {
           <TableHeader>
             <TableRow>
               <TableHead className="w-10 text-center">No</TableHead>
-              <TableHead className="min-w-44">Work Item</TableHead>
+              <TableHead className="min-w-44">Item Pekerjaan</TableHead>
               <TableHead className="w-28 text-center">Metode / Rumus</TableHead>
-              <TableHead className="w-24 text-right">Planned Vol</TableHead>
-              <TableHead className="w-16 text-center">Unit</TableHead>
-              <TableHead className="w-24 text-center">Date</TableHead>
+              <TableHead className="w-24 text-right">Vol Rencana</TableHead>
+              <TableHead className="w-16 text-center">Satuan</TableHead>
+              <TableHead className="w-24 text-center">Tanggal</TableHead>
               <TableHead className="w-40 text-center">Dimensi Pengukuran</TableHead>
-              <TableHead className="w-24 text-right">Quantity</TableHead>
-              <TableHead className="w-24 text-right">Unit / Wt</TableHead>
-              <TableHead className="w-28 text-right font-bold">Total Qty</TableHead>
-              <TableHead className="min-w-32">Description</TableHead>
-              {isAdmin && <TableHead className="w-16 text-center">Action</TableHead>}
+              <TableHead className="w-24 text-right">Kuantitas</TableHead>
+              <TableHead className="w-24 text-right">Satuan / Berat</TableHead>
+              <TableHead className="w-28 text-right font-bold">Total Kuantitas</TableHead>
+              <TableHead className="min-w-32">Deskripsi</TableHead>
+              {isAdmin && <TableHead className="w-16 text-center">Aksi</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>

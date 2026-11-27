@@ -22,9 +22,9 @@ import { Search } from 'lucide-react'
 type Category = 'LABOR' | 'MATERIALS' | 'EQUIPMENT'
 
 const categoryMeta: Record<Category, { title: string; label: string }> = {
-  LABOR: { title: 'Pilih Tenaga Kerja (Labor)', label: 'Tenaga Kerja' },
-  MATERIALS: { title: 'Pilih Bahan (Materials)', label: 'Bahan Material' },
-  EQUIPMENT: { title: 'Pilih Peralatan (Equipment)', label: 'Peralatan' },
+  LABOR: { title: 'Pilih Tenaga Kerja', label: 'Tenaga Kerja' },
+  MATERIALS: { title: 'Pilih Bahan', label: 'Bahan Material' },
+  EQUIPMENT: { title: 'Pilih Peralatan', label: 'Peralatan' },
 }
 
 type Props = {
@@ -53,7 +53,7 @@ export function UnitPricePickerDialog({
   })
 
   const meta = categoryMeta[category] || {
-    title: 'Pilih Unit Price',
+    title: 'Pilih Harga Satuan',
     label: 'Item',
   }
 

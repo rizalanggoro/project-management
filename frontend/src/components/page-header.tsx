@@ -19,7 +19,7 @@ export function PageHeader({
   searchValue,
   onSearch,
   onAdd,
-  addLabel = "Add",
+  addLabel = "Tambah",
 }: Props) {
   return (
     <>
@@ -37,7 +37,7 @@ export function PageHeader({
                 <Search data-icon="inline-start" />
               </InputGroupAddon>
               <InputGroupInput
-                placeholder="Search..."
+                placeholder="Cari..."
                 {...(searchValue !== undefined ? { value: searchValue } : {})}
                 onChange={(e) => onSearch?.(e.target.value)}
               />

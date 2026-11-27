@@ -67,7 +67,7 @@ function AhspPage() {
               <Search data-icon="inline-start" />
             </InputGroupAddon>
             <InputGroupInput
-              placeholder="Search..."
+              placeholder="Cari..."
               value={q || ''}
               onChange={(e) =>
                 navigate({
@@ -92,19 +92,19 @@ function AhspPage() {
           <TableHeader>
             <TableRow>
               <TableHead className="w-12 text-center">No</TableHead>
-              <TableHead className="w-36">Code</TableHead>
-              <TableHead>Work Item</TableHead>
-              <TableHead className="w-24 text-center">Unit</TableHead>
-              <TableHead className="w-40 text-right">Unit Price</TableHead>
-              <TableHead>Note</TableHead>
-              {isAdmin && <TableHead className="w-20 text-center">Action</TableHead>}
+              <TableHead className="w-36">Kode</TableHead>
+              <TableHead>Item Pekerjaan</TableHead>
+              <TableHead className="w-24 text-center">Satuan</TableHead>
+              <TableHead className="w-40 text-right">Harga Satuan</TableHead>
+              <TableHead>Catatan</TableHead>
+              {isAdmin && <TableHead className="w-20 text-center">Aksi</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
               <TableRow>
                 <TableCell colSpan={isAdmin ? 7 : 6} className="h-32 text-center text-muted-foreground">
-                  Loading data...
+                  Memuat data...
                 </TableCell>
               </TableRow>
             ) : ahsps.length === 0 ? (

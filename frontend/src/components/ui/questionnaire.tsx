@@ -225,7 +225,7 @@ function QuestionnairePrevious({
       )}
       {...props}
     >
-      {children ?? "Previous"}
+      {children ?? "Sebelumnya"}
     </QuestionnairePrimitive.Previous>
   )
 }
@@ -275,7 +275,7 @@ function QuestionnaireNext({
       )}
       {...props}
     >
-      {children ?? "Next"}
+      {children ?? "Berikutnya"}
     </QuestionnairePrimitive.Next>
   )
 }
@@ -300,7 +300,7 @@ function QuestionnaireSubmit({
       )}
       {...props}
     >
-      {children ?? "Submit"}
+      {children ?? "Kirim"}
     </QuestionnairePrimitive.Submit>
   )
 }

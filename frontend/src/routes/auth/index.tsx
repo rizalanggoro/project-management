@@ -30,7 +30,7 @@ function AuthPage() {
       navigate({ to: '/projects', replace: true })
     } catch (err: unknown) {
       const errorObj = err as { error?: { message?: string }; message?: string }
-      const msg = errorObj?.error?.message || errorObj?.message || 'Login gagal: Periksa email dan password.'
+      const msg = errorObj?.error?.message || errorObj?.message || 'Gagal masuk: Periksa email dan kata sandi.'
       setErrorMsg(msg)
     } finally {
       setIsSubmitting(false)
@@ -47,7 +47,7 @@ function AuthPage() {
           <div className="mx-auto mb-2 flex size-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <Construction className="size-5" />
           </div>
-          <CardTitle className="text-xl">Project Management</CardTitle>
+          <CardTitle className="text-xl">Manajemen Proyek</CardTitle>
           <CardDescription>
             Estimasi Biaya &amp; Manajemen Proyek Konstruksi
           </CardDescription>
@@ -76,7 +76,7 @@ function AuthPage() {
               </Field>
 
               <Field>
-                <FieldLabel htmlFor="auth-password">Password</FieldLabel>
+                <FieldLabel htmlFor="auth-password">Kata Sandi</FieldLabel>
                 <Input
                   id="auth-password"
                   type="password"

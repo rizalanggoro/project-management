@@ -73,11 +73,11 @@ function AddProjectForm({
     e.preventDefault();
     setFormError("");
     if (!name.trim()) {
-      setFormError("Nama project wajib diisi.");
+      setFormError("Nama proyek wajib diisi.");
       return;
     }
     if (!PROJECT_SECTIONS.includes(section)) {
-      setFormError("Section harus berupa salah satu dari: GA Building, EHS, atau Wellfare.");
+      setFormError("Bagian harus berupa salah satu dari: GA Building, EHS, atau Wellfare.");
       return;
     }
     if (!PROJECT_PLANTS.includes(plant)) {
@@ -116,7 +116,7 @@ function AddProjectForm({
   return (
     <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
       <DialogHeader>
-        <DialogTitle>Add New Project</DialogTitle>
+        <DialogTitle>Tambah Proyek Baru</DialogTitle>
         <DialogDescription>
           Masukkan rincian proyek baru dan tahapan monitoring.
         </DialogDescription>
@@ -131,7 +131,7 @@ function AddProjectForm({
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <FieldGroup>
           <Field>
-            <FieldLabel htmlFor="proj-name">Project Name</FieldLabel>
+            <FieldLabel htmlFor="proj-name">Nama Proyek</FieldLabel>
             <Input
               id="proj-name"
               value={name}
@@ -143,7 +143,7 @@ function AddProjectForm({
 
           <div className="grid grid-cols-2 gap-4">
             <Field>
-              <FieldLabel htmlFor="proj-section">Section</FieldLabel>
+              <FieldLabel htmlFor="proj-section">Bagian</FieldLabel>
               <Select
                 items={PROJECT_SECTIONS.map((sec) => ({ value: sec, label: sec }))}
                 value={section}
@@ -154,7 +154,7 @@ function AddProjectForm({
                 }}
               >
                 <SelectTrigger id="proj-section" className="w-full">
-                  <SelectValue placeholder="Pilih Section..." />
+                  <SelectValue placeholder="Pilih Bagian..." />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -196,7 +196,7 @@ function AddProjectForm({
 
           <div className="grid grid-cols-2 gap-4">
             <Field>
-              <FieldLabel htmlFor="proj-plan">Plan Date</FieldLabel>
+              <FieldLabel htmlFor="proj-plan">Tanggal Rencana</FieldLabel>
               <Input
                 id="proj-plan"
                 type="date"
@@ -205,7 +205,7 @@ function AddProjectForm({
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="proj-budget">Budget (Rp)</FieldLabel>
+              <FieldLabel htmlFor="proj-budget">Anggaran (Rp)</FieldLabel>
               <Input
                 id="proj-budget"
                 value={budget}
@@ -216,7 +216,7 @@ function AddProjectForm({
           </div>
 
           <Field>
-            <FieldLabel htmlFor="proj-note">Note</FieldLabel>
+            <FieldLabel htmlFor="proj-note">Catatan</FieldLabel>
             <Input
               id="proj-note"
               value={note}
@@ -226,7 +226,7 @@ function AddProjectForm({
           </Field>
 
           <Field>
-            <FieldLabel>Progress Stages</FieldLabel>
+            <FieldLabel>Tahapan Progres</FieldLabel>
             <Combobox
               multiple
               items={PROGRESS_STAGES}
@@ -272,10 +272,10 @@ function AddProjectForm({
             variant="outline"
             onClick={onClose}
           >
-            Cancel
+            Batal
           </Button>
           <Button type="submit" disabled={createMut.isPending}>
-            {createMut.isPending ? "Saving..." : "Save Project"}
+            {createMut.isPending ? "Menyimpan..." : "Simpan Proyek"}
           </Button>
         </DialogFooter>
       </form>

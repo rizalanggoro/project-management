@@ -52,7 +52,7 @@ export function FormulaBadge({ formula }: FormulaBadgeProps) {
     case 'unit_only':
       return (
         <Badge variant="outline" className="bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300 border-purple-200">
-          Unit / Lot
+          Satuan / Lot
         </Badge>
       )
     case 'box':

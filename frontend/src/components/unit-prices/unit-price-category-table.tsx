@@ -39,12 +39,12 @@ export function UnitPriceCategoryTable({
         <TableHeader>
           <TableRow>
             <TableHead className="w-12 text-center">No</TableHead>
-            <TableHead className="w-28">Code</TableHead>
+            <TableHead className="w-28">Kode</TableHead>
             <TableHead>Nama</TableHead>
             <TableHead className="w-24">Prefix</TableHead>
             <TableHead className="w-20 text-center">Urutan</TableHead>
             <TableHead className="w-24 text-center">Status</TableHead>
-            {isAdmin && <TableHead className="w-32 text-center">Action</TableHead>}
+            {isAdmin && <TableHead className="w-32 text-center">Aksi</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>

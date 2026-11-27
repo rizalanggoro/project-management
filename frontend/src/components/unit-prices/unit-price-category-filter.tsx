@@ -27,7 +27,7 @@ export function UnitPriceCategoryFilter({
     <div className={cn("flex items-center gap-2", className)}>
       {showLabel && (
         <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">
-          Category:
+          Kategori:
         </span>
       )}
       <Select
@@ -40,7 +40,7 @@ export function UnitPriceCategoryFilter({
         }}
       >
         <SelectTrigger className="w-44">
-          <SelectValue placeholder="Category" />
+          <SelectValue placeholder="Kategori" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>

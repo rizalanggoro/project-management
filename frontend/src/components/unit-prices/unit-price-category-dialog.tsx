@@ -39,8 +39,8 @@ const categorySchema = z.object({
   code: z
     .string()
     .trim()
-    .min(1, "Code wajib diisi.")
-    .regex(/^[A-Za-z0-9_-]+$/, "Code hanya boleh huruf, angka, - dan _."),
+    .min(1, "Kode wajib diisi.")
+    .regex(/^[A-Za-z0-9_-]+$/, "Kode hanya boleh huruf, angka, - dan _."),
   name: z.string().trim().min(1, "Nama wajib diisi."),
   code_prefix: z
     .string()
@@ -142,7 +142,7 @@ function CategoryForm({
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="upc-code">Code</FieldLabel>
+                  <FieldLabel htmlFor="upc-code">Kode</FieldLabel>
                   <Input
                     {...field}
                     id="upc-code"
@@ -161,7 +161,7 @@ function CategoryForm({
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="upc-prefix">Code Prefix</FieldLabel>
+                  <FieldLabel htmlFor="upc-prefix">Prefix Kode</FieldLabel>
                   <Input
                     {...field}
                     id="upc-prefix"

@@ -64,7 +64,7 @@ function PaginationLink({
 
 function PaginationPrevious({
   className,
-  text = "Previous",
+  text = "Sebelumnya",
   ...props
 }: React.ComponentProps<typeof PaginationLink> & { text?: string }) {
   return (
@@ -82,7 +82,7 @@ function PaginationPrevious({
 
 function PaginationNext({
   className,
-  text = "Next",
+  text = "Berikutnya",
   ...props
 }: React.ComponentProps<typeof PaginationLink> & { text?: string }) {
   return (

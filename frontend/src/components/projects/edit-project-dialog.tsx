@@ -89,11 +89,11 @@ function EditProjectForm({
     e.preventDefault();
     setFormError("");
     if (!name.trim()) {
-      setFormError("Nama project wajib diisi.");
+      setFormError("Nama proyek wajib diisi.");
       return;
     }
     if (!PROJECT_SECTIONS.includes(section)) {
-      setFormError("Section harus berupa salah satu dari: GA Building, EHS, atau Wellfare.");
+      setFormError("Bagian harus berupa salah satu dari: GA Building, EHS, atau Wellfare.");
       return;
     }
     if (!PROJECT_PLANTS.includes(plant)) {
@@ -133,7 +133,7 @@ function EditProjectForm({
   return (
     <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
       <DialogHeader>
-        <DialogTitle>Edit Project</DialogTitle>
+        <DialogTitle>Ubah Proyek</DialogTitle>
         <DialogDescription>
           Ubah data proyek dan perbarui tahapan progres.
         </DialogDescription>
@@ -148,7 +148,7 @@ function EditProjectForm({
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <FieldGroup>
           <Field>
-            <FieldLabel htmlFor="edit-proj-name">Project Name</FieldLabel>
+            <FieldLabel htmlFor="edit-proj-name">Nama Proyek</FieldLabel>
             <Input
               id="edit-proj-name"
               value={name}
@@ -160,7 +160,7 @@ function EditProjectForm({
 
           <div className="grid grid-cols-2 gap-4">
             <Field>
-              <FieldLabel htmlFor="edit-proj-section">Section</FieldLabel>
+              <FieldLabel htmlFor="edit-proj-section">Bagian</FieldLabel>
               <Select
                 items={PROJECT_SECTIONS.map((sec) => ({ value: sec, label: sec }))}
                 value={section}
@@ -171,7 +171,7 @@ function EditProjectForm({
                 }}
               >
                 <SelectTrigger id="edit-proj-section" className="w-full">
-                  <SelectValue placeholder="Pilih Section..." />
+                  <SelectValue placeholder="Pilih Bagian..." />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -213,7 +213,7 @@ function EditProjectForm({
 
           <div className="grid grid-cols-2 gap-4">
             <Field>
-              <FieldLabel htmlFor="edit-proj-plan">Plan Date</FieldLabel>
+              <FieldLabel htmlFor="edit-proj-plan">Tanggal Rencana</FieldLabel>
               <Input
                 id="edit-proj-plan"
                 type="date"
@@ -222,7 +222,7 @@ function EditProjectForm({
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="edit-proj-budget">Budget (Rp)</FieldLabel>
+              <FieldLabel htmlFor="edit-proj-budget">Anggaran (Rp)</FieldLabel>
               <Input
                 id="edit-proj-budget"
                 value={budget}
@@ -233,7 +233,7 @@ function EditProjectForm({
           </div>
 
           <Field>
-            <FieldLabel htmlFor="edit-proj-note">Note</FieldLabel>
+            <FieldLabel htmlFor="edit-proj-note">Catatan</FieldLabel>
             <Input
               id="edit-proj-note"
               value={note}
@@ -243,7 +243,7 @@ function EditProjectForm({
           </Field>
 
           <Field>
-            <FieldLabel>Progress Stages</FieldLabel>
+            <FieldLabel>Tahapan Progres</FieldLabel>
             <Combobox
               multiple
               items={PROGRESS_STAGES}
@@ -289,10 +289,10 @@ function EditProjectForm({
             variant="outline"
             onClick={onClose}
           >
-            Cancel
+            Batal
           </Button>
           <Button type="submit" disabled={updateMut.isPending}>
-            {updateMut.isPending ? "Saving..." : "Save Changes"}
+            {updateMut.isPending ? "Menyimpan..." : "Simpan Perubahan"}
           </Button>
         </DialogFooter>
       </form>

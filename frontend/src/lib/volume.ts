@@ -99,9 +99,9 @@ export const FORMULA_CONFIGS: Record<FormulaType, FormulaConfig> = {
   },
   custom: {
     id: 'custom',
-    label: 'Manual / Planned Volume',
+    label: 'Manual / Volume Rencana',
     category: 'lainnya',
-    description: 'Perhitungan langsung dari planned volume × pengali unit',
+    description: 'Perhitungan langsung dari volume rencana × pengali unit',
     fields: { weight: 'Pengali Unit' },
   },
 }

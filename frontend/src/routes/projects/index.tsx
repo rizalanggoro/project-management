@@ -99,7 +99,7 @@ function ProjectsPage() {
     <div className="flex flex-col gap-4 min-w-0">
       <div className="flex flex-col gap-4">
         <h1 className="text-2xl font-bold tracking-tight text-foreground">
-          Projects
+          Proyek
         </h1>
         <div className="flex items-center justify-between gap-4">
           <InputGroup className="w-64">
@@ -107,7 +107,7 @@ function ProjectsPage() {
               <Search data-icon="inline-start" />
             </InputGroupAddon>
             <InputGroupInput
-              placeholder="Search..."
+              placeholder="Cari..."
               value={q || ""}
               onChange={(e) =>
                 navigate({
@@ -122,7 +122,7 @@ function ProjectsPage() {
           </InputGroup>
           <Button onClick={handleOpenAdd}>
             <Plus data-icon="inline-start" />
-            Project
+            Proyek
           </Button>
         </div>
       </div>
@@ -132,15 +132,15 @@ function ProjectsPage() {
           <TableHeader>
             <TableRow>
               <TableHead className="w-12 text-center">No</TableHead>
-              <TableHead>Project</TableHead>
-              <TableHead>Section</TableHead>
+              <TableHead>Proyek</TableHead>
+              <TableHead>Bagian</TableHead>
               <TableHead>Plant</TableHead>
-              <TableHead>Plan Date</TableHead>
-              <TableHead className="text-right">Budget</TableHead>
-              <TableHead className="min-w-[240px]">Progress</TableHead>
-              <TableHead>Note</TableHead>
+              <TableHead>Tanggal Rencana</TableHead>
+              <TableHead className="text-right">Anggaran</TableHead>
+              <TableHead className="min-w-[240px]">Progres</TableHead>
+              <TableHead>Catatan</TableHead>
               {isAdmin && (
-                <TableHead className="w-16 text-center">Action</TableHead>
+                <TableHead className="w-16 text-center">Aksi</TableHead>
               )}
             </TableRow>
           </TableHeader>
@@ -151,7 +151,7 @@ function ProjectsPage() {
                   colSpan={colSpanCount}
                   className="h-32 text-center text-muted-foreground"
                 >
-                  Loading data...
+                  Memuat data...
                 </TableCell>
               </TableRow>
             ) : projects.length === 0 ? (
@@ -205,7 +205,7 @@ function ProjectsPage() {
                             variant="outline"
                             className="text-[11px] text-muted-foreground font-normal border-dashed"
                           >
-                            Pending
+                            Menunggu
                           </Badge>
                         ) : (
                           doneStages.map((s) => (

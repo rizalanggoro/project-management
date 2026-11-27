@@ -70,13 +70,13 @@ function UpsertUnitPriceForm({
         .object({
           code: z.string().trim(),
           category: z.string().min(1, "Pilih kategori."),
-          work_item: z.string().trim().min(1, "Work item wajib diisi."),
-          unit: z.string().trim().min(1, "Unit wajib diisi."),
+          work_item: z.string().trim().min(1, "Item pekerjaan wajib diisi."),
+          unit: z.string().trim().min(1, "Satuan wajib diisi."),
           unit_price: z
             .string()
-            .min(1, "Unit price wajib diisi.")
+            .min(1, "Harga satuan wajib diisi.")
             .refine((value) => /^\d+$/.test(value.replace(/[\s.,]/g, "")), {
-              message: "Unit price harus berupa angka.",
+              message: "Harga satuan harus berupa angka.",
             }),
           note: z.string().trim(),
         })
@@ -85,7 +85,7 @@ function UpsertUnitPriceForm({
             ctx.addIssue({
               code: "custom",
               path: ["code"],
-              message: "Code wajib diisi.",
+              message: "Kode wajib diisi.",
             });
           }
         }),
@@ -151,7 +151,7 @@ function UpsertUnitPriceForm({
   return (
     <>
       <DialogHeader>
-        <DialogTitle>{isEdit ? "Edit Unit Price" : "Add Unit Price"}</DialogTitle>
+        <DialogTitle>{isEdit ? "Ubah Harga Satuan" : "Tambah Harga Satuan"}</DialogTitle>
         <DialogDescription>
           {isEdit
             ? "Perbarui data harga satuan."
@@ -174,7 +174,7 @@ function UpsertUnitPriceForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="up-code">
-                    Code{" "}
+                    Kode{" "}
                     {!isEdit && (
                       <span className="text-xs font-normal text-muted-foreground">
                         (opsional)
@@ -198,7 +198,7 @@ function UpsertUnitPriceForm({
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="up-category">Category</FieldLabel>
+                  <FieldLabel htmlFor="up-category">Kategori</FieldLabel>
                   <Select
                     name={field.name}
                     items={categoryItems}
@@ -231,7 +231,7 @@ function UpsertUnitPriceForm({
             control={control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="up-workitem">Work Item</FieldLabel>
+                <FieldLabel htmlFor="up-workitem">Item Pekerjaan</FieldLabel>
                 <Input
                   {...field}
                   id="up-workitem"
@@ -251,7 +251,7 @@ function UpsertUnitPriceForm({
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="up-unit">Unit</FieldLabel>
+                  <FieldLabel htmlFor="up-unit">Satuan</FieldLabel>
                   <Input
                     {...field}
                     id="up-unit"
@@ -269,7 +269,7 @@ function UpsertUnitPriceForm({
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="up-price">Unit Price (Rp)</FieldLabel>
+                  <FieldLabel htmlFor="up-price">Harga Satuan (Rp)</FieldLabel>
                   <Input
                     {...field}
                     id="up-price"
@@ -290,7 +290,7 @@ function UpsertUnitPriceForm({
             control={control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="up-note">Note</FieldLabel>
+                <FieldLabel htmlFor="up-note">Catatan</FieldLabel>
                 <Input
                   {...field}
                   id="up-note"
@@ -307,10 +307,10 @@ function UpsertUnitPriceForm({
 
         <DialogFooter>
           <Button type="button" variant="outline" onClick={onClose}>
-            Cancel
+            Batal
           </Button>
           <Button type="submit" disabled={isPending}>
-            {isPending ? "Saving..." : "Save"}
+            {isPending ? "Menyimpan..." : "Simpan"}
           </Button>
         </DialogFooter>
       </form>

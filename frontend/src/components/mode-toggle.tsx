@@ -18,21 +18,21 @@ export function ModeToggle() {
           <Button variant="outline" size="icon">
             <Sun className="size-4 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
             <Moon className="absolute size-4 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
-            <span className="sr-only">Toggle theme</span>
+            <span className="sr-only">Ubah tema</span>
           </Button>
         }
       />
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")}>
-          <span>Light</span>
+          <span>Terang</span>
           {theme === "light" && <Check className="ml-auto size-4" />}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("dark")}>
-          <span>Dark</span>
+          <span>Gelap</span>
           {theme === "dark" && <Check className="ml-auto size-4" />}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("system")}>
-          <span>System</span>
+          <span>Sistem</span>
           {theme === "system" && <Check className="ml-auto size-4" />}
         </DropdownMenuItem>
       </DropdownMenuContent>
