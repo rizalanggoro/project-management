@@ -121,6 +121,16 @@ export type CreateProjectInput = {
     section: string;
 };
 
+export type CreateProjectPlantInput = {
+    code: string;
+    name: string;
+};
+
+export type CreateProjectSectionInput = {
+    code: string;
+    name: string;
+};
+
 export type CreateRabItemInput = {
     boq_item_id?: string;
     group?: string;
@@ -237,6 +247,18 @@ export type ProjectListResponse = {
     meta: PaginationMeta;
 };
 
+export type ProjectPlantDto = {
+    code: string;
+    id: string;
+    name: string;
+};
+
+export type ProjectSectionDto = {
+    code: string;
+    id: string;
+    name: string;
+};
+
 export type RabItemDto = {
     boq_item_id: string;
     group: string;
@@ -310,6 +332,16 @@ export type UpdateProjectInput = {
     progress_vendor?: string;
     section?: string;
     status?: string;
+};
+
+export type UpdateProjectPlantInput = {
+    code?: string;
+    name?: string;
+};
+
+export type UpdateProjectSectionInput = {
+    code?: string;
+    name?: string;
 };
 
 export type UpdateRabItemInput = {
@@ -843,6 +875,290 @@ export type GetHealthResponses = {
 };
 
 export type GetHealthResponse = GetHealthResponses[keyof GetHealthResponses];
+
+export type ListProjectPlantsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/project-plants';
+};
+
+export type ListProjectPlantsErrors = {
+    /**
+     * Internal Server Error
+     */
+    500: ErrorResponse;
+};
+
+export type ListProjectPlantsError = ListProjectPlantsErrors[keyof ListProjectPlantsErrors];
+
+export type ListProjectPlantsResponses = {
+    /**
+     * OK
+     */
+    200: Array<ProjectPlantDto>;
+};
+
+export type ListProjectPlantsResponse = ListProjectPlantsResponses[keyof ListProjectPlantsResponses];
+
+export type CreateProjectPlantData = {
+    /**
+     * Project plant input
+     */
+    body: CreateProjectPlantInput;
+    path?: never;
+    query?: never;
+    url: '/project-plants';
+};
+
+export type CreateProjectPlantErrors = {
+    /**
+     * Bad Request
+     */
+    400: ErrorResponse;
+    /**
+     * Conflict
+     */
+    409: ErrorResponse;
+    /**
+     * Internal Server Error
+     */
+    500: ErrorResponse;
+};
+
+export type CreateProjectPlantError = CreateProjectPlantErrors[keyof CreateProjectPlantErrors];
+
+export type CreateProjectPlantResponses = {
+    /**
+     * Created
+     */
+    201: ProjectPlantDto;
+};
+
+export type CreateProjectPlantResponse = CreateProjectPlantResponses[keyof CreateProjectPlantResponses];
+
+export type DeleteProjectPlantData = {
+    body?: never;
+    path: {
+        /**
+         * Project plant ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/project-plants/{id}';
+};
+
+export type DeleteProjectPlantErrors = {
+    /**
+     * Not Found
+     */
+    404: ErrorResponse;
+    /**
+     * Conflict
+     */
+    409: ErrorResponse;
+    /**
+     * Internal Server Error
+     */
+    500: ErrorResponse;
+};
+
+export type DeleteProjectPlantError = DeleteProjectPlantErrors[keyof DeleteProjectPlantErrors];
+
+export type DeleteProjectPlantResponses = {
+    /**
+     * No Content
+     */
+    204: unknown;
+};
+
+export type UpdateProjectPlantData = {
+    /**
+     * Project plant update data
+     */
+    body: UpdateProjectPlantInput;
+    path: {
+        /**
+         * Project plant ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/project-plants/{id}';
+};
+
+export type UpdateProjectPlantErrors = {
+    /**
+     * Bad Request
+     */
+    400: ErrorResponse;
+    /**
+     * Not Found
+     */
+    404: ErrorResponse;
+    /**
+     * Conflict
+     */
+    409: ErrorResponse;
+    /**
+     * Internal Server Error
+     */
+    500: ErrorResponse;
+};
+
+export type UpdateProjectPlantError = UpdateProjectPlantErrors[keyof UpdateProjectPlantErrors];
+
+export type UpdateProjectPlantResponses = {
+    /**
+     * OK
+     */
+    200: ProjectPlantDto;
+};
+
+export type UpdateProjectPlantResponse = UpdateProjectPlantResponses[keyof UpdateProjectPlantResponses];
+
+export type ListProjectSectionsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/project-sections';
+};
+
+export type ListProjectSectionsErrors = {
+    /**
+     * Internal Server Error
+     */
+    500: ErrorResponse;
+};
+
+export type ListProjectSectionsError = ListProjectSectionsErrors[keyof ListProjectSectionsErrors];
+
+export type ListProjectSectionsResponses = {
+    /**
+     * OK
+     */
+    200: Array<ProjectSectionDto>;
+};
+
+export type ListProjectSectionsResponse = ListProjectSectionsResponses[keyof ListProjectSectionsResponses];
+
+export type CreateProjectSectionData = {
+    /**
+     * Project section input
+     */
+    body: CreateProjectSectionInput;
+    path?: never;
+    query?: never;
+    url: '/project-sections';
+};
+
+export type CreateProjectSectionErrors = {
+    /**
+     * Bad Request
+     */
+    400: ErrorResponse;
+    /**
+     * Conflict
+     */
+    409: ErrorResponse;
+    /**
+     * Internal Server Error
+     */
+    500: ErrorResponse;
+};
+
+export type CreateProjectSectionError = CreateProjectSectionErrors[keyof CreateProjectSectionErrors];
+
+export type CreateProjectSectionResponses = {
+    /**
+     * Created
+     */
+    201: ProjectSectionDto;
+};
+
+export type CreateProjectSectionResponse = CreateProjectSectionResponses[keyof CreateProjectSectionResponses];
+
+export type DeleteProjectSectionData = {
+    body?: never;
+    path: {
+        /**
+         * Project section ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/project-sections/{id}';
+};
+
+export type DeleteProjectSectionErrors = {
+    /**
+     * Not Found
+     */
+    404: ErrorResponse;
+    /**
+     * Conflict
+     */
+    409: ErrorResponse;
+    /**
+     * Internal Server Error
+     */
+    500: ErrorResponse;
+};
+
+export type DeleteProjectSectionError = DeleteProjectSectionErrors[keyof DeleteProjectSectionErrors];
+
+export type DeleteProjectSectionResponses = {
+    /**
+     * No Content
+     */
+    204: unknown;
+};
+
+export type UpdateProjectSectionData = {
+    /**
+     * Project section update data
+     */
+    body: UpdateProjectSectionInput;
+    path: {
+        /**
+         * Project section ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/project-sections/{id}';
+};
+
+export type UpdateProjectSectionErrors = {
+    /**
+     * Bad Request
+     */
+    400: ErrorResponse;
+    /**
+     * Not Found
+     */
+    404: ErrorResponse;
+    /**
+     * Conflict
+     */
+    409: ErrorResponse;
+    /**
+     * Internal Server Error
+     */
+    500: ErrorResponse;
+};
+
+export type UpdateProjectSectionError = UpdateProjectSectionErrors[keyof UpdateProjectSectionErrors];
+
+export type UpdateProjectSectionResponses = {
+    /**
+     * OK
+     */
+    200: ProjectSectionDto;
+};
+
+export type UpdateProjectSectionResponse = UpdateProjectSectionResponses[keyof UpdateProjectSectionResponses];
 
 export type ListProjectsData = {
     body?: never;

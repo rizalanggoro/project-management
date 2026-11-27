@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateAhspData, CreateAhspErrors, CreateAhspResponses, CreateGroupData, CreateGroupErrors, CreateGroupResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, CreateRabItemData, CreateRabItemErrors, CreateRabItemResponses, CreateScheduleData, CreateScheduleErrors, CreateScheduleResponses, CreateUnitPriceCategoryData, CreateUnitPriceCategoryErrors, CreateUnitPriceCategoryResponses, CreateUnitPriceData, CreateUnitPriceErrors, CreateUnitPriceResponses, CreateVolumeData, CreateVolumeErrors, CreateVolumeResponses, DeleteAhspData, DeleteAhspErrors, DeleteAhspResponses, DeleteGroupData, DeleteGroupErrors, DeleteGroupResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, DeleteRabItemData, DeleteRabItemErrors, DeleteRabItemResponses, DeleteScheduleData, DeleteScheduleErrors, DeleteScheduleResponses, DeleteUnitPriceCategoryData, DeleteUnitPriceCategoryErrors, DeleteUnitPriceCategoryResponses, DeleteUnitPriceData, DeleteUnitPriceErrors, DeleteUnitPriceResponses, DeleteVolumeData, DeleteVolumeErrors, DeleteVolumeResponses, ExportRabExcelData, ExportRabExcelErrors, ExportRabExcelResponses, ExportRabPdfData, ExportRabPdfErrors, ExportRabPdfResponses, ExportVolumeExcelData, ExportVolumeExcelErrors, ExportVolumeExcelResponses, GetAhspData, GetAhspErrors, GetAhspResponses, GetCostEstimateData, GetCostEstimateErrors, GetCostEstimateResponses, GetHealthData, GetHealthErrors, GetHealthResponses, GetMeData, GetMeErrors, GetMeResponses, GetProjectBoqData, GetProjectBoqErrors, GetProjectBoqResponses, GetProjectData, GetProjectErrors, GetProjectRabData, GetProjectRabErrors, GetProjectRabResponses, GetProjectResponses, ListAhspsData, ListAhspsErrors, ListAhspsResponses, ListBoqProjectsData, ListBoqProjectsErrors, ListBoqProjectsResponses, ListGroupsData, ListGroupsErrors, ListGroupsResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, ListSchedulesData, ListSchedulesErrors, ListSchedulesResponses, ListUnitPriceCategoriesData, ListUnitPriceCategoriesErrors, ListUnitPriceCategoriesResponses, ListUnitPricesData, ListUnitPricesErrors, ListUnitPricesResponses, ListVolumesData, ListVolumesErrors, ListVolumesResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, UpdateAhspData, UpdateAhspErrors, UpdateAhspResponses, UpdateGroupData, UpdateGroupErrors, UpdateGroupResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses, UpdateRabItemData, UpdateRabItemErrors, UpdateRabItemResponses, UpdateScheduleData, UpdateScheduleErrors, UpdateScheduleResponses, UpdateUnitPriceCategoryData, UpdateUnitPriceCategoryErrors, UpdateUnitPriceCategoryResponses, UpdateUnitPriceData, UpdateUnitPriceErrors, UpdateUnitPriceResponses, UpdateVolumeData, UpdateVolumeErrors, UpdateVolumeResponses } from './types.gen';
+import type { CreateAhspData, CreateAhspErrors, CreateAhspResponses, CreateGroupData, CreateGroupErrors, CreateGroupResponses, CreateProjectData, CreateProjectErrors, CreateProjectPlantData, CreateProjectPlantErrors, CreateProjectPlantResponses, CreateProjectResponses, CreateProjectSectionData, CreateProjectSectionErrors, CreateProjectSectionResponses, CreateRabItemData, CreateRabItemErrors, CreateRabItemResponses, CreateScheduleData, CreateScheduleErrors, CreateScheduleResponses, CreateUnitPriceCategoryData, CreateUnitPriceCategoryErrors, CreateUnitPriceCategoryResponses, CreateUnitPriceData, CreateUnitPriceErrors, CreateUnitPriceResponses, CreateVolumeData, CreateVolumeErrors, CreateVolumeResponses, DeleteAhspData, DeleteAhspErrors, DeleteAhspResponses, DeleteGroupData, DeleteGroupErrors, DeleteGroupResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectPlantData, DeleteProjectPlantErrors, DeleteProjectPlantResponses, DeleteProjectResponses, DeleteProjectSectionData, DeleteProjectSectionErrors, DeleteProjectSectionResponses, DeleteRabItemData, DeleteRabItemErrors, DeleteRabItemResponses, DeleteScheduleData, DeleteScheduleErrors, DeleteScheduleResponses, DeleteUnitPriceCategoryData, DeleteUnitPriceCategoryErrors, DeleteUnitPriceCategoryResponses, DeleteUnitPriceData, DeleteUnitPriceErrors, DeleteUnitPriceResponses, DeleteVolumeData, DeleteVolumeErrors, DeleteVolumeResponses, ExportRabExcelData, ExportRabExcelErrors, ExportRabExcelResponses, ExportRabPdfData, ExportRabPdfErrors, ExportRabPdfResponses, ExportVolumeExcelData, ExportVolumeExcelErrors, ExportVolumeExcelResponses, GetAhspData, GetAhspErrors, GetAhspResponses, GetCostEstimateData, GetCostEstimateErrors, GetCostEstimateResponses, GetHealthData, GetHealthErrors, GetHealthResponses, GetMeData, GetMeErrors, GetMeResponses, GetProjectBoqData, GetProjectBoqErrors, GetProjectBoqResponses, GetProjectData, GetProjectErrors, GetProjectRabData, GetProjectRabErrors, GetProjectRabResponses, GetProjectResponses, ListAhspsData, ListAhspsErrors, ListAhspsResponses, ListBoqProjectsData, ListBoqProjectsErrors, ListBoqProjectsResponses, ListGroupsData, ListGroupsErrors, ListGroupsResponses, ListProjectPlantsData, ListProjectPlantsErrors, ListProjectPlantsResponses, ListProjectsData, ListProjectSectionsData, ListProjectSectionsErrors, ListProjectSectionsResponses, ListProjectsErrors, ListProjectsResponses, ListSchedulesData, ListSchedulesErrors, ListSchedulesResponses, ListUnitPriceCategoriesData, ListUnitPriceCategoriesErrors, ListUnitPriceCategoriesResponses, ListUnitPricesData, ListUnitPricesErrors, ListUnitPricesResponses, ListVolumesData, ListVolumesErrors, ListVolumesResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, UpdateAhspData, UpdateAhspErrors, UpdateAhspResponses, UpdateGroupData, UpdateGroupErrors, UpdateGroupResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectPlantData, UpdateProjectPlantErrors, UpdateProjectPlantResponses, UpdateProjectResponses, UpdateProjectSectionData, UpdateProjectSectionErrors, UpdateProjectSectionResponses, UpdateRabItemData, UpdateRabItemErrors, UpdateRabItemResponses, UpdateScheduleData, UpdateScheduleErrors, UpdateScheduleResponses, UpdateUnitPriceCategoryData, UpdateUnitPriceCategoryErrors, UpdateUnitPriceCategoryResponses, UpdateUnitPriceData, UpdateUnitPriceErrors, UpdateUnitPriceResponses, UpdateVolumeData, UpdateVolumeErrors, UpdateVolumeResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -124,6 +124,74 @@ export const updateGroup = <ThrowOnError extends boolean = false>(options: Optio
  * Service and database are reachable
  */
 export const getHealth = <ThrowOnError extends boolean = false>(options?: Options<GetHealthData, ThrowOnError>): RequestResult<GetHealthResponses, GetHealthErrors, ThrowOnError> => (options?.client ?? client).get<GetHealthResponses, GetHealthErrors, ThrowOnError>({ url: '/health', ...options });
+
+/**
+ * List project plants
+ */
+export const listProjectPlants = <ThrowOnError extends boolean = false>(options?: Options<ListProjectPlantsData, ThrowOnError>): RequestResult<ListProjectPlantsResponses, ListProjectPlantsErrors, ThrowOnError> => (options?.client ?? client).get<ListProjectPlantsResponses, ListProjectPlantsErrors, ThrowOnError>({ url: '/project-plants', ...options });
+
+/**
+ * Create project plant
+ */
+export const createProjectPlant = <ThrowOnError extends boolean = false>(options: Options<CreateProjectPlantData, ThrowOnError>): RequestResult<CreateProjectPlantResponses, CreateProjectPlantErrors, ThrowOnError> => (options.client ?? client).post<CreateProjectPlantResponses, CreateProjectPlantErrors, ThrowOnError>({
+    url: '/project-plants',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete project plant
+ */
+export const deleteProjectPlant = <ThrowOnError extends boolean = false>(options: Options<DeleteProjectPlantData, ThrowOnError>): RequestResult<DeleteProjectPlantResponses, DeleteProjectPlantErrors, ThrowOnError> => (options.client ?? client).delete<DeleteProjectPlantResponses, DeleteProjectPlantErrors, ThrowOnError>({ url: '/project-plants/{id}', ...options });
+
+/**
+ * Update project plant
+ */
+export const updateProjectPlant = <ThrowOnError extends boolean = false>(options: Options<UpdateProjectPlantData, ThrowOnError>): RequestResult<UpdateProjectPlantResponses, UpdateProjectPlantErrors, ThrowOnError> => (options.client ?? client).put<UpdateProjectPlantResponses, UpdateProjectPlantErrors, ThrowOnError>({
+    url: '/project-plants/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * List project sections
+ */
+export const listProjectSections = <ThrowOnError extends boolean = false>(options?: Options<ListProjectSectionsData, ThrowOnError>): RequestResult<ListProjectSectionsResponses, ListProjectSectionsErrors, ThrowOnError> => (options?.client ?? client).get<ListProjectSectionsResponses, ListProjectSectionsErrors, ThrowOnError>({ url: '/project-sections', ...options });
+
+/**
+ * Create project section
+ */
+export const createProjectSection = <ThrowOnError extends boolean = false>(options: Options<CreateProjectSectionData, ThrowOnError>): RequestResult<CreateProjectSectionResponses, CreateProjectSectionErrors, ThrowOnError> => (options.client ?? client).post<CreateProjectSectionResponses, CreateProjectSectionErrors, ThrowOnError>({
+    url: '/project-sections',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete project section
+ */
+export const deleteProjectSection = <ThrowOnError extends boolean = false>(options: Options<DeleteProjectSectionData, ThrowOnError>): RequestResult<DeleteProjectSectionResponses, DeleteProjectSectionErrors, ThrowOnError> => (options.client ?? client).delete<DeleteProjectSectionResponses, DeleteProjectSectionErrors, ThrowOnError>({ url: '/project-sections/{id}', ...options });
+
+/**
+ * Update project section
+ */
+export const updateProjectSection = <ThrowOnError extends boolean = false>(options: Options<UpdateProjectSectionData, ThrowOnError>): RequestResult<UpdateProjectSectionResponses, UpdateProjectSectionErrors, ThrowOnError> => (options.client ?? client).put<UpdateProjectSectionResponses, UpdateProjectSectionErrors, ThrowOnError>({
+    url: '/project-sections/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * List projects

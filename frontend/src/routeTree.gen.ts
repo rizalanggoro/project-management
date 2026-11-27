@@ -15,6 +15,8 @@ import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as BoqIndexRouteImport } from './routes/boq/index'
 import { Route as GroupsIndexRouteImport } from './routes/groups/index'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
+import { Route as ProjectPlantsIndexRouteImport } from './routes/project-plants/index'
+import { Route as ProjectSectionsIndexRouteImport } from './routes/project-sections/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
 import { Route as RabIndexRouteImport } from './routes/rab/index'
 import { Route as ScheduleIndexRouteImport } from './routes/schedule/index'
@@ -54,6 +56,16 @@ const GroupsIndexRoute = GroupsIndexRouteImport.update({
 const LoginIndexRoute = LoginIndexRouteImport.update({
   id: '/login/',
   path: '/login/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectPlantsIndexRoute = ProjectPlantsIndexRouteImport.update({
+  id: '/project-plants/',
+  path: '/project-plants/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectSectionsIndexRoute = ProjectSectionsIndexRouteImport.update({
+  id: '/project-sections/',
+  path: '/project-sections/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
@@ -115,6 +127,8 @@ export interface FileRoutesByFullPath {
   '/boq/': typeof BoqIndexRoute
   '/groups/': typeof GroupsIndexRoute
   '/login/': typeof LoginIndexRoute
+  '/project-plants/': typeof ProjectPlantsIndexRoute
+  '/project-sections/': typeof ProjectSectionsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/rab/': typeof RabIndexRoute
   '/schedule/': typeof ScheduleIndexRoute
@@ -133,6 +147,8 @@ export interface FileRoutesByTo {
   '/boq': typeof BoqIndexRoute
   '/groups': typeof GroupsIndexRoute
   '/login': typeof LoginIndexRoute
+  '/project-plants': typeof ProjectPlantsIndexRoute
+  '/project-sections': typeof ProjectSectionsIndexRoute
   '/projects': typeof ProjectsIndexRoute
   '/rab': typeof RabIndexRoute
   '/schedule': typeof ScheduleIndexRoute
@@ -152,6 +168,8 @@ export interface FileRoutesById {
   '/boq/': typeof BoqIndexRoute
   '/groups/': typeof GroupsIndexRoute
   '/login/': typeof LoginIndexRoute
+  '/project-plants/': typeof ProjectPlantsIndexRoute
+  '/project-sections/': typeof ProjectSectionsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/rab/': typeof RabIndexRoute
   '/schedule/': typeof ScheduleIndexRoute
@@ -172,6 +190,8 @@ export interface FileRouteTypes {
     | '/boq/'
     | '/groups/'
     | '/login/'
+    | '/project-plants/'
+    | '/project-sections/'
     | '/projects/'
     | '/rab/'
     | '/schedule/'
@@ -190,6 +210,8 @@ export interface FileRouteTypes {
     | '/boq'
     | '/groups'
     | '/login'
+    | '/project-plants'
+    | '/project-sections'
     | '/projects'
     | '/rab'
     | '/schedule'
@@ -208,6 +230,8 @@ export interface FileRouteTypes {
     | '/boq/'
     | '/groups/'
     | '/login/'
+    | '/project-plants/'
+    | '/project-sections/'
     | '/projects/'
     | '/rab/'
     | '/schedule/'
@@ -227,6 +251,8 @@ export interface RootRouteChildren {
   BoqIndexRoute: typeof BoqIndexRoute
   GroupsIndexRoute: typeof GroupsIndexRoute
   LoginIndexRoute: typeof LoginIndexRoute
+  ProjectPlantsIndexRoute: typeof ProjectPlantsIndexRoute
+  ProjectSectionsIndexRoute: typeof ProjectSectionsIndexRoute
   ProjectsIndexRoute: typeof ProjectsIndexRoute
   RabIndexRoute: typeof RabIndexRoute
   ScheduleIndexRoute: typeof ScheduleIndexRoute
@@ -281,6 +307,20 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login/'
       preLoaderRoute: typeof LoginIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/project-plants/': {
+      id: '/project-plants/'
+      path: '/project-plants'
+      fullPath: '/project-plants/'
+      preLoaderRoute: typeof ProjectPlantsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/project-sections/': {
+      id: '/project-sections/'
+      path: '/project-sections'
+      fullPath: '/project-sections/'
+      preLoaderRoute: typeof ProjectSectionsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/projects/': {
@@ -363,6 +403,8 @@ const rootRouteChildren: RootRouteChildren = {
   BoqIndexRoute: BoqIndexRoute,
   GroupsIndexRoute: GroupsIndexRoute,
   LoginIndexRoute: LoginIndexRoute,
+  ProjectPlantsIndexRoute: ProjectPlantsIndexRoute,
+  ProjectSectionsIndexRoute: ProjectSectionsIndexRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,
   RabIndexRoute: RabIndexRoute,
   ScheduleIndexRoute: ScheduleIndexRoute,

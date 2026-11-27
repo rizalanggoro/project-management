@@ -3,8 +3,8 @@
 import { type DefaultError, type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { createAhsp, createGroup, createProject, createRabItem, createSchedule, createUnitPrice, createUnitPriceCategory, createVolume, deleteAhsp, deleteGroup, deleteProject, deleteRabItem, deleteSchedule, deleteUnitPrice, deleteUnitPriceCategory, deleteVolume, exportRabExcel, exportRabPdf, exportVolumeExcel, getAhsp, getCostEstimate, getHealth, getMe, getProject, getProjectBoq, getProjectRab, listAhsps, listBoqProjects, listGroups, listProjects, listSchedules, listUnitPriceCategories, listUnitPrices, listVolumes, login, logout, type Options, updateAhsp, updateGroup, updateProject, updateRabItem, updateSchedule, updateUnitPrice, updateUnitPriceCategory, updateVolume } from '../sdk.gen';
-import type { CreateAhspData, CreateAhspError, CreateAhspResponse, CreateGroupData, CreateGroupError, CreateGroupResponse, CreateProjectData, CreateProjectError, CreateProjectResponse, CreateRabItemData, CreateRabItemError, CreateRabItemResponse, CreateScheduleData, CreateScheduleError, CreateScheduleResponse, CreateUnitPriceCategoryData, CreateUnitPriceCategoryError, CreateUnitPriceCategoryResponse, CreateUnitPriceData, CreateUnitPriceError, CreateUnitPriceResponse, CreateVolumeData, CreateVolumeError, CreateVolumeResponse, DeleteAhspData, DeleteAhspError, DeleteGroupData, DeleteGroupError, DeleteProjectData, DeleteProjectError, DeleteRabItemData, DeleteRabItemError, DeleteScheduleData, DeleteScheduleError, DeleteUnitPriceCategoryData, DeleteUnitPriceCategoryError, DeleteUnitPriceData, DeleteUnitPriceError, DeleteVolumeData, DeleteVolumeError, ExportRabExcelData, ExportRabExcelError, ExportRabPdfData, ExportRabPdfError, ExportVolumeExcelData, ExportVolumeExcelError, GetAhspData, GetAhspError, GetAhspResponse, GetCostEstimateData, GetCostEstimateError, GetCostEstimateResponse, GetHealthData, GetHealthError, GetHealthResponse, GetMeData, GetMeError, GetMeResponse, GetProjectBoqData, GetProjectBoqError, GetProjectBoqResponse, GetProjectData, GetProjectError, GetProjectRabData, GetProjectRabError, GetProjectRabResponse, GetProjectResponse, ListAhspsData, ListAhspsError, ListAhspsResponse, ListBoqProjectsData, ListBoqProjectsError, ListBoqProjectsResponse, ListGroupsData, ListGroupsError, ListGroupsResponse, ListProjectsData, ListProjectsError, ListProjectsResponse, ListSchedulesData, ListSchedulesError, ListSchedulesResponse, ListUnitPriceCategoriesData, ListUnitPriceCategoriesError, ListUnitPriceCategoriesResponse, ListUnitPricesData, ListUnitPricesError, ListUnitPricesResponse, ListVolumesData, ListVolumesError, ListVolumesResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, UpdateAhspData, UpdateAhspError, UpdateAhspResponse, UpdateGroupData, UpdateGroupError, UpdateGroupResponse, UpdateProjectData, UpdateProjectError, UpdateProjectResponse, UpdateRabItemData, UpdateRabItemError, UpdateRabItemResponse, UpdateScheduleData, UpdateScheduleError, UpdateScheduleResponse, UpdateUnitPriceCategoryData, UpdateUnitPriceCategoryError, UpdateUnitPriceCategoryResponse, UpdateUnitPriceData, UpdateUnitPriceError, UpdateUnitPriceResponse, UpdateVolumeData, UpdateVolumeError, UpdateVolumeResponse } from '../types.gen';
+import { createAhsp, createGroup, createProject, createProjectPlant, createProjectSection, createRabItem, createSchedule, createUnitPrice, createUnitPriceCategory, createVolume, deleteAhsp, deleteGroup, deleteProject, deleteProjectPlant, deleteProjectSection, deleteRabItem, deleteSchedule, deleteUnitPrice, deleteUnitPriceCategory, deleteVolume, exportRabExcel, exportRabPdf, exportVolumeExcel, getAhsp, getCostEstimate, getHealth, getMe, getProject, getProjectBoq, getProjectRab, listAhsps, listBoqProjects, listGroups, listProjectPlants, listProjects, listProjectSections, listSchedules, listUnitPriceCategories, listUnitPrices, listVolumes, login, logout, type Options, updateAhsp, updateGroup, updateProject, updateProjectPlant, updateProjectSection, updateRabItem, updateSchedule, updateUnitPrice, updateUnitPriceCategory, updateVolume } from '../sdk.gen';
+import type { CreateAhspData, CreateAhspError, CreateAhspResponse, CreateGroupData, CreateGroupError, CreateGroupResponse, CreateProjectData, CreateProjectError, CreateProjectPlantData, CreateProjectPlantError, CreateProjectPlantResponse, CreateProjectResponse, CreateProjectSectionData, CreateProjectSectionError, CreateProjectSectionResponse, CreateRabItemData, CreateRabItemError, CreateRabItemResponse, CreateScheduleData, CreateScheduleError, CreateScheduleResponse, CreateUnitPriceCategoryData, CreateUnitPriceCategoryError, CreateUnitPriceCategoryResponse, CreateUnitPriceData, CreateUnitPriceError, CreateUnitPriceResponse, CreateVolumeData, CreateVolumeError, CreateVolumeResponse, DeleteAhspData, DeleteAhspError, DeleteGroupData, DeleteGroupError, DeleteProjectData, DeleteProjectError, DeleteProjectPlantData, DeleteProjectPlantError, DeleteProjectSectionData, DeleteProjectSectionError, DeleteRabItemData, DeleteRabItemError, DeleteScheduleData, DeleteScheduleError, DeleteUnitPriceCategoryData, DeleteUnitPriceCategoryError, DeleteUnitPriceData, DeleteUnitPriceError, DeleteVolumeData, DeleteVolumeError, ExportRabExcelData, ExportRabExcelError, ExportRabPdfData, ExportRabPdfError, ExportVolumeExcelData, ExportVolumeExcelError, GetAhspData, GetAhspError, GetAhspResponse, GetCostEstimateData, GetCostEstimateError, GetCostEstimateResponse, GetHealthData, GetHealthError, GetHealthResponse, GetMeData, GetMeError, GetMeResponse, GetProjectBoqData, GetProjectBoqError, GetProjectBoqResponse, GetProjectData, GetProjectError, GetProjectRabData, GetProjectRabError, GetProjectRabResponse, GetProjectResponse, ListAhspsData, ListAhspsError, ListAhspsResponse, ListBoqProjectsData, ListBoqProjectsError, ListBoqProjectsResponse, ListGroupsData, ListGroupsError, ListGroupsResponse, ListProjectPlantsData, ListProjectPlantsError, ListProjectPlantsResponse, ListProjectsData, ListProjectSectionsData, ListProjectSectionsError, ListProjectSectionsResponse, ListProjectsError, ListProjectsResponse, ListSchedulesData, ListSchedulesError, ListSchedulesResponse, ListUnitPriceCategoriesData, ListUnitPriceCategoriesError, ListUnitPriceCategoriesResponse, ListUnitPricesData, ListUnitPricesError, ListUnitPricesResponse, ListVolumesData, ListVolumesError, ListVolumesResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, UpdateAhspData, UpdateAhspError, UpdateAhspResponse, UpdateGroupData, UpdateGroupError, UpdateGroupResponse, UpdateProjectData, UpdateProjectError, UpdateProjectPlantData, UpdateProjectPlantError, UpdateProjectPlantResponse, UpdateProjectResponse, UpdateProjectSectionData, UpdateProjectSectionError, UpdateProjectSectionResponse, UpdateRabItemData, UpdateRabItemError, UpdateRabItemResponse, UpdateScheduleData, UpdateScheduleError, UpdateScheduleResponse, UpdateUnitPriceCategoryData, UpdateUnitPriceCategoryError, UpdateUnitPriceCategoryResponse, UpdateUnitPriceData, UpdateUnitPriceError, UpdateUnitPriceResponse, UpdateVolumeData, UpdateVolumeError, UpdateVolumeResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -284,6 +284,144 @@ export const getHealthOptions = (options?: Options<GetHealthData>) => queryOptio
     },
     queryKey: getHealthQueryKey(options)
 });
+
+export const listProjectPlantsQueryKey = (options?: Options<ListProjectPlantsData>) => createQueryKey('listProjectPlants', options);
+
+/**
+ * List project plants
+ */
+export const listProjectPlantsOptions = (options?: Options<ListProjectPlantsData>) => queryOptions<ListProjectPlantsResponse, ListProjectPlantsError, ListProjectPlantsResponse, ReturnType<typeof listProjectPlantsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listProjectPlants({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listProjectPlantsQueryKey(options)
+});
+
+/**
+ * Create project plant
+ */
+export const createProjectPlantMutation = (options?: Partial<Options<CreateProjectPlantData>>): UseMutationOptions<CreateProjectPlantResponse, CreateProjectPlantError, Options<CreateProjectPlantData>> => {
+    const mutationOptions: UseMutationOptions<CreateProjectPlantResponse, CreateProjectPlantError, Options<CreateProjectPlantData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createProjectPlant({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Delete project plant
+ */
+export const deleteProjectPlantMutation = (options?: Partial<Options<DeleteProjectPlantData>>): UseMutationOptions<unknown, DeleteProjectPlantError, Options<DeleteProjectPlantData>> => {
+    const mutationOptions: UseMutationOptions<unknown, DeleteProjectPlantError, Options<DeleteProjectPlantData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await deleteProjectPlant({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Update project plant
+ */
+export const updateProjectPlantMutation = (options?: Partial<Options<UpdateProjectPlantData>>): UseMutationOptions<UpdateProjectPlantResponse, UpdateProjectPlantError, Options<UpdateProjectPlantData>> => {
+    const mutationOptions: UseMutationOptions<UpdateProjectPlantResponse, UpdateProjectPlantError, Options<UpdateProjectPlantData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await updateProjectPlant({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const listProjectSectionsQueryKey = (options?: Options<ListProjectSectionsData>) => createQueryKey('listProjectSections', options);
+
+/**
+ * List project sections
+ */
+export const listProjectSectionsOptions = (options?: Options<ListProjectSectionsData>) => queryOptions<ListProjectSectionsResponse, ListProjectSectionsError, ListProjectSectionsResponse, ReturnType<typeof listProjectSectionsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listProjectSections({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listProjectSectionsQueryKey(options)
+});
+
+/**
+ * Create project section
+ */
+export const createProjectSectionMutation = (options?: Partial<Options<CreateProjectSectionData>>): UseMutationOptions<CreateProjectSectionResponse, CreateProjectSectionError, Options<CreateProjectSectionData>> => {
+    const mutationOptions: UseMutationOptions<CreateProjectSectionResponse, CreateProjectSectionError, Options<CreateProjectSectionData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createProjectSection({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Delete project section
+ */
+export const deleteProjectSectionMutation = (options?: Partial<Options<DeleteProjectSectionData>>): UseMutationOptions<unknown, DeleteProjectSectionError, Options<DeleteProjectSectionData>> => {
+    const mutationOptions: UseMutationOptions<unknown, DeleteProjectSectionError, Options<DeleteProjectSectionData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await deleteProjectSection({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Update project section
+ */
+export const updateProjectSectionMutation = (options?: Partial<Options<UpdateProjectSectionData>>): UseMutationOptions<UpdateProjectSectionResponse, UpdateProjectSectionError, Options<UpdateProjectSectionData>> => {
+    const mutationOptions: UseMutationOptions<UpdateProjectSectionResponse, UpdateProjectSectionError, Options<UpdateProjectSectionData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await updateProjectSection({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
 
 export const listProjectsQueryKey = (options?: Options<ListProjectsData>) => createQueryKey('listProjects', options);
 
