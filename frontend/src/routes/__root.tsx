@@ -1,4 +1,15 @@
 import { ModeToggle } from "@/components/mode-toggle";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogMedia,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Separator } from "@/components/ui/separator";
 import {
   Sidebar,
@@ -37,7 +48,7 @@ import {
   Tags,
   User as UserIcon,
 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const nav = [
   {
@@ -78,6 +89,7 @@ function Shell() {
   const { user, isLoading, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const [isLogoutOpen, setLogoutOpen] = useState(false);
 
   const isAuthPage =
     location.pathname === "/auth" || location.pathname === "/login";
@@ -170,7 +182,7 @@ function Shell() {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  onClick={() => logout()}
+                  onClick={() => setLogoutOpen(true)}
                   tooltip="Keluar"
                   className="text-destructive hover:bg-destructive/10 hover:text-destructive focus:text-destructive"
                 >
@@ -201,6 +213,32 @@ function Shell() {
           </main>
         </SidebarInset>
       </SidebarProvider>
+
+      <AlertDialog open={isLogoutOpen} onOpenChange={setLogoutOpen}>
+        <AlertDialogContent size="sm">
+          <AlertDialogHeader>
+            <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
+              <LogOut />
+            </AlertDialogMedia>
+            <AlertDialogTitle>Keluar dari aplikasi?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Sesi Anda akan berakhir. Silakan masuk kembali untuk melanjutkan.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel variant="ghost">Batal</AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              onClick={() => {
+                setLogoutOpen(false);
+                void logout();
+              }}
+            >
+              Keluar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </TooltipProvider>
   );
 }
