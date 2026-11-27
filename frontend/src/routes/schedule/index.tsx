@@ -17,8 +17,15 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { useAuth } from '@/lib/auth'
-import { Plus, Search } from 'lucide-react'
+import { EllipsisVertical, Plus, Search, Trash2 } from 'lucide-react'
 
 export const Route = createFileRoute('/schedule/')({
   component: SchedulePage,
@@ -267,14 +274,31 @@ function SchedulePage() {
                   </TableCell>
                   {isAdmin && (
                     <TableCell className="text-center">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="text-xs text-destructive hover:bg-destructive/10"
-                        onClick={() => handleDelete(s.id, s.work_item)}
-                      >
-                        Hapus
-                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger
+                          render={
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="size-8 text-muted-foreground hover:text-foreground"
+                            />
+                          }
+                        >
+                          <EllipsisVertical />
+                          <span className="sr-only">Aksi</span>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-32">
+                          <DropdownMenuGroup>
+                            <DropdownMenuItem
+                              variant="destructive"
+                              onClick={() => handleDelete(s.id, s.work_item)}
+                            >
+                              <Trash2 />
+                              <span>Hapus</span>
+                            </DropdownMenuItem>
+                          </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   )}
                 </TableRow>

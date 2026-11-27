@@ -2,6 +2,13 @@ import type { UnitPriceCategoryDto } from "@/api/types.gen";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Empty,
   EmptyDescription,
   EmptyHeader,
@@ -15,6 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
 
 export interface UnitPriceCategoryTableProps {
   items: UnitPriceCategoryDto[];
@@ -92,22 +100,35 @@ export function UnitPriceCategoryTable({
                 </TableCell>
                 {isAdmin && (
                   <TableCell className="text-center">
-                    <div className="flex items-center justify-center gap-2">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => onEdit?.(item)}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        render={
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-8 text-muted-foreground hover:text-foreground"
+                          />
+                        }
                       >
-                        Ubah
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => onDelete?.(item)}
-                      >
-                        Hapus
-                      </Button>
-                    </div>
+                        <EllipsisVertical />
+                        <span className="sr-only">Aksi</span>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-32">
+                        <DropdownMenuGroup>
+                          <DropdownMenuItem onClick={() => onEdit?.(item)}>
+                            <Pencil />
+                            <span>Ubah</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            variant="destructive"
+                            onClick={() => onDelete?.(item)}
+                          >
+                            <Trash2 />
+                            <span>Hapus</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 )}
               </TableRow>

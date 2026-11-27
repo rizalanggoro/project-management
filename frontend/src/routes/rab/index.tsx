@@ -21,9 +21,22 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent } from '@/components/ui/card'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuPortal,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { formatRupiah, formatDecimal } from '@/lib/utils'
 import { useAuth } from '@/lib/auth'
-import { AlertCircle, Download, Plus, Search } from 'lucide-react'
+import { AlertCircle, Download, EllipsisVertical, Plus, Search, Tags, Trash2 } from 'lucide-react'
 
 export const Route = createFileRoute('/rab/')({
   component: RabPage,
@@ -347,34 +360,60 @@ function RabPage() {
                         </TableCell>
                         {isAdmin && (
                           <TableCell className="text-center">
-                            <div className="flex items-center justify-center gap-2">
-                              <Select
-                                items={groupItems}
-                                value={item.group || undefined}
-                                onValueChange={(val) => { if (val) handleUpdateGroup(item.id, val) }}
+                            <DropdownMenu>
+                              <DropdownMenuTrigger
+                                render={
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="size-8 text-muted-foreground hover:text-foreground"
+                                  />
+                                }
                               >
-                                <SelectTrigger className="w-16">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectGroup>
-                                    {groupItems.map((g) => (
-                                      <SelectItem key={g.value} value={g.value}>
-                                        {g.value}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="text-xs text-destructive hover:bg-destructive/10"
-                                onClick={() => handleDelete(item.id)}
-                              >
-                                Hapus
-                              </Button>
-                            </div>
+                                <EllipsisVertical />
+                                <span className="sr-only">Aksi</span>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="w-40">
+                                <DropdownMenuGroup>
+                                  <DropdownMenuSub>
+                                    <DropdownMenuSubTrigger>
+                                      <Tags />
+                                      <span>Ubah grup</span>
+                                    </DropdownMenuSubTrigger>
+                                    <DropdownMenuPortal>
+                                      <DropdownMenuSubContent>
+                                        <DropdownMenuGroup>
+                                          <DropdownMenuRadioGroup
+                                            value={item.group || undefined}
+                                            onValueChange={(value) => {
+                                              if (value && value !== item.group) {
+                                                handleUpdateGroup(item.id, value)
+                                              }
+                                            }}
+                                          >
+                                            {groupItems.map((g) => (
+                                              <DropdownMenuRadioItem
+                                                key={g.value}
+                                                value={g.value}
+                                              >
+                                                {g.label}
+                                              </DropdownMenuRadioItem>
+                                            ))}
+                                          </DropdownMenuRadioGroup>
+                                        </DropdownMenuGroup>
+                                      </DropdownMenuSubContent>
+                                    </DropdownMenuPortal>
+                                  </DropdownMenuSub>
+                                  <DropdownMenuItem
+                                    variant="destructive"
+                                    onClick={() => handleDelete(item.id)}
+                                  >
+                                    <Trash2 />
+                                    <span>Hapus</span>
+                                  </DropdownMenuItem>
+                                </DropdownMenuGroup>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </TableCell>
                         )}
                       </TableRow>

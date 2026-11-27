@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
@@ -16,7 +17,7 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty'
 import { formatRupiah } from '@/lib/utils'
 import { useAuth } from '@/lib/auth'
-import { MoreHorizontal, Pencil, Plus, Search, Trash2 } from 'lucide-react'
+import { EllipsisVertical, Pencil, Plus, Search, Trash2 } from 'lucide-react'
 
 export const Route = createFileRoute('/ahsp/')({
   component: AhspPage,
@@ -157,28 +158,30 @@ function AhspPage() {
                             />
                           }
                         >
-                          <MoreHorizontal className="size-4" />
-                          <span className="sr-only">Menu</span>
+                          <EllipsisVertical />
+                          <span className="sr-only">Aksi</span>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-32">
-                          <DropdownMenuItem
-                            onClick={() =>
-                              navigate({
-                                to: '/ahsp/$id/edit',
-                                params: { id: a.id },
-                              })
-                            }
-                          >
-                            <Pencil className="size-4 mr-2" />
-                            <span>Ubah</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            variant="destructive"
-                            onClick={() => handleDelete(a.id, a.code)}
-                          >
-                            <Trash2 className="size-4 mr-2" />
-                            <span>Hapus</span>
-                          </DropdownMenuItem>
+                          <DropdownMenuGroup>
+                            <DropdownMenuItem
+                              onClick={() =>
+                                navigate({
+                                  to: '/ahsp/$id/edit',
+                                  params: { id: a.id },
+                                })
+                              }
+                            >
+                              <Pencil />
+                              <span>Ubah</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              variant="destructive"
+                              onClick={() => handleDelete(a.id, a.code)}
+                            >
+                              <Trash2 />
+                              <span>Hapus</span>
+                            </DropdownMenuItem>
+                          </DropdownMenuGroup>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>

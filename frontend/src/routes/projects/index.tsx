@@ -19,6 +19,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -40,7 +41,7 @@ import { useAuth } from "@/lib/auth";
 import { formatRupiah } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Check, MoreHorizontal, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { Check, EllipsisVertical, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/projects/")({
@@ -239,21 +240,23 @@ function ProjectsPage() {
                               />
                             }
                           >
-                            <MoreHorizontal className="size-4" />
-                            <span className="sr-only">Menu</span>
+                            <EllipsisVertical />
+                            <span className="sr-only">Aksi</span>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-32">
-                            <DropdownMenuItem onClick={() => handleOpenEdit(p)}>
-                              <Pencil className="size-4 mr-2" />
-                              <span>Ubah</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              variant="destructive"
-                              onClick={(e) => handleDelete(p.id, e)}
-                            >
-                              <Trash2 className="size-4 mr-2" />
-                              <span>Hapus</span>
-                            </DropdownMenuItem>
+                            <DropdownMenuGroup>
+                              <DropdownMenuItem onClick={() => handleOpenEdit(p)}>
+                                <Pencil />
+                                <span>Ubah</span>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                variant="destructive"
+                                onClick={(e) => handleDelete(p.id, e)}
+                              >
+                                <Trash2 />
+                                <span>Hapus</span>
+                              </DropdownMenuItem>
+                            </DropdownMenuGroup>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>

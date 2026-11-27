@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -22,7 +23,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatRupiah } from "@/lib/utils";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
 
 export interface UnitPriceTableProps {
   items: UnitPriceDto[];
@@ -106,25 +107,27 @@ export function UnitPriceTable({
                           />
                         }
                       >
-                        <MoreHorizontal className="size-4" />
-                        <span className="sr-only">Menu</span>
+                        <EllipsisVertical />
+                        <span className="sr-only">Aksi</span>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-32">
-                        {onEdit && (
-                          <DropdownMenuItem onClick={() => onEdit(item)}>
-                            <Pencil className="size-4 mr-2" />
-                            <span>Ubah</span>
-                          </DropdownMenuItem>
-                        )}
-                        {onDelete && (
-                          <DropdownMenuItem
-                            variant="destructive"
-                            onClick={() => onDelete(item)}
-                          >
-                            <Trash2 className="size-4 mr-2" />
-                            <span>Hapus</span>
-                          </DropdownMenuItem>
-                        )}
+                        <DropdownMenuGroup>
+                          {onEdit && (
+                            <DropdownMenuItem onClick={() => onEdit(item)}>
+                              <Pencil />
+                              <span>Ubah</span>
+                            </DropdownMenuItem>
+                          )}
+                          {onDelete && (
+                            <DropdownMenuItem
+                              variant="destructive"
+                              onClick={() => onDelete(item)}
+                            >
+                              <Trash2 />
+                              <span>Hapus</span>
+                            </DropdownMenuItem>
+                          )}
+                        </DropdownMenuGroup>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

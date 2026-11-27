@@ -14,9 +14,15 @@ import { FieldGroup, Field, FieldLabel } from '@/components/ui/field'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Empty, EmptyHeader, EmptyTitle } from '@/components/ui/empty'
-import { Badge } from '@/components/ui/badge'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { useAuth } from '@/lib/auth'
-import { Plus } from 'lucide-react'
+import { EllipsisVertical, Pencil, Plus, Trash2 } from 'lucide-react'
 
 export const Route = createFileRoute('/groups/')({
   component: GroupsPage,
@@ -133,11 +139,35 @@ function GroupsPage() {
                   <TableCell className="font-medium">{g.name}</TableCell>
                   {isAdmin && (
                     <TableCell className="text-center">
-                      <div className="flex items-center justify-center gap-2">
-                        <Badge variant="outline" className="font-mono">{g.code}</Badge>
-                        <Button size="sm" variant="ghost" onClick={() => openEdit(g)}>Ubah</Button>
-                        <Button size="sm" variant="ghost" onClick={() => handleDelete(g.id, g.code)}>Hapus</Button>
-                      </div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger
+                          render={
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="size-8 text-muted-foreground hover:text-foreground"
+                            />
+                          }
+                        >
+                          <EllipsisVertical />
+                          <span className="sr-only">Aksi</span>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-32">
+                          <DropdownMenuGroup>
+                            <DropdownMenuItem onClick={() => openEdit(g)}>
+                              <Pencil />
+                              <span>Ubah</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              variant="destructive"
+                              onClick={() => handleDelete(g.id, g.code)}
+                            >
+                              <Trash2 />
+                              <span>Hapus</span>
+                            </DropdownMenuItem>
+                          </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   )}
                 </TableRow>
