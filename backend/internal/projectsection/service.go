@@ -73,7 +73,6 @@ func (s *service) Update(id uint, input UpdateProjectSectionInput) (*ProjectSect
 		return nil, err
 	}
 
-	oldCode := section.Code
 	if input.Code != nil {
 		code := strings.TrimSpace(*input.Code)
 		if code == "" {
@@ -94,11 +93,6 @@ func (s *service) Update(id uint, input UpdateProjectSectionInput) (*ProjectSect
 
 	if err := s.repo.Update(s.db, section); err != nil {
 		return nil, err
-	}
-	if section.Code != oldCode {
-		if err := s.repo.RenameCode(s.db, oldCode, section.Code); err != nil {
-			return nil, err
-		}
 	}
 
 	dto := toDTO(section)

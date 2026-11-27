@@ -11,38 +11,14 @@ import (
 	"musashi/backend/internal/model"
 )
 
-// FindOptions selects one section by ID or by code. ExcludeID skips a row when
-// matching by code, used to detect duplicates during an update.
-type FindOptions struct {
-	ID        *uint
-	Code      *string
-	ExcludeID *uint
-}
-
-var (
-	ErrFindRequiresIDOrCode = errors.New("provide id or code")
-	ErrFindAmbiguous        = errors.New("provide only one of id or code")
-)
-
-// ListOptions is the section-specific list query.
-type ListOptions struct {
-	Keyword  string
-	SortBy   string
-	SortDir  string
-	Includes []string
-}
-
 // Repository combines the shared CRUD contract with section-specific queries.
 type Repository interface {
 	crud.Repository[domain.ProjectSectionRecord, FindOptions, ListOptions]
 
-	RenameCode(db *gorm.DB, oldCode, newCode string) error
 	CountReferences(db *gorm.DB, code string) (int64, error)
 }
 
 type repository struct{}
-
-var _ Repository = (*repository)(nil)
 
 func NewRepository() Repository {
 	return &repository{}
@@ -56,6 +32,19 @@ func (r *repository) Create(db *gorm.DB, s *domain.ProjectSectionRecord) error {
 	*s = *m.ToDomain()
 	return nil
 }
+
+// FindOptions selects one section by ID or by code. ExcludeID skips a row when
+// matching by code, used to detect duplicates during an update.
+type FindOptions struct {
+	ID        *uint
+	Code      *string
+	ExcludeID *uint
+}
+
+var (
+	ErrFindRequiresIDOrCode = errors.New("provide id or code")
+	ErrFindAmbiguous        = errors.New("provide only one of id or code")
+)
 
 func (r *repository) Find(db *gorm.DB, opts FindOptions) (*domain.ProjectSectionRecord, error) {
 	if opts.ID == nil && opts.Code == nil {
@@ -81,6 +70,14 @@ func (r *repository) Find(db *gorm.DB, opts FindOptions) (*domain.ProjectSection
 		return nil, err
 	}
 	return m.ToDomain(), nil
+}
+
+// ListOptions is the section-specific list query.
+type ListOptions struct {
+	Keyword  string
+	SortBy   string
+	SortDir  string
+	Includes []string
 }
 
 func (r *repository) List(db *gorm.DB, opts ListOptions) ([]domain.ProjectSectionRecord, error) {
@@ -131,12 +128,6 @@ func (r *repository) Delete(db *gorm.DB, id uint) (bool, error) {
 		return false, res.Error
 	}
 	return res.RowsAffected > 0, nil
-}
-
-func (r *repository) RenameCode(db *gorm.DB, oldCode, newCode string) error {
-	return db.Table("projects").
-		Where("lower(section) = lower(?)", oldCode).
-		Update("section", newCode).Error
 }
 
 func (r *repository) CountReferences(db *gorm.DB, code string) (int64, error) {

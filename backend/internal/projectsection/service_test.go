@@ -66,10 +66,6 @@ func (m *mockRepo) Update(_ *gorm.DB, item *domain.ProjectSectionRecord) error {
 	return nil
 }
 
-func (m *mockRepo) RenameCode(_ *gorm.DB, oldCode, newCode string) error {
-	return nil
-}
-
 func (m *mockRepo) CountReferences(_ *gorm.DB, code string) (int64, error) {
 	return m.references, nil
 }
