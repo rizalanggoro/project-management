@@ -7,12 +7,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "cn";
-import { UNIT_PRICE_CATEGORIES } from "./constants";
 
 export interface UnitPriceCategoryFilterProps {
   value: string;
   onChange: (value: string) => void;
-  categories?: readonly string[];
+  categories: readonly string[];
   className?: string;
   showLabel?: boolean;
 }
@@ -20,7 +19,7 @@ export interface UnitPriceCategoryFilterProps {
 export function UnitPriceCategoryFilter({
   value,
   onChange,
-  categories = UNIT_PRICE_CATEGORIES,
+  categories,
   className,
   showLabel = true,
 }: UnitPriceCategoryFilterProps) {

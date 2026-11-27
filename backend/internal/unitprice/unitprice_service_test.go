@@ -73,6 +73,24 @@ func (m *mockUnitPriceRepo) Delete(id uint) (bool, error) {
 	return true, nil
 }
 
+type mockCategoryRepo struct {
+	categories map[string]*domain.UnitPriceCategoryRecord
+}
+
+func newMockCategoryRepo() *mockCategoryRepo {
+	return &mockCategoryRepo{categories: map[string]*domain.UnitPriceCategoryRecord{
+		"LABOR":     {Code: "LABOR", CodePrefix: "LBR", IsActive: true},
+		"MATERIALS": {Code: "MATERIALS", CodePrefix: "MTR", IsActive: true},
+	}}
+}
+
+func (m *mockCategoryRepo) FindByCode(code string, excludeID *uint) (*domain.UnitPriceCategoryRecord, error) {
+	if c, ok := m.categories[strings.ToUpper(strings.TrimSpace(code))]; ok {
+		return c, nil
+	}
+	return nil, gorm.ErrRecordNotFound
+}
+
 func TestUnitPriceService(t *testing.T) {
 	t.Run("List", func(t *testing.T) {
 		repo := &mockUnitPriceRepo{
@@ -82,7 +100,7 @@ func TestUnitPriceService(t *testing.T) {
 				}, nil
 			},
 		}
-		svc := NewService(repo)
+		svc := NewService(repo, newMockCategoryRepo())
 		list, err := svc.List("", "")
 		if err != nil || len(list) != 1 || list[0].Code != "UP-01" {
 			t.Fatalf("unexpected list: %v, list: %+v", err, list)
@@ -98,7 +116,7 @@ func TestUnitPriceService(t *testing.T) {
 				return nil, gorm.ErrRecordNotFound
 			},
 		}
-		svc := NewService(repo)
+		svc := NewService(repo, newMockCategoryRepo())
 
 		// Required fields (workItem and unit are required)
 		_, err := svc.Create(CreateUnitPriceInput{Code: "UP-01", WorkItem: "", Unit: "m3"})
@@ -107,7 +125,7 @@ func TestUnitPriceService(t *testing.T) {
 		}
 
 		// Duplicate code
-		_, err = svc.Create(CreateUnitPriceInput{Code: "DUP-01", WorkItem: "Item", Unit: "m3"})
+		_, err = svc.Create(CreateUnitPriceInput{Code: "DUP-01", Category: "LABOR", WorkItem: "Item", Unit: "m3"})
 		if !errors.Is(err, ErrCodeAlreadyExists) {
 			t.Fatalf("expected ErrCodeAlreadyExists, got %v", err)
 		}
@@ -152,7 +170,7 @@ func TestUnitPriceService(t *testing.T) {
 				return nil, gorm.ErrRecordNotFound
 			},
 		}
-		svc := NewService(repo)
+		svc := NewService(repo, newMockCategoryRepo())
 
 		// Not found
 		_, err := svc.Update(99, UpdateUnitPriceInput{})
@@ -191,7 +209,7 @@ func TestUnitPriceService(t *testing.T) {
 				return id == 1, nil
 			},
 		}
-		svc := NewService(repo)
+		svc := NewService(repo, newMockCategoryRepo())
 
 		// In use
 		err := svc.Delete(10)
@@ -221,7 +239,7 @@ func TestUnitPriceHandler(t *testing.T) {
 			}, nil
 		},
 	}
-	svc := NewService(repo)
+	svc := NewService(repo, newMockCategoryRepo())
 	handler := NewHandler(svc)
 
 	app := fiber.New()

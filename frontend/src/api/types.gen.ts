@@ -140,6 +140,14 @@ export type CreateScheduleInput = {
     work_item: string;
 };
 
+export type CreateUnitPriceCategoryInput = {
+    code: string;
+    code_prefix: string;
+    is_active?: boolean;
+    name: string;
+    sort_order: number;
+};
+
 export type CreateUnitPriceInput = {
     category: string;
     code: string;
@@ -260,6 +268,15 @@ export type ScheduleDto = {
     work_item: string;
 };
 
+export type UnitPriceCategoryDto = {
+    code: string;
+    code_prefix: string;
+    id: string;
+    is_active: boolean;
+    name: string;
+    sort_order: number;
+};
+
 export type UnitPriceDto = {
     category: string;
     code: string;
@@ -311,6 +328,14 @@ export type UpdateScheduleInput = {
     status?: string;
     weight?: string;
     work_item?: string;
+};
+
+export type UpdateUnitPriceCategoryInput = {
+    code?: string;
+    code_prefix?: string;
+    is_active?: boolean;
+    name?: string;
+    sort_order?: number;
 };
 
 export type UpdateUnitPriceInput = {
@@ -1569,6 +1594,148 @@ export type UpdateScheduleResponses = {
 
 export type UpdateScheduleResponse = UpdateScheduleResponses[keyof UpdateScheduleResponses];
 
+export type ListUnitPriceCategoriesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/unit-price-categories';
+};
+
+export type ListUnitPriceCategoriesErrors = {
+    /**
+     * Internal Server Error
+     */
+    500: ErrorResponse;
+};
+
+export type ListUnitPriceCategoriesError = ListUnitPriceCategoriesErrors[keyof ListUnitPriceCategoriesErrors];
+
+export type ListUnitPriceCategoriesResponses = {
+    /**
+     * OK
+     */
+    200: Array<UnitPriceCategoryDto>;
+};
+
+export type ListUnitPriceCategoriesResponse = ListUnitPriceCategoriesResponses[keyof ListUnitPriceCategoriesResponses];
+
+export type CreateUnitPriceCategoryData = {
+    /**
+     * Category input
+     */
+    body: CreateUnitPriceCategoryInput;
+    path?: never;
+    query?: never;
+    url: '/unit-price-categories';
+};
+
+export type CreateUnitPriceCategoryErrors = {
+    /**
+     * Bad Request
+     */
+    400: ErrorResponse;
+    /**
+     * Conflict
+     */
+    409: ErrorResponse;
+    /**
+     * Internal Server Error
+     */
+    500: ErrorResponse;
+};
+
+export type CreateUnitPriceCategoryError = CreateUnitPriceCategoryErrors[keyof CreateUnitPriceCategoryErrors];
+
+export type CreateUnitPriceCategoryResponses = {
+    /**
+     * Created
+     */
+    201: UnitPriceCategoryDto;
+};
+
+export type CreateUnitPriceCategoryResponse = CreateUnitPriceCategoryResponses[keyof CreateUnitPriceCategoryResponses];
+
+export type DeleteUnitPriceCategoryData = {
+    body?: never;
+    path: {
+        /**
+         * Category ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/unit-price-categories/{id}';
+};
+
+export type DeleteUnitPriceCategoryErrors = {
+    /**
+     * Not Found
+     */
+    404: ErrorResponse;
+    /**
+     * Conflict
+     */
+    409: ErrorResponse;
+    /**
+     * Internal Server Error
+     */
+    500: ErrorResponse;
+};
+
+export type DeleteUnitPriceCategoryError = DeleteUnitPriceCategoryErrors[keyof DeleteUnitPriceCategoryErrors];
+
+export type DeleteUnitPriceCategoryResponses = {
+    /**
+     * No Content
+     */
+    204: unknown;
+};
+
+export type UpdateUnitPriceCategoryData = {
+    /**
+     * Category update data
+     */
+    body: UpdateUnitPriceCategoryInput;
+    path: {
+        /**
+         * Category ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/unit-price-categories/{id}';
+};
+
+export type UpdateUnitPriceCategoryErrors = {
+    /**
+     * Bad Request
+     */
+    400: ErrorResponse;
+    /**
+     * Not Found
+     */
+    404: ErrorResponse;
+    /**
+     * Conflict
+     */
+    409: ErrorResponse;
+    /**
+     * Internal Server Error
+     */
+    500: ErrorResponse;
+};
+
+export type UpdateUnitPriceCategoryError = UpdateUnitPriceCategoryErrors[keyof UpdateUnitPriceCategoryErrors];
+
+export type UpdateUnitPriceCategoryResponses = {
+    /**
+     * OK
+     */
+    200: UnitPriceCategoryDto;
+};
+
+export type UpdateUnitPriceCategoryResponse = UpdateUnitPriceCategoryResponses[keyof UpdateUnitPriceCategoryResponses];
+
 export type ListUnitPricesData = {
     body?: never;
     path?: never;
@@ -1578,7 +1745,7 @@ export type ListUnitPricesData = {
          */
         q?: string;
         /**
-         * Filter by category (LABOR, MATERIALS, EQUIPMENT, OTHER)
+         * Filter by unit price category code
          */
         category?: string;
     };

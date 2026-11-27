@@ -1562,6 +1562,189 @@ const docTemplate = `{
                 }
             }
         },
+        "/unit-price-categories": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "unit-price-categories"
+                ],
+                "summary": "List unit price categories",
+                "operationId": "listUnitPriceCategories",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/UnitPriceCategoryDTO"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "unit-price-categories"
+                ],
+                "summary": "Create unit price category",
+                "operationId": "createUnitPriceCategory",
+                "parameters": [
+                    {
+                        "description": "Category input",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/CreateUnitPriceCategoryInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/UnitPriceCategoryDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/unit-price-categories/{id}": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "unit-price-categories"
+                ],
+                "summary": "Update unit price category",
+                "operationId": "updateUnitPriceCategory",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Category ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Category update data",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdateUnitPriceCategoryInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/UnitPriceCategoryDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "unit-price-categories"
+                ],
+                "summary": "Delete unit price category",
+                "operationId": "deleteUnitPriceCategory",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Category ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/unit-prices": {
             "get": {
                 "produces": [
@@ -1581,7 +1764,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Filter by category (LABOR, MATERIALS, EQUIPMENT, OTHER)",
+                        "description": "Filter by unit price category code",
                         "name": "category",
                         "in": "query"
                     }
@@ -2337,6 +2520,37 @@ const docTemplate = `{
                 }
             }
         },
+        "CreateUnitPriceCategoryInput": {
+            "type": "object",
+            "required": [
+                "code",
+                "code_prefix",
+                "name",
+                "sort_order"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "LABOR"
+                },
+                "code_prefix": {
+                    "type": "string",
+                    "example": "LBR"
+                },
+                "is_active": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Labor"
+                },
+                "sort_order": {
+                    "type": "integer",
+                    "example": 0
+                }
+            }
+        },
         "CreateUnitPriceInput": {
             "type": "object",
             "required": [
@@ -2745,6 +2959,37 @@ const docTemplate = `{
                 }
             }
         },
+        "UnitPriceCategoryDTO": {
+            "type": "object",
+            "required": [
+                "code",
+                "code_prefix",
+                "id",
+                "is_active",
+                "name",
+                "sort_order"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "code_prefix": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "sort_order": {
+                    "type": "integer"
+                }
+            }
+        },
         "UnitPriceDTO": {
             "type": "object",
             "required": [
@@ -2892,6 +3137,31 @@ const docTemplate = `{
                 },
                 "work_item": {
                     "type": "string"
+                }
+            }
+        },
+        "UpdateUnitPriceCategoryInput": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "LABOR"
+                },
+                "code_prefix": {
+                    "type": "string",
+                    "example": "LBR"
+                },
+                "is_active": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Tenaga Kerja"
+                },
+                "sort_order": {
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },

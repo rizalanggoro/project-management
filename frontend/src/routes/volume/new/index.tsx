@@ -26,7 +26,7 @@ import {
   computeVolume,
   type FormulaType,
 } from '@/lib/volume'
-import { ArrowLeft, Calculator, Save, Building2, Ruler } from 'lucide-react'
+import { Calculator, Save, Building2, Ruler } from 'lucide-react'
 
 export const Route = createFileRoute('/volume/new/')({
   component: VolumeNewPage,
@@ -274,16 +274,6 @@ function VolumeNewPage() {
       {/* Top Navigation & Breadcrumb */}
       <div className="flex items-center justify-between border-b pb-4">
         <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="gap-2 text-muted-foreground hover:text-foreground"
-            onClick={() => navigate({ to: '/volume', search: { projectId: activeProjectId } })}
-          >
-            <ArrowLeft className="size-4" />
-            <span>Kembali ke Daftar Volume</span>
-          </Button>
-          <div className="h-4 w-px bg-border" />
           <div>
             <h1 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
               <Calculator className="size-5 text-primary" />

@@ -23,6 +23,7 @@ import (
 	"musashi/backend/internal/rab"
 	"musashi/backend/internal/schedule"
 	"musashi/backend/internal/unitprice"
+	"musashi/backend/internal/unitpricecategory"
 	"musashi/backend/internal/volume"
 	"musashi/backend/utils"
 )
@@ -77,7 +78,9 @@ func New(db *gorm.DB, cfg config.Config) *fiber.App {
 	groupHandler := group.NewHandler(group.NewService(group.NewRepository(db)))
 	projectHandler := project.NewHandler(project.NewService(project.NewRepository(db)))
 	scheduleHandler := schedule.NewHandler(schedule.NewService(schedule.NewRepository(db)))
-	unitPriceHandler := unitprice.NewHandler(unitprice.NewService(unitprice.NewRepository(db)))
+	unitPriceCategoryRepo := unitpricecategory.NewRepository(db)
+	unitPriceHandler := unitprice.NewHandler(unitprice.NewService(unitprice.NewRepository(db), unitPriceCategoryRepo))
+	unitPriceCategoryHandler := unitpricecategory.NewHandler(unitpricecategory.NewService(unitPriceCategoryRepo))
 	ahspHandler := ahsp.NewHandler(ahsp.NewService(ahsp.NewRepository(db)))
 	boqHandler := boq.NewHandler(boq.NewService(boq.NewRepository(db)))
 	volumeHandler := volume.NewHandler(volume.NewService(volume.NewRepository(db)))
@@ -118,6 +121,12 @@ func New(db *gorm.DB, cfg config.Config) *fiber.App {
 	api.Post("/unit-prices", authReq, adminOnly, unitPriceHandler.Create)
 	api.Put("/unit-prices/:id", authReq, adminOnly, unitPriceHandler.Update)
 	api.Delete("/unit-prices/:id", authReq, adminOnly, unitPriceHandler.Delete)
+
+	// Unit Price Categories
+	api.Get("/unit-price-categories", authReq, unitPriceCategoryHandler.List)
+	api.Post("/unit-price-categories", authReq, adminOnly, unitPriceCategoryHandler.Create)
+	api.Put("/unit-price-categories/:id", authReq, adminOnly, unitPriceCategoryHandler.Update)
+	api.Delete("/unit-price-categories/:id", authReq, adminOnly, unitPriceCategoryHandler.Delete)
 
 	// AHSP
 	api.Get("/ahsps", authReq, ahspHandler.List)

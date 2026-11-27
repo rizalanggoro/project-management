@@ -22,6 +22,7 @@ import { Route as UnitPricesIndexRouteImport } from './routes/unit-prices/index'
 import { Route as VolumeIndexRouteImport } from './routes/volume/index'
 import { Route as AhspIdIndexRouteImport } from './routes/ahsp/$id/index'
 import { Route as AhspNewIndexRouteImport } from './routes/ahsp/new/index'
+import { Route as UnitPricesCategoriesIndexRouteImport } from './routes/unit-prices/categories/index'
 import { Route as VolumeNewIndexRouteImport } from './routes/volume/new/index'
 import { Route as AhspIdEditIndexRouteImport } from './routes/ahsp/$id/edit/index'
 
@@ -90,15 +91,21 @@ const AhspNewIndexRoute = AhspNewIndexRouteImport.update({
   path: '/ahsp/new/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UnitPricesCategoriesIndexRoute =
+  UnitPricesCategoriesIndexRouteImport.update({
+    id: '/unit-prices/categories/',
+    path: '/unit-prices/categories/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const VolumeNewIndexRoute = VolumeNewIndexRouteImport.update({
   id: '/volume/new/',
   path: '/volume/new/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AhspIdEditIndexRoute = AhspIdEditIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AhspIdEditRoute,
+  id: '/ahsp/$id/edit/',
+  path: '/ahsp/$id/edit/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -115,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/volume/': typeof VolumeIndexRoute
   '/ahsp/$id/': typeof AhspIdIndexRoute
   '/ahsp/new/': typeof AhspNewIndexRoute
+  '/unit-prices/categories/': typeof UnitPricesCategoriesIndexRoute
   '/volume/new/': typeof VolumeNewIndexRoute
   '/ahsp/$id/edit/': typeof AhspIdEditIndexRoute
 }
@@ -132,6 +140,7 @@ export interface FileRoutesByTo {
   '/volume': typeof VolumeIndexRoute
   '/ahsp/$id': typeof AhspIdIndexRoute
   '/ahsp/new': typeof AhspNewIndexRoute
+  '/unit-prices/categories': typeof UnitPricesCategoriesIndexRoute
   '/volume/new': typeof VolumeNewIndexRoute
   '/ahsp/$id/edit': typeof AhspIdEditIndexRoute
 }
@@ -150,6 +159,7 @@ export interface FileRoutesById {
   '/volume/': typeof VolumeIndexRoute
   '/ahsp/$id/': typeof AhspIdIndexRoute
   '/ahsp/new/': typeof AhspNewIndexRoute
+  '/unit-prices/categories/': typeof UnitPricesCategoriesIndexRoute
   '/volume/new/': typeof VolumeNewIndexRoute
   '/ahsp/$id/edit/': typeof AhspIdEditIndexRoute
 }
@@ -169,6 +179,7 @@ export interface FileRouteTypes {
     | '/volume/'
     | '/ahsp/$id/'
     | '/ahsp/new/'
+    | '/unit-prices/categories/'
     | '/volume/new/'
     | '/ahsp/$id/edit/'
   fileRoutesByTo: FileRoutesByTo
@@ -186,6 +197,7 @@ export interface FileRouteTypes {
     | '/volume'
     | '/ahsp/$id'
     | '/ahsp/new'
+    | '/unit-prices/categories'
     | '/volume/new'
     | '/ahsp/$id/edit'
   id:
@@ -203,6 +215,7 @@ export interface FileRouteTypes {
     | '/volume/'
     | '/ahsp/$id/'
     | '/ahsp/new/'
+    | '/unit-prices/categories/'
     | '/volume/new/'
     | '/ahsp/$id/edit/'
   fileRoutesById: FileRoutesById
@@ -221,7 +234,9 @@ export interface RootRouteChildren {
   VolumeIndexRoute: typeof VolumeIndexRoute
   AhspIdIndexRoute: typeof AhspIdIndexRoute
   AhspNewIndexRoute: typeof AhspNewIndexRoute
+  UnitPricesCategoriesIndexRoute: typeof UnitPricesCategoriesIndexRoute
   VolumeNewIndexRoute: typeof VolumeNewIndexRoute
+  AhspIdEditIndexRoute: typeof AhspIdEditIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -317,6 +332,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AhspNewIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/unit-prices/categories/': {
+      id: '/unit-prices/categories/'
+      path: '/unit-prices/categories'
+      fullPath: '/unit-prices/categories/'
+      preLoaderRoute: typeof UnitPricesCategoriesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/volume/new/': {
       id: '/volume/new/'
       path: '/volume/new'
@@ -326,10 +348,10 @@ declare module '@tanstack/react-router' {
     }
     '/ahsp/$id/edit/': {
       id: '/ahsp/$id/edit/'
-      path: '/'
+      path: '/ahsp/$id/edit'
       fullPath: '/ahsp/$id/edit/'
       preLoaderRoute: typeof AhspIdEditIndexRouteImport
-      parentRoute: typeof AhspIdEditRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -348,7 +370,9 @@ const rootRouteChildren: RootRouteChildren = {
   VolumeIndexRoute: VolumeIndexRoute,
   AhspIdIndexRoute: AhspIdIndexRoute,
   AhspNewIndexRoute: AhspNewIndexRoute,
+  UnitPricesCategoriesIndexRoute: UnitPricesCategoriesIndexRoute,
   VolumeNewIndexRoute: VolumeNewIndexRoute,
+  AhspIdEditIndexRoute: AhspIdEditIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 
 	"musashi/backend/internal/platform/httperr"
+	"musashi/backend/internal/unitpricecategory"
 	"musashi/backend/utils"
 )
 
@@ -24,7 +25,7 @@ func NewHandler(svc Service) *Handler {
 // @Tags        unit-prices
 // @Produce     json
 // @Param       q query string false "Search query"
-// @Param       category query string false "Filter by category (LABOR, MATERIALS, EQUIPMENT, OTHER)"
+// @Param       category query string false "Filter by unit price category code"
 // @Success     200 {array} UnitPriceDTO
 // @Failure     500 {object} httperr.ErrorResponse
 // @Router      /unit-prices [get]
@@ -61,6 +62,9 @@ func (h *Handler) Create(c fiber.Ctx) error {
 	dto, err := h.svc.Create(input)
 	if err != nil {
 		if errors.Is(err, ErrRequiredFields) {
+			return httperr.BadRequest(c, err.Error(), nil)
+		}
+		if errors.Is(err, ErrCategoryNotFound) {
 			return httperr.BadRequest(c, err.Error(), nil)
 		}
 		if errors.Is(err, ErrCodeAlreadyExists) {
@@ -102,6 +106,9 @@ func (h *Handler) Update(c fiber.Ctx) error {
 		if errors.Is(err, ErrUnitPriceNotFound) {
 			return httperr.NotFound(c, "Unit price not found")
 		}
+		if errors.Is(err, ErrCategoryNotFound) {
+			return httperr.BadRequest(c, err.Error(), nil)
+		}
 		if errors.Is(err, ErrCodeAlreadyExists) {
 			return httperr.Conflict(c, err.Error())
 		}
@@ -142,17 +149,17 @@ func (h *Handler) Delete(c fiber.Ctx) error {
 
 // Backward-compatible helpers
 func ListHandler(db *gorm.DB) fiber.Handler {
-	return NewHandler(NewService(NewRepository(db))).List
+	return NewHandler(NewService(NewRepository(db), unitpricecategory.NewRepository(db))).List
 }
 
 func CreateHandler(db *gorm.DB) fiber.Handler {
-	return NewHandler(NewService(NewRepository(db))).Create
+	return NewHandler(NewService(NewRepository(db), unitpricecategory.NewRepository(db))).Create
 }
 
 func UpdateHandler(db *gorm.DB) fiber.Handler {
-	return NewHandler(NewService(NewRepository(db))).Update
+	return NewHandler(NewService(NewRepository(db), unitpricecategory.NewRepository(db))).Update
 }
 
 func DeleteHandler(db *gorm.DB) fiber.Handler {
-	return NewHandler(NewService(NewRepository(db))).Delete
+	return NewHandler(NewService(NewRepository(db), unitpricecategory.NewRepository(db))).Delete
 }

@@ -1,13 +1,14 @@
 import {
   deleteUnitPriceMutation,
+  listUnitPriceCategoriesOptions,
   listUnitPricesOptions,
 } from "@/api/@tanstack/react-query.gen";
 import type { UnitPriceDto } from "@/api/types.gen";
 import {
-  UnitPriceDialog,
   UnitPriceTable,
+  UpsertUnitPriceDialog,
 } from "@/components/unit-prices";
-import { UNIT_PRICE_CATEGORIES } from "@/components/unit-prices/constants";
+import { ALL_UNIT_PRICE_CATEGORY } from "@/components/unit-prices/constants";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -43,7 +44,7 @@ function UnitPricesPage() {
   const { q, category } = Route.useSearch();
   const { isAdmin, user, openLoginModal } = useAuth();
 
-  const currentCategory = category || "ALL";
+  const currentCategory = category || ALL_UNIT_PRICE_CATEGORY;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<UnitPriceDto | null>(null);
 
@@ -51,10 +52,19 @@ function UnitPricesPage() {
     ...listUnitPricesOptions({
       query: {
         q: q || undefined,
-        category: currentCategory === "ALL" ? undefined : (currentCategory as any),
+        category:
+          currentCategory === ALL_UNIT_PRICE_CATEGORY
+            ? undefined
+            : currentCategory,
       },
     }),
   });
+
+  const { data: categories = [] } = useQuery(listUnitPriceCategoriesOptions());
+  const filterCategories = [
+    ALL_UNIT_PRICE_CATEGORY,
+    ...categories.filter((c) => c.is_active).map((c) => c.code),
+  ];
 
   const deleteMut = useMutation(deleteUnitPriceMutation());
 
@@ -129,13 +139,14 @@ function UnitPricesPage() {
                       navigate({
                         search: ((prev: any) => ({
                           ...prev,
-                          category: val === "ALL" ? undefined : val,
+                          category:
+                        val === ALL_UNIT_PRICE_CATEGORY ? undefined : val,
                         })) as any,
                         replace: true,
                       })
                     }
                   >
-                    {UNIT_PRICE_CATEGORIES.map((cat) => (
+                    {filterCategories.map((cat) => (
                       <DropdownMenuRadioItem key={cat} value={cat}>
                         {cat}
                       </DropdownMenuRadioItem>
@@ -145,10 +156,20 @@ function UnitPricesPage() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <Button onClick={handleOpenAdd}>
-            <Plus data-icon="inline-start" />
-            Unit Price
-          </Button>
+          <div className="flex items-center gap-2">
+            {isAdmin && (
+              <Button
+                variant="outline"
+                onClick={() => navigate({ to: "/unit-prices/categories" })}
+              >
+                Categories
+              </Button>
+            )}
+            <Button onClick={handleOpenAdd}>
+              <Plus data-icon="inline-start" />
+              Unit Price
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -161,7 +182,7 @@ function UnitPricesPage() {
         onDelete={handleDelete}
       />
 
-      <UnitPriceDialog
+      <UpsertUnitPriceDialog
         open={isDialogOpen}
         onOpenChange={(open) => {
           setIsDialogOpen(open);

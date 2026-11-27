@@ -34,6 +34,7 @@ import {
   LogOut,
   Receipt,
   Tag,
+  Tags,
   User as UserIcon,
 } from "lucide-react";
 import { useEffect } from "react";
@@ -58,7 +59,14 @@ const nav = [
   },
   {
     group: "Master Data",
-    items: [{ to: "/groups", label: "Groups", icon: Layers }],
+    items: [
+      { to: "/groups", label: "Groups", icon: Layers },
+      {
+        to: "/unit-prices/categories",
+        label: "Unit Price Categories",
+        icon: Tags,
+      },
+    ],
   },
 ] as const;
 

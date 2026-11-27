@@ -340,6 +340,29 @@ definitions:
     - weight
     - work_item
     type: object
+  CreateUnitPriceCategoryInput:
+    properties:
+      code:
+        example: LABOR
+        type: string
+      code_prefix:
+        example: LBR
+        type: string
+      is_active:
+        example: true
+        type: boolean
+      name:
+        example: Labor
+        type: string
+      sort_order:
+        example: 0
+        type: integer
+    required:
+    - code
+    - code_prefix
+    - name
+    - sort_order
+    type: object
   CreateUnitPriceInput:
     properties:
       category:
@@ -627,6 +650,28 @@ definitions:
     - weight
     - work_item
     type: object
+  UnitPriceCategoryDTO:
+    properties:
+      code:
+        type: string
+      code_prefix:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      name:
+        type: string
+      sort_order:
+        type: integer
+    required:
+    - code
+    - code_prefix
+    - id
+    - is_active
+    - name
+    - sort_order
+    type: object
   UnitPriceDTO:
     properties:
       category:
@@ -727,6 +772,24 @@ definitions:
         type: string
       work_item:
         type: string
+    type: object
+  UpdateUnitPriceCategoryInput:
+    properties:
+      code:
+        example: LABOR
+        type: string
+      code_prefix:
+        example: LBR
+        type: string
+      is_active:
+        example: true
+        type: boolean
+      name:
+        example: Tenaga Kerja
+        type: string
+      sort_order:
+        example: 1
+        type: integer
     type: object
   UpdateUnitPriceInput:
     properties:
@@ -1868,6 +1931,127 @@ paths:
       summary: Update schedule item
       tags:
       - schedules
+  /unit-price-categories:
+    get:
+      operationId: listUnitPriceCategories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/UnitPriceCategoryDTO'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: List unit price categories
+      tags:
+      - unit-price-categories
+    post:
+      consumes:
+      - application/json
+      operationId: createUnitPriceCategory
+      parameters:
+      - description: Category input
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/CreateUnitPriceCategoryInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/UnitPriceCategoryDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Create unit price category
+      tags:
+      - unit-price-categories
+  /unit-price-categories/{id}:
+    delete:
+      operationId: deleteUnitPriceCategory
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Delete unit price category
+      tags:
+      - unit-price-categories
+    put:
+      consumes:
+      - application/json
+      operationId: updateUnitPriceCategory
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Category update data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateUnitPriceCategoryInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/UnitPriceCategoryDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Update unit price category
+      tags:
+      - unit-price-categories
   /unit-prices:
     get:
       operationId: listUnitPrices
@@ -1876,7 +2060,7 @@ paths:
         in: query
         name: q
         type: string
-      - description: Filter by category (LABOR, MATERIALS, EQUIPMENT, OTHER)
+      - description: Filter by unit price category code
         in: query
         name: category
         type: string

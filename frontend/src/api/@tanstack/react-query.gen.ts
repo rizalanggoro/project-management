@@ -3,8 +3,8 @@
 import { type DefaultError, type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { createAhsp, createGroup, createProject, createRabItem, createSchedule, createUnitPrice, createVolume, deleteAhsp, deleteGroup, deleteProject, deleteRabItem, deleteSchedule, deleteUnitPrice, deleteVolume, exportRabExcel, exportRabPdf, exportVolumeExcel, getAhsp, getCostEstimate, getHealth, getMe, getProject, getProjectBoq, getProjectRab, listAhsps, listBoqProjects, listGroups, listProjects, listSchedules, listUnitPrices, listVolumes, login, logout, type Options, updateAhsp, updateGroup, updateProject, updateRabItem, updateSchedule, updateUnitPrice, updateVolume } from '../sdk.gen';
-import type { CreateAhspData, CreateAhspError, CreateAhspResponse, CreateGroupData, CreateGroupError, CreateGroupResponse, CreateProjectData, CreateProjectError, CreateProjectResponse, CreateRabItemData, CreateRabItemError, CreateRabItemResponse, CreateScheduleData, CreateScheduleError, CreateScheduleResponse, CreateUnitPriceData, CreateUnitPriceError, CreateUnitPriceResponse, CreateVolumeData, CreateVolumeError, CreateVolumeResponse, DeleteAhspData, DeleteAhspError, DeleteGroupData, DeleteGroupError, DeleteProjectData, DeleteProjectError, DeleteRabItemData, DeleteRabItemError, DeleteScheduleData, DeleteScheduleError, DeleteUnitPriceData, DeleteUnitPriceError, DeleteVolumeData, DeleteVolumeError, ExportRabExcelData, ExportRabExcelError, ExportRabPdfData, ExportRabPdfError, ExportVolumeExcelData, ExportVolumeExcelError, GetAhspData, GetAhspError, GetAhspResponse, GetCostEstimateData, GetCostEstimateError, GetCostEstimateResponse, GetHealthData, GetHealthError, GetHealthResponse, GetMeData, GetMeError, GetMeResponse, GetProjectBoqData, GetProjectBoqError, GetProjectBoqResponse, GetProjectData, GetProjectError, GetProjectRabData, GetProjectRabError, GetProjectRabResponse, GetProjectResponse, ListAhspsData, ListAhspsError, ListAhspsResponse, ListBoqProjectsData, ListBoqProjectsError, ListBoqProjectsResponse, ListGroupsData, ListGroupsError, ListGroupsResponse, ListProjectsData, ListProjectsError, ListProjectsResponse, ListSchedulesData, ListSchedulesError, ListSchedulesResponse, ListUnitPricesData, ListUnitPricesError, ListUnitPricesResponse, ListVolumesData, ListVolumesError, ListVolumesResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, UpdateAhspData, UpdateAhspError, UpdateAhspResponse, UpdateGroupData, UpdateGroupError, UpdateGroupResponse, UpdateProjectData, UpdateProjectError, UpdateProjectResponse, UpdateRabItemData, UpdateRabItemError, UpdateRabItemResponse, UpdateScheduleData, UpdateScheduleError, UpdateScheduleResponse, UpdateUnitPriceData, UpdateUnitPriceError, UpdateUnitPriceResponse, UpdateVolumeData, UpdateVolumeError, UpdateVolumeResponse } from '../types.gen';
+import { createAhsp, createGroup, createProject, createRabItem, createSchedule, createUnitPrice, createUnitPriceCategory, createVolume, deleteAhsp, deleteGroup, deleteProject, deleteRabItem, deleteSchedule, deleteUnitPrice, deleteUnitPriceCategory, deleteVolume, exportRabExcel, exportRabPdf, exportVolumeExcel, getAhsp, getCostEstimate, getHealth, getMe, getProject, getProjectBoq, getProjectRab, listAhsps, listBoqProjects, listGroups, listProjects, listSchedules, listUnitPriceCategories, listUnitPrices, listVolumes, login, logout, type Options, updateAhsp, updateGroup, updateProject, updateRabItem, updateSchedule, updateUnitPrice, updateUnitPriceCategory, updateVolume } from '../sdk.gen';
+import type { CreateAhspData, CreateAhspError, CreateAhspResponse, CreateGroupData, CreateGroupError, CreateGroupResponse, CreateProjectData, CreateProjectError, CreateProjectResponse, CreateRabItemData, CreateRabItemError, CreateRabItemResponse, CreateScheduleData, CreateScheduleError, CreateScheduleResponse, CreateUnitPriceCategoryData, CreateUnitPriceCategoryError, CreateUnitPriceCategoryResponse, CreateUnitPriceData, CreateUnitPriceError, CreateUnitPriceResponse, CreateVolumeData, CreateVolumeError, CreateVolumeResponse, DeleteAhspData, DeleteAhspError, DeleteGroupData, DeleteGroupError, DeleteProjectData, DeleteProjectError, DeleteRabItemData, DeleteRabItemError, DeleteScheduleData, DeleteScheduleError, DeleteUnitPriceCategoryData, DeleteUnitPriceCategoryError, DeleteUnitPriceData, DeleteUnitPriceError, DeleteVolumeData, DeleteVolumeError, ExportRabExcelData, ExportRabExcelError, ExportRabPdfData, ExportRabPdfError, ExportVolumeExcelData, ExportVolumeExcelError, GetAhspData, GetAhspError, GetAhspResponse, GetCostEstimateData, GetCostEstimateError, GetCostEstimateResponse, GetHealthData, GetHealthError, GetHealthResponse, GetMeData, GetMeError, GetMeResponse, GetProjectBoqData, GetProjectBoqError, GetProjectBoqResponse, GetProjectData, GetProjectError, GetProjectRabData, GetProjectRabError, GetProjectRabResponse, GetProjectResponse, ListAhspsData, ListAhspsError, ListAhspsResponse, ListBoqProjectsData, ListBoqProjectsError, ListBoqProjectsResponse, ListGroupsData, ListGroupsError, ListGroupsResponse, ListProjectsData, ListProjectsError, ListProjectsResponse, ListSchedulesData, ListSchedulesError, ListSchedulesResponse, ListUnitPriceCategoriesData, ListUnitPriceCategoriesError, ListUnitPriceCategoriesResponse, ListUnitPricesData, ListUnitPricesError, ListUnitPricesResponse, ListVolumesData, ListVolumesError, ListVolumesResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, UpdateAhspData, UpdateAhspError, UpdateAhspResponse, UpdateGroupData, UpdateGroupError, UpdateGroupResponse, UpdateProjectData, UpdateProjectError, UpdateProjectResponse, UpdateRabItemData, UpdateRabItemError, UpdateRabItemResponse, UpdateScheduleData, UpdateScheduleError, UpdateScheduleResponse, UpdateUnitPriceCategoryData, UpdateUnitPriceCategoryError, UpdateUnitPriceCategoryResponse, UpdateUnitPriceData, UpdateUnitPriceError, UpdateUnitPriceResponse, UpdateVolumeData, UpdateVolumeError, UpdateVolumeResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -684,6 +684,75 @@ export const updateScheduleMutation = (options?: Partial<Options<UpdateScheduleD
     const mutationOptions: UseMutationOptions<UpdateScheduleResponse, UpdateScheduleError, Options<UpdateScheduleData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await updateSchedule({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const listUnitPriceCategoriesQueryKey = (options?: Options<ListUnitPriceCategoriesData>) => createQueryKey('listUnitPriceCategories', options);
+
+/**
+ * List unit price categories
+ */
+export const listUnitPriceCategoriesOptions = (options?: Options<ListUnitPriceCategoriesData>) => queryOptions<ListUnitPriceCategoriesResponse, ListUnitPriceCategoriesError, ListUnitPriceCategoriesResponse, ReturnType<typeof listUnitPriceCategoriesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listUnitPriceCategories({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listUnitPriceCategoriesQueryKey(options)
+});
+
+/**
+ * Create unit price category
+ */
+export const createUnitPriceCategoryMutation = (options?: Partial<Options<CreateUnitPriceCategoryData>>): UseMutationOptions<CreateUnitPriceCategoryResponse, CreateUnitPriceCategoryError, Options<CreateUnitPriceCategoryData>> => {
+    const mutationOptions: UseMutationOptions<CreateUnitPriceCategoryResponse, CreateUnitPriceCategoryError, Options<CreateUnitPriceCategoryData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createUnitPriceCategory({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Delete unit price category
+ */
+export const deleteUnitPriceCategoryMutation = (options?: Partial<Options<DeleteUnitPriceCategoryData>>): UseMutationOptions<unknown, DeleteUnitPriceCategoryError, Options<DeleteUnitPriceCategoryData>> => {
+    const mutationOptions: UseMutationOptions<unknown, DeleteUnitPriceCategoryError, Options<DeleteUnitPriceCategoryData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await deleteUnitPriceCategory({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Update unit price category
+ */
+export const updateUnitPriceCategoryMutation = (options?: Partial<Options<UpdateUnitPriceCategoryData>>): UseMutationOptions<UpdateUnitPriceCategoryResponse, UpdateUnitPriceCategoryError, Options<UpdateUnitPriceCategoryData>> => {
+    const mutationOptions: UseMutationOptions<UpdateUnitPriceCategoryResponse, UpdateUnitPriceCategoryError, Options<UpdateUnitPriceCategoryData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await updateUnitPriceCategory({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

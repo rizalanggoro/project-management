@@ -16,7 +16,14 @@ var (
 	ErrRequiredFields       = errors.New("work item and unit are required")
 	ErrCodeAlreadyExists    = errors.New("unit price with that code already exists")
 	ErrReferencedByAhspItem = errors.New("cannot delete unit price: referenced by one or more AHSP items")
+	ErrCategoryNotFound     = errors.New("unit price category not found")
 )
+
+// CategoryRepository is the minimal contract needed to resolve a category code
+// and its auto-generated code prefix.
+type CategoryRepository interface {
+	FindByCode(code string, excludeID *uint) (*domain.UnitPriceCategoryRecord, error)
+}
 
 type Service interface {
 	List(q, category string) ([]UnitPriceDTO, error)
@@ -26,11 +33,12 @@ type Service interface {
 }
 
 type service struct {
-	repo Repository
+	repo       Repository
+	categories CategoryRepository
 }
 
-func NewService(repo Repository) Service {
-	return &service{repo: repo}
+func NewService(repo Repository, categories CategoryRepository) Service {
+	return &service{repo: repo, categories: categories}
 }
 
 func (s *service) List(q, category string) ([]UnitPriceDTO, error) {
@@ -46,25 +54,33 @@ func (s *service) List(q, category string) ([]UnitPriceDTO, error) {
 	return data, nil
 }
 
+func (s *service) resolveCategory(code string) (*domain.UnitPriceCategoryRecord, error) {
+	category, err := s.categories.FindByCode(code, nil)
+	if err != nil || category == nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) || err == nil {
+			return nil, ErrCategoryNotFound
+		}
+		return nil, err
+	}
+	return category, nil
+}
+
 func (s *service) Create(input CreateUnitPriceInput) (*UnitPriceDTO, error) {
 	code := strings.TrimSpace(input.Code)
 	if input.WorkItem == "" || input.Unit == "" {
 		return nil, ErrRequiredFields
 	}
 
-	if code == "" {
-		prefix := "UP"
-		switch domain.UnitPriceCategory(input.Category) {
-		case domain.CategoryLabor:
-			prefix = "LBR"
-		case domain.CategoryMaterials:
-			prefix = "MTR"
-		case domain.CategoryEquipment:
-			prefix = "EQP"
-		case domain.CategoryOther:
-			prefix = "OTH"
-		}
+	category, err := s.resolveCategory(input.Category)
+	if err != nil {
+		return nil, err
+	}
 
+	if code == "" {
+		prefix := category.CodePrefix
+		if prefix == "" {
+			prefix = "UP"
+		}
 		for i := 1; ; i++ {
 			candidate := fmt.Sprintf("%s-%03d", prefix, i)
 			existing, err := s.repo.FindByCode(candidate, nil)
@@ -83,12 +99,12 @@ func (s *service) Create(input CreateUnitPriceInput) (*UnitPriceDTO, error) {
 	price, _ := strconv.ParseInt(input.UnitPrice, 10, 64)
 
 	item := domain.UnitPrice{
-		Code:        code,
-		Category:    domain.UnitPriceCategory(input.Category),
-		WorkItem:    input.WorkItem,
-		Unit:        input.Unit,
-		UnitPrice:   price,
-		Note:        input.Note,
+		Code:      code,
+		Category:  domain.UnitPriceCategory(category.Code),
+		WorkItem:  input.WorkItem,
+		Unit:      input.Unit,
+		UnitPrice: price,
+		Note:      input.Note,
 	}
 
 	if err := s.repo.Create(&item); err != nil {
@@ -119,7 +135,11 @@ func (s *service) Update(id uint, input UpdateUnitPriceInput) (*UnitPriceDTO, er
 		}
 	}
 	if input.Category != nil {
-		item.Category = domain.UnitPriceCategory(*input.Category)
+		category, err := s.resolveCategory(*input.Category)
+		if err != nil {
+			return nil, err
+		}
+		item.Category = domain.UnitPriceCategory(category.Code)
 	}
 	if input.WorkItem != nil {
 		item.WorkItem = *input.WorkItem
