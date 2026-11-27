@@ -199,8 +199,9 @@ func (h *Handler) Delete(c fiber.Ctx) error {
 
 func newServiceFromDB(db *gorm.DB) Service {
 	return NewService(
+		db,
 		NewRepository(db),
-		projectsection.NewRepository(db),
+		projectsection.NewRepository(),
 		projectplant.NewRepository(db),
 	)
 }

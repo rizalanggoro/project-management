@@ -12,6 +12,7 @@ import (
 	"gorm.io/gorm"
 
 	"musashi/backend/internal/domain"
+	"musashi/backend/internal/projectsection"
 )
 
 type mockProjectRepo struct {
@@ -73,7 +74,11 @@ type mockSectionRepo struct {
 	codes map[string]bool
 }
 
-func (m *mockSectionRepo) FindByCode(code string, excludeID *uint) (*domain.ProjectSectionRecord, error) {
+func (m *mockSectionRepo) Find(_ *gorm.DB, opts projectsection.FindOptions) (*domain.ProjectSectionRecord, error) {
+	code := ""
+	if opts.Code != nil {
+		code = *opts.Code
+	}
 	if m != nil && m.codes[strings.ToLower(strings.TrimSpace(code))] {
 		return &domain.ProjectSectionRecord{Code: code}, nil
 	}
@@ -116,7 +121,7 @@ func TestProjectService(t *testing.T) {
 			},
 		}
 		sections, plants := masterRepos()
-		svc := NewService(repo, sections, plants)
+		svc := NewService(nil, repo, sections, plants)
 		list, total, err := svc.List("", 0, 0)
 		if err != nil || total != 2 || len(list) != 2 {
 			t.Fatalf("unexpected list result: %v, total: %d", err, total)
@@ -133,7 +138,7 @@ func TestProjectService(t *testing.T) {
 			},
 		}
 		sections, plants := masterRepos()
-		svc := NewService(repo, sections, plants)
+		svc := NewService(nil, repo, sections, plants)
 
 		got, err := svc.Get(1)
 		if err != nil || got.Name != "Proj 1" {
@@ -156,7 +161,7 @@ func TestProjectService(t *testing.T) {
 			},
 		}
 		sections, plants := masterRepos()
-		svc := NewService(repo, sections, plants)
+		svc := NewService(nil, repo, sections, plants)
 
 		// Empty name
 		_, err := svc.Create(CreateProjectInput{Name: "   "})
@@ -212,7 +217,7 @@ func TestProjectService(t *testing.T) {
 			},
 		}
 		sections, plants := masterRepos()
-		svc := NewService(repo, sections, plants)
+		svc := NewService(nil, repo, sections, plants)
 
 		// Not found
 		_, err := svc.Update(99, UpdateProjectInput{Name: strPtr("New")})
@@ -259,7 +264,7 @@ func TestProjectService(t *testing.T) {
 			},
 		}
 		sections, plants := masterRepos()
-		svc := NewService(repo, sections, plants)
+		svc := NewService(nil, repo, sections, plants)
 
 		if err := svc.Delete(1); err != nil {
 			t.Fatalf("expected success, got %v", err)
@@ -284,7 +289,7 @@ func TestProjectHandler(t *testing.T) {
 		},
 	}
 	sections, plants := masterRepos()
-	svc := NewService(repo, sections, plants)
+	svc := NewService(nil, repo, sections, plants)
 	handler := NewHandler(svc)
 
 	app := fiber.New()

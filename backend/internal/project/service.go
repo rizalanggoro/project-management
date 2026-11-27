@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 
 	"musashi/backend/internal/domain"
+	"musashi/backend/internal/projectsection"
 )
 
 var (
@@ -29,7 +30,7 @@ type Service interface {
 }
 
 type SectionRepository interface {
-	FindByCode(code string, excludeID *uint) (*domain.ProjectSectionRecord, error)
+	Find(db *gorm.DB, opts projectsection.FindOptions) (*domain.ProjectSectionRecord, error)
 }
 
 type PlantRepository interface {
@@ -37,20 +38,21 @@ type PlantRepository interface {
 }
 
 type service struct {
+	db       *gorm.DB
 	repo     Repository
 	sections SectionRepository
 	plants   PlantRepository
 }
 
-func NewService(repo Repository, sections SectionRepository, plants PlantRepository) Service {
-	return &service{repo: repo, sections: sections, plants: plants}
+func NewService(db *gorm.DB, repo Repository, sections SectionRepository, plants PlantRepository) Service {
+	return &service{db: db, repo: repo, sections: sections, plants: plants}
 }
 
 func (s *service) resolveSection(code string) error {
 	if code == "" {
 		return ErrSectionNotFound
 	}
-	section, err := s.sections.FindByCode(code, nil)
+	section, err := s.sections.Find(s.db, projectsection.FindOptions{Code: &code})
 	if err != nil || section == nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return ErrSectionNotFound

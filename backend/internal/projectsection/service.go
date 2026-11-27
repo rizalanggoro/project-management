@@ -24,15 +24,18 @@ type Service interface {
 }
 
 type service struct {
+	db   *gorm.DB
 	repo Repository
 }
 
-func NewService(repo Repository) Service {
-	return &service{repo: repo}
+func NewService(db *gorm.DB, repo Repository) Service {
+	return &service{db: db, repo: repo}
 }
 
 func (s *service) List(q string) ([]ProjectSectionDTO, error) {
-	items, err := s.repo.List(strings.TrimSpace(q))
+	items, err := s.repo.List(s.db, ListOptions{
+		Keyword: strings.TrimSpace(q),
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -49,12 +52,12 @@ func (s *service) Create(input CreateProjectSectionInput) (*ProjectSectionDTO, e
 	if code == "" || name == "" {
 		return nil, ErrRequiredFields
 	}
-	if existing, err := s.repo.FindByCode(code, nil); err == nil && existing != nil {
+	if existing, err := s.repo.Find(s.db, FindOptions{Code: &code}); err == nil && existing != nil {
 		return nil, ErrCodeAlreadyExists
 	}
 
 	section := domain.ProjectSectionRecord{Code: code, Name: name}
-	if err := s.repo.Create(&section); err != nil {
+	if err := s.repo.Create(s.db, &section); err != nil {
 		return nil, err
 	}
 	dto := toDTO(&section)
@@ -62,7 +65,7 @@ func (s *service) Create(input CreateProjectSectionInput) (*ProjectSectionDTO, e
 }
 
 func (s *service) Update(id uint, input UpdateProjectSectionInput) (*ProjectSectionDTO, error) {
-	section, err := s.repo.FindByID(id)
+	section, err := s.repo.Find(s.db, FindOptions{ID: &id})
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, ErrSectionNotFound
@@ -76,7 +79,7 @@ func (s *service) Update(id uint, input UpdateProjectSectionInput) (*ProjectSect
 		if code == "" {
 			return nil, ErrRequiredFields
 		}
-		if existing, err := s.repo.FindByCode(code, &id); err == nil && existing != nil {
+		if existing, err := s.repo.Find(s.db, FindOptions{Code: &code, ExcludeID: &id}); err == nil && existing != nil {
 			return nil, ErrCodeAlreadyExists
 		}
 		section.Code = code
@@ -89,11 +92,11 @@ func (s *service) Update(id uint, input UpdateProjectSectionInput) (*ProjectSect
 		section.Name = name
 	}
 
-	if err := s.repo.Update(section); err != nil {
+	if err := s.repo.Update(s.db, section); err != nil {
 		return nil, err
 	}
 	if section.Code != oldCode {
-		if err := s.repo.RenameCode(oldCode, section.Code); err != nil {
+		if err := s.repo.RenameCode(s.db, oldCode, section.Code); err != nil {
 			return nil, err
 		}
 	}
@@ -103,21 +106,21 @@ func (s *service) Update(id uint, input UpdateProjectSectionInput) (*ProjectSect
 }
 
 func (s *service) Delete(id uint) error {
-	section, err := s.repo.FindByID(id)
+	section, err := s.repo.Find(s.db, FindOptions{ID: &id})
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return ErrSectionNotFound
 		}
 		return err
 	}
-	n, err := s.repo.CountReferences(section.Code)
+	n, err := s.repo.CountReferences(s.db, section.Code)
 	if err != nil {
 		return err
 	}
 	if n > 0 {
 		return ErrSectionInUse
 	}
-	deleted, err := s.repo.Delete(id)
+	deleted, err := s.repo.Delete(s.db, id)
 	if err != nil {
 		return err
 	}

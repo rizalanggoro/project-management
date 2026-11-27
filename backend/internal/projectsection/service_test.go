@@ -24,7 +24,8 @@ func newMockRepo() *mockRepo {
 	}
 }
 
-func (m *mockRepo) List(q string) ([]domain.ProjectSectionRecord, error) {
+func (m *mockRepo) List(_ *gorm.DB, opts ListOptions) ([]domain.ProjectSectionRecord, error) {
+	q := opts.Keyword
 	items := make([]domain.ProjectSectionRecord, 0, len(m.items))
 	for _, item := range m.items {
 		if q == "" || strings.Contains(strings.ToLower(item.Code), strings.ToLower(q)) ||
@@ -35,46 +36,45 @@ func (m *mockRepo) List(q string) ([]domain.ProjectSectionRecord, error) {
 	return items, nil
 }
 
-func (m *mockRepo) FindByID(id uint) (*domain.ProjectSectionRecord, error) {
-	if item, ok := m.items[id]; ok {
-		return item, nil
+func (m *mockRepo) Find(_ *gorm.DB, opts FindOptions) (*domain.ProjectSectionRecord, error) {
+	if opts.ID != nil {
+		if item, ok := m.items[*opts.ID]; ok {
+			return item, nil
+		}
+		return nil, gorm.ErrRecordNotFound
 	}
-	return nil, gorm.ErrRecordNotFound
-}
-
-func (m *mockRepo) FindByCode(code string, excludeID *uint) (*domain.ProjectSectionRecord, error) {
 	for id, item := range m.items {
-		if excludeID != nil && id == *excludeID {
+		if opts.ExcludeID != nil && id == *opts.ExcludeID {
 			continue
 		}
-		if strings.EqualFold(item.Code, code) {
+		if strings.EqualFold(item.Code, *opts.Code) {
 			return item, nil
 		}
 	}
 	return nil, gorm.ErrRecordNotFound
 }
 
-func (m *mockRepo) Create(item *domain.ProjectSectionRecord) error {
+func (m *mockRepo) Create(_ *gorm.DB, item *domain.ProjectSectionRecord) error {
 	item.ID = m.nextID
 	m.nextID++
 	m.items[item.ID] = item
 	return nil
 }
 
-func (m *mockRepo) Update(item *domain.ProjectSectionRecord) error {
+func (m *mockRepo) Update(_ *gorm.DB, item *domain.ProjectSectionRecord) error {
 	m.items[item.ID] = item
 	return nil
 }
 
-func (m *mockRepo) RenameCode(oldCode, newCode string) error {
+func (m *mockRepo) RenameCode(_ *gorm.DB, oldCode, newCode string) error {
 	return nil
 }
 
-func (m *mockRepo) CountReferences(code string) (int64, error) {
+func (m *mockRepo) CountReferences(_ *gorm.DB, code string) (int64, error) {
 	return m.references, nil
 }
 
-func (m *mockRepo) Delete(id uint) (bool, error) {
+func (m *mockRepo) Delete(_ *gorm.DB, id uint) (bool, error) {
 	if _, ok := m.items[id]; !ok {
 		return false, nil
 	}
@@ -94,7 +94,7 @@ func parseTestID(t *testing.T, id string) uint {
 func TestProjectSectionService(t *testing.T) {
 	t.Run("create trims input and rejects duplicates", func(t *testing.T) {
 		repo := newMockRepo()
-		svc := NewService(repo)
+		svc := NewService(nil, repo)
 
 		created, err := svc.Create(CreateProjectSectionInput{Code: "  GA Building  ", Name: " GA Building "})
 		if err != nil || created.Code != "GA Building" || created.Name != "GA Building" {
@@ -114,7 +114,7 @@ func TestProjectSectionService(t *testing.T) {
 
 	t.Run("list and filter", func(t *testing.T) {
 		repo := newMockRepo()
-		svc := NewService(repo)
+		svc := NewService(nil, repo)
 		if _, err := svc.Create(CreateProjectSectionInput{Code: "EHS", Name: "Environment"}); err != nil {
 			t.Fatal(err)
 		}
@@ -130,7 +130,7 @@ func TestProjectSectionService(t *testing.T) {
 
 	t.Run("update and not found", func(t *testing.T) {
 		repo := newMockRepo()
-		svc := NewService(repo)
+		svc := NewService(nil, repo)
 		created, err := svc.Create(CreateProjectSectionInput{Code: "EHS", Name: "Environment"})
 		if err != nil {
 			t.Fatal(err)
@@ -150,7 +150,7 @@ func TestProjectSectionService(t *testing.T) {
 
 	t.Run("delete guards references", func(t *testing.T) {
 		repo := newMockRepo()
-		svc := NewService(repo)
+		svc := NewService(nil, repo)
 		created, err := svc.Create(CreateProjectSectionInput{Code: "EHS", Name: "Environment"})
 		if err != nil {
 			t.Fatal(err)
